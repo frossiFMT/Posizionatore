@@ -1,0 +1,899 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V21" />
+  <SW.Blocks.InstanceDB ID="0">
+    <AttributeList>
+      <HeaderVersion>1.0</HeaderVersion>
+      <InstanceOfName>AxisAS_Mng_v2.0</InstanceOfName>
+      <InstanceOfType>FB</InstanceOfType>
+      <Interface>
+        <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+          <Section Name="Input" />
+          <Section Name="Output" />
+          <Section Name="InOut" />
+          <Section Name="Static">
+            <Member Name="DataIn" Datatype="&quot;AxixAS_DataIn_Type_v2.0&quot;" Remanence="Retain">
+              <Sections>
+                <Section Name="None">
+                  <Member Name="ixEnablePos" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ixDriveReady" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ixEnableLevRes" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ixLevelReached" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ixMotorReadyReq" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ixAlarmReset" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ixAbort" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ixJogPos" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ixJogNeg" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="xAutoSpeedDetect" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="xAutoAccDecCalculation" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ifPositionRequest" Datatype="Real">
+                    <StartValue>2222.0</StartValue>
+                  </Member>
+                  <Member Name="ifSpeedRequest" Datatype="Real">
+                    <StartValue>500.0</StartValue>
+                  </Member>
+                  <Member Name="ifPositionStartLev" Datatype="Real">
+                    <StartValue>500.0</StartValue>
+                  </Member>
+                  <Member Name="ifSpeedLev" Datatype="Real">
+                    <StartValue>100.0</StartValue>
+                  </Member>
+                  <Member Name="ifAccRamp" Datatype="Real">
+                    <StartValue>1000.0</StartValue>
+                  </Member>
+                  <Member Name="ifDecRamp" Datatype="Real">
+                    <StartValue>1000.0</StartValue>
+                  </Member>
+                  <Member Name="ifTimeScan" Datatype="Real">
+                    <StartValue>0.005068141</StartValue>
+                  </Member>
+                  <Member Name="ifEncoder" Datatype="Real">
+                    <StartValue>2221.003</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="DataOut" Datatype="&quot;AxixAS_DataOut_Type_v2.0&quot;" Remanence="Retain">
+              <Sections>
+                <Section Name="None">
+                  <Member Name="oxCmdMotorForw" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="oxCmdMotorBack" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="oxCmdBrake" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="oxPosError" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="oxSincroError" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="oxEndPos" Datatype="Bool">
+                    <StartValue>TRUE</StartValue>
+                  </Member>
+                  <Member Name="oxEndPosBig" Datatype="Bool">
+                    <StartValue>TRUE</StartValue>
+                  </Member>
+                  <Member Name="oxStopSpeed" Datatype="Bool">
+                    <StartValue>TRUE</StartValue>
+                  </Member>
+                  <Member Name="oxAccOnWork" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="oxDecOnWork" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                  <Member Name="ofSpeedRequest" Datatype="Real">
+                    <StartValue>0.0</StartValue>
+                  </Member>
+                  <Member Name="ofEncMotorPos" Datatype="Real">
+                    <StartValue>2221.003</StartValue>
+                  </Member>
+                  <Member Name="ofMaxError" Datatype="Real">
+                    <StartValue>0.0</StartValue>
+                  </Member>
+                  <Member Name="ofSpaceStop" Datatype="Real">
+                    <StartValue>2.0</StartValue>
+                  </Member>
+                  <Member Name="ofSpaceLevRes" Datatype="Real">
+                    <StartValue>43.75</StartValue>
+                  </Member>
+                  <Member Name="ofSpaceStart" Datatype="Real">
+                    <StartValue>125.0</StartValue>
+                  </Member>
+                  <Member Name="otTimeMove" Datatype="Time">
+                    <StartValue>T#8S_555MS</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="Sincro" Datatype="&quot;AxixAS_DataSincro_Type_v2.0&quot;">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Sections>
+                <Section Name="None">
+                  <Member Name="DataIn" Datatype="&quot;AxixAS_DataIn_Type_v2.0&quot;">
+                    <Sections>
+                      <Section Name="None">
+                        <Member Name="ixEnablePos" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ixDriveReady" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ixEnableLevRes" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ixLevelReached" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ixMotorReadyReq" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ixAlarmReset" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ixAbort" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ixJogPos" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ixJogNeg" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="xAutoSpeedDetect" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="xAutoAccDecCalculation" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ifPositionRequest" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ifSpeedRequest" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ifPositionStartLev" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ifSpeedLev" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ifAccRamp" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ifDecRamp" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ifTimeScan" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ifEncoder" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                      </Section>
+                    </Sections>
+                  </Member>
+                  <Member Name="DataOut" Datatype="&quot;AxixAS_DataOut_Type_v2.0&quot;">
+                    <Sections>
+                      <Section Name="None">
+                        <Member Name="oxCmdMotorForw" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxCmdMotorBack" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxCmdBrake" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxPosError" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxSincroError" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxEndPos" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxEndPosBig" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxStopSpeed" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxAccOnWork" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="oxDecOnWork" Datatype="Bool">
+                          <StartValue>FALSE</StartValue>
+                        </Member>
+                        <Member Name="ofSpeedRequest" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ofEncMotorPos" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ofMaxError" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ofSpaceStop" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ofSpaceLevRes" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="ofSpaceStart" Datatype="Real">
+                          <StartValue>0.0</StartValue>
+                        </Member>
+                        <Member Name="otTimeMove" Datatype="Time">
+                          <StartValue>T#0MS</StartValue>
+                        </Member>
+                      </Section>
+                    </Sections>
+                  </Member>
+                  <Member Name="ixEnableSincro" Datatype="Int">
+                    <StartValue>0</StartValue>
+                  </Member>
+                  <Member Name="ifDistance_Master/Slave" Datatype="Real">
+                    <StartValue>0.0</StartValue>
+                  </Member>
+                  <Member Name="ifErrorSincro" Datatype="Real">
+                    <StartValue>0.0</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="Cfg" Datatype="&quot;AxixAS_CFG_Type_v2.0&quot;" Remanence="Retain">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Configurazione Asse </MultiLanguageText>
+              </Comment>
+              <Sections>
+                <Section Name="None">
+                  <Member Name="fJogSpeed" Datatype="Real">
+                    <StartValue>10.0</StartValue>
+                  </Member>
+                  <Member Name="fJogAcc" Datatype="Real">
+                    <StartValue>10.0</StartValue>
+                  </Member>
+                  <Member Name="fJogDec" Datatype="Real">
+                    <StartValue>10.0</StartValue>
+                  </Member>
+                  <Member Name="fVirt_EncWindPos" Datatype="Real">
+                    <StartValue>1.0</StartValue>
+                  </Member>
+                  <Member Name="fMotWindPos" Datatype="Real">
+                    <StartValue>2.0</StartValue>
+                  </Member>
+                  <Member Name="fMotWindPosBig" Datatype="Real">
+                    <StartValue>30.0</StartValue>
+                  </Member>
+                  <Member Name="fMaxErrEnc" Datatype="Real">
+                    <StartValue>10.0</StartValue>
+                  </Member>
+                  <Member Name="fMaxSpeed" Datatype="Real">
+                    <StartValue>1200.0</StartValue>
+                  </Member>
+                  <Member Name="fMinAccRamp" Datatype="Real">
+                    <StartValue>100.0</StartValue>
+                  </Member>
+                  <Member Name="fMinDecRamp" Datatype="Real">
+                    <StartValue>100.0</StartValue>
+                  </Member>
+                  <Member Name="fMaxAccRamp" Datatype="Real">
+                    <StartValue>1200.0</StartValue>
+                  </Member>
+                  <Member Name="fMaxDecRamp" Datatype="Real">
+                    <StartValue>800.0</StartValue>
+                  </Member>
+                  <Member Name="fThreshold_SUP_AutoSpeed" Datatype="Real">
+                    <StartValue>500.0</StartValue>
+                  </Member>
+                  <Member Name="fThreshold_INF_AutoSpeed" Datatype="Real">
+                    <StartValue>0.0</StartValue>
+                  </Member>
+                  <Member Name="xCurveS-L" Datatype="Int">
+                    <StartValue>2</StartValue>
+                  </Member>
+                  <Member Name="fMotWindSpeed" Datatype="Real">
+                    <StartValue>10.0</StartValue>
+                  </Member>
+                  <Member Name="fMotAdvStopPosition" Datatype="Real">
+                    <StartValue>0.0</StartValue>
+                  </Member>
+                  <Member Name="fKPpid_Pos" Datatype="Real">
+                    <StartValue>1.0</StartValue>
+                  </Member>
+                  <Member Name="fKPpidAcc_Pos" Datatype="Real">
+                    <StartValue>1.0</StartValue>
+                  </Member>
+                  <Member Name="fKPpidDec_Pos" Datatype="Real">
+                    <StartValue>4.0</StartValue>
+                  </Member>
+                  <Member Name="fKPpid_Vel" Datatype="Real">
+                    <StartValue>1.0</StartValue>
+                  </Member>
+                  <Member Name="fKPpidAcc_Vel" Datatype="Real">
+                    <StartValue>1.0</StartValue>
+                  </Member>
+                  <Member Name="fKPpidDec_Vel" Datatype="Real">
+                    <StartValue>1.0</StartValue>
+                  </Member>
+                  <Member Name="fMinSpeed" Datatype="Real">
+                    <StartValue>20.0</StartValue>
+                  </Member>
+                  <Member Name="fFirstStepNepero" Datatype="Real">
+                    <StartValue>6.0</StartValue>
+                  </Member>
+                  <Member Name="fAutoChangeS-Lvalue" Datatype="Real">
+                    <StartValue>0.0</StartValue>
+                  </Member>
+                  <Member Name="tBrakeDelay_Fwd" Datatype="Time">
+                    <StartValue>T#100MS</StartValue>
+                  </Member>
+                  <Member Name="tBrakeDelay_Bkw" Datatype="Time">
+                    <StartValue>T#100MS</StartValue>
+                  </Member>
+                  <Member Name="tDriveOnReq" Datatype="Time">
+                    <StartValue>T#5S</StartValue>
+                  </Member>
+                  <Member Name="tCtrEndPos" Datatype="Time">
+                    <StartValue>T#1S</StartValue>
+                  </Member>
+                  <Member Name="xDisablePos" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="Work" Datatype="Struct" Remanence="Retain">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Gestione interna Asse</MultiLanguageText>
+              </Comment>
+              <Member Name="xEnablePos" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xINEnable" Datatype="Bool">
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xDriveReady" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xCmdVirSpeedChanged" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xCurveS-L" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="ExternalWritable" SystemDefined="true">false</BooleanAttribute>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>TRUE</StartValue>
+              </Member>
+              <Member Name="xAutoChangeS-L" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xCTRAutoChangeS-L" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xDecStop" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xDecResearch" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xStopVirPositioner" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>TRUE</StartValue>
+              </Member>
+              <Member Name="xEnableJog" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xChangeTargetPulse" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xAutoSpeedPulse" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xEnablePulse" Datatype="Bool">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="f_PositionTarget" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>2222.0</StartValue>
+              </Member>
+              <Member Name="fVirPos" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>2221.003</StartValue>
+              </Member>
+              <Member Name="f_SpeedReqCalc" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>500.0</StartValue>
+              </Member>
+              <Member Name="fVirSpeed" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fVirSpeedLinear" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fVirSpeedLog" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fVirSpeedCos" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fCmdVirSpeed" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fCmdVirSpeedMemo" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fCmdVirAcc" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>5.068141</StartValue>
+              </Member>
+              <Member Name="fCmdVirDec" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>4.054513</StartValue>
+              </Member>
+              <Member Name="fLimVirDec" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fDecVirStop" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fCalcEncErr" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fJogSpeed" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fCmdJogSpeed" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fCmdJogAcc" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fCmdJogDec" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fLim+Ppid" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>240.0</StartValue>
+              </Member>
+              <Member Name="fLim-Ppid" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>-240.0</StartValue>
+              </Member>
+              <Member Name="fOutSpeedMot" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fSuppCalcPpid" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>5.0</StartValue>
+              </Member>
+              <Member Name="fMemoMaxSpeed" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>1.0</StartValue>
+              </Member>
+              <Member Name="fPpid" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="fMemoOldPos" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>2222.0</StartValue>
+              </Member>
+              <Member Name="fAccOnWork" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>1000.0</StartValue>
+              </Member>
+              <Member Name="fDecOnWork" Datatype="Real">
+                <AttributeList>
+                  <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+                </AttributeList>
+                <StartValue>800.0</StartValue>
+              </Member>
+              <Member Name="fSpaceFromTarget" Datatype="Real">
+                <StartValue>0.0</StartValue>
+              </Member>
+              <Member Name="xTimBrakeDelay_Fwd" Datatype="Bool">
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xTimBrakeDelay_Bkw" Datatype="Bool">
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xTimStopEndPos" Datatype="Bool">
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="xMotorMagn_pulse" Datatype="Bool">
+                <StartValue>FALSE</StartValue>
+              </Member>
+              <Member Name="fCalc" Datatype="Array[0..20] of Real">
+                <Subelement Path="0">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="1">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="2">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="3">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="4">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="5">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="6">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="7">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="8">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="9">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="10">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="11">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="12">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="13">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="14">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="15">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="16">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="17">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="18">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="19">
+                  <StartValue>0.0</StartValue>
+                </Subelement>
+                <Subelement Path="20">
+                  <StartValue>1617.987</StartValue>
+                </Subelement>
+              </Member>
+              <Member Name="xCalc" Datatype="Array[0..20] of Bool">
+                <Subelement Path="0">
+                  <StartValue>TRUE</StartValue>
+                </Subelement>
+                <Subelement Path="1">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="2">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="3">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="4">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="5">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="6">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="7">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="8">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="9">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="10">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="11">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="12">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="13">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="14">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="15">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="16">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="17">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="18">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="19">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+                <Subelement Path="20">
+                  <StartValue>FALSE</StartValue>
+                </Subelement>
+              </Member>
+            </Member>
+            <Member Name="TmrBrake_Fwd" Datatype="IEC_TIMER" Version="1.0">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Timer sgancio freno FWD </MultiLanguageText>
+              </Comment>
+              <Sections>
+                <Section Name="None">
+                  <Member Name="PT" Datatype="Time">
+                    <StartValue>T#100MS</StartValue>
+                  </Member>
+                  <Member Name="IN" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="TmrBrake_Bkw" Datatype="IEC_TIMER" Version="1.0">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Timer sgancio freno BKW </MultiLanguageText>
+              </Comment>
+              <Sections>
+                <Section Name="None">
+                  <Member Name="PT" Datatype="Time">
+                    <StartValue>T#100MS</StartValue>
+                  </Member>
+                  <Member Name="IN" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="Tmr_EndPos" Datatype="IEC_TIMER" Version="1.0">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Timer allarme controllo fine posizionamento </MultiLanguageText>
+              </Comment>
+              <Sections>
+                <Section Name="None">
+                  <Member Name="PT" Datatype="Time">
+                    <StartValue>T#1S</StartValue>
+                  </Member>
+                  <Member Name="IN" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="Tmr_DriveOnReq" Datatype="IEC_TIMER" Version="1.0">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Timer OFF richiesta Drive Ready </MultiLanguageText>
+              </Comment>
+              <Sections>
+                <Section Name="None">
+                  <Member Name="PT" Datatype="Time">
+                    <StartValue>T#5S</StartValue>
+                  </Member>
+                  <Member Name="IN" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="Tmr_DriveOffReq" Datatype="IEC_TIMER" Version="1.0">
+              <Sections>
+                <Section Name="None">
+                  <Member Name="PT" Datatype="Time">
+                    <StartValue>T#5S</StartValue>
+                  </Member>
+                  <Member Name="IN" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+            <Member Name="Tmr_OnMove" Datatype="IEC_TIMER" Version="1.0">
+              <Sections>
+                <Section Name="None">
+                  <Member Name="PT" Datatype="Time">
+                    <StartValue>T#1M_40S</StartValue>
+                  </Member>
+                  <Member Name="IN" Datatype="Bool">
+                    <StartValue>FALSE</StartValue>
+                  </Member>
+                </Section>
+              </Sections>
+            </Member>
+          </Section>
+        </Sections>
+      </Interface>
+      <Name>Axis_1</Name>
+      <Namespace />
+      <Number>3</Number>
+      <ProgrammingLanguage>DB</ProgrammingLanguage>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.InstanceDB>
+</Document>

@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V21" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Interface>
+        <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+          <Section Name="None">
+            <Member Name="oxCmdMotorForw" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Inverter run enabled</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Abilitazione marcia Avanti</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxCmdMotorBack" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Abilitazione marcia Indietro</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxCmdBrake" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Enable brake release</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Comando stacco freno</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxPosError" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Pursuit error</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Allarme: Errore di inseguimento</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxSincroError" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Allarme: Sicro fuori tolleranza</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxEndPos" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Positioning terminated</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Posizionamento terminato</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxEndPosBig" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Posizionamento Allargato terminato </MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxStopSpeed" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Motor speed below low limit</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Velocità motore = 0</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxAccOnWork" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Rampa Acc in atto</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="oxDecOnWork" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Rampa Dec in atto</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ofSpeedRequest" Datatype="Real">
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Motor speed requested (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Velocita motore richiesta (mm/sec)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ofEncMotorPos" Datatype="Real">
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Motor encoder position (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Posizione encoder motore (mm)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ofMaxError" Datatype="Real">
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Pursuit max error (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Errore massimo di inseguimento (mm)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ofSpaceStop" Datatype="Real">
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Stop space requested from current position/speed (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Spazio richiesto per fermata da posizione/velocità attuale (mm)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ofSpaceLevRes" Datatype="Real">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Spazio richiesto per cambio velocità ricerca livello da posizione/velocità attuale (mm)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ofSpaceStart" Datatype="Real">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Spazio richiesto per partenza da posizione/velocità attuale (mm)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="otTimeMove" Datatype="Time">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Tempo ultimo movimento</MultiLanguageText>
+              </Comment>
+            </Member>
+          </Section>
+        </Sections>
+      </Interface>
+      <Name>AxixAS_DataOut_Type_v2.0</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

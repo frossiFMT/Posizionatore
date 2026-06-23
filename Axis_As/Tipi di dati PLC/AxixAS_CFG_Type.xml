@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V21" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Interface>
+        <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+          <Section Name="None">
+            <Member Name="xmm/degree" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">UM= Millimetri UNM= Gradi</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="xCurveS-L" Datatype="Int">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">0=curva TRAPEZIO 1=curva LOGARITMO 2=curva COS</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="fJogSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Speed Jog movement (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Velocità  JOG (mm/sec)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fJogAcc" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Acc. jog movement (mm/sec^2)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Acc. JOG (mm/sec^2)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fJogDec" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Dec. jog movement (mm/sec^2)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Dec. JOG (mm/sec^2)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fVirt_EncWindPos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Cycle end virtual encoder position window (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di posizione encoder virtuale Stop (mm)</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fVirt_EncWindSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Cycle end virtual encoder speed window(mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di velocità encoder virtuale Stop (mm/sec)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fMotWindPos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Cycle end motor position window (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di posizione motore Stop (mm)</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fMotWindSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Cycle end motor speed window (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di velocità motore Stop  (mm/sec)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fMotWindPosBig" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Finestra Allargata di posizione motore Stop (mm)</MultiLanguageText>
+              </Comment>
+              <StartValue>30.0</StartValue>
+            </Member>
+            <Member Name="fMotAdvStopPosition" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Finestra per anticipo STOP al target virtuale</MultiLanguageText>
+              </Comment>
+              <StartValue>30.0</StartValue>
+            </Member>
+            <Member Name="fMaxErrEnc" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Max tracking value for alarm (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Massimo valore inseguimento per allarme (mm)</MultiLanguageText>
+              </Comment>
+              <StartValue>5.0</StartValue>
+            </Member>
+            <Member Name="fKPpid_Pos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">PID Proportional constant</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Anello Posizione Costante proporzionale PID</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fKPpidAcc_Pos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Anello Posizione Costante proporzionale PID fase accelerazione</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fKPpidDec_Pos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">PID Proportional constant dec.phase</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Anello Posizione Costante proporzionale PID fase decelerazione</MultiLanguageText>
+              </Comment>
+              <StartValue>4.0</StartValue>
+            </Member>
+            <Member Name="fKPpid_Vel" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Anello Velocità Costante proporzionale PID</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fKPpidAcc_Vel" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Anello Velocità Costante proporzionale PID fase accelerazione</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fKPpidDec_Vel" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Anello Velocità Costante proporzionale PID fase decelerazione</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fMinSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Low limit speed requested (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Limite INF velocità richiesta (mm/sec)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="fMaxSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">High speed limit (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Limite SUP velocità richiesta (mm/sec)</MultiLanguageText>
+              </Comment>
+              <StartValue>100.0</StartValue>
+            </Member>
+            <Member Name="fMaxAccRamp" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Limite SUP Acc richiesta (mm/sec^2)</MultiLanguageText>
+              </Comment>
+              <StartValue>1200.0</StartValue>
+            </Member>
+            <Member Name="fMaxDecRamp" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Limite SUP Dec richiesta (mm/sec^2)</MultiLanguageText>
+              </Comment>
+              <StartValue>800.0</StartValue>
+            </Member>
+            <Member Name="fFirstStepNepero" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Definisce gradino di ingresso Funzione Nepero</MultiLanguageText>
+              </Comment>
+              <StartValue>6.0</StartValue>
+            </Member>
+            <Member Name="fAutoChangeS-Lvalue" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Cambio curva automatico se LOG -&gt; TRA per spostamenti inferiori a...</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="tBrakeDelay_Fwd" Datatype="Time">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Valore timer sblocco freno avanti-salita</MultiLanguageText>
+              </Comment>
+              <StartValue>T#100ms</StartValue>
+            </Member>
+            <Member Name="tBrakeDelay_Bkw" Datatype="Time">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Valore timer sblocco freno indietro-discesa</MultiLanguageText>
+              </Comment>
+              <StartValue>T#100ms</StartValue>
+            </Member>
+            <Member Name="tDriveOnReq" Datatype="Time">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Valore timer controllo mantenimento abilitazione inverter</MultiLanguageText>
+              </Comment>
+              <StartValue>T#5s</StartValue>
+            </Member>
+            <Member Name="tCtrEndPos" Datatype="Time">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Valore timer allarme controllo fine posizionamento</MultiLanguageText>
+              </Comment>
+              <StartValue>T#1000ms</StartValue>
+            </Member>
+          </Section>
+        </Sections>
+      </Interface>
+      <Name>AxixAS_CFG_Type</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

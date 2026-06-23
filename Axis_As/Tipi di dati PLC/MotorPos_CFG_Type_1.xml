@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V21" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Interface>
+        <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+          <Section Name="None">
+            <Member Name="xEncoderReversal" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Motor encoder direction inversion 0=straight 1=inversion</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Inversione direzione encoder motore 0=diritto 1=inversione</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="xLaserPhotEncoder" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Fotocellula Laser o Encoder (0=Encoder)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="fEncoderRatio" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Encoder points conversion value -&gt; mm (1 encoder turn=movement mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Valore di conversione punti encoder -&gt; mm (1 giro encoder=spostamento mm)</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fJogSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Speed Jog movement (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Velocità movimentazione in jog/Speed Jog moviment (mm/sec)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fJogAcc" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Acc. jog movement (mm/sec^2)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Acc. movimentazione in jog/Acc. jog movement (mm/sec^2)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fJogDec" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Dec. jog movement (mm/sec^2)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Dec. movimentazione in jog/Dec. jog movement (mm/sec^2)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fVirtEncWindPos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Cycle end virtual encoder position window (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di posizione encoder virtuale fine ciclo/Window pos. V. encoder(mm)</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fVirtEncWindSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Cycle end virtual encoder speed window(mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di velocità encoder virtuale fine ciclo/Window speed V. encod(mm/sec)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fMotWindPos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Cycle end motor position window (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di posizione motore fine ciclo/Window motor pos. end cycle (mm)</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fMotWindSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Cycle end motor speed window (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di velocità motore fine ciclo/Window motor speed end cycle (mm/sec)</MultiLanguageText>
+              </Comment>
+              <StartValue>10.0</StartValue>
+            </Member>
+            <Member Name="fMaxErrEnc" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Max tracking value for alarm (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Massimo valore inseguimento per allarme/Max value pursuit alarm (mm)</MultiLanguageText>
+              </Comment>
+              <StartValue>5.0</StartValue>
+            </Member>
+            <Member Name="fKPpid_Pos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">PID Proportional constant</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Anello Posizione Costante proporzionale PID/Proportionale constant PID</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fKPpidAcc_Pos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Anello Posizione Costante proporzionale PID fase accelerazione/proprotional constant PID dec.</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fKPpidDec_Pos" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">PID Proportional constant dec.phase</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Anello Posizione Costante proporzionale PID fase decelerazione/proprotional constant PID dec.</MultiLanguageText>
+              </Comment>
+              <StartValue>4.0</StartValue>
+            </Member>
+            <Member Name="fKPpid_Vel" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Anello Velocità Costante proporzionale PID/Proportionale constant PID</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fKPpidAcc_Vel" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Anello Velocità Costante proporzionale PID fase accelerazione/proprotional constant PID dec.</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fKPpidDec_Vel" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Anello Velocità Costante proporzionale PID fase decelerazione/proprotional constant PID dec.</MultiLanguageText>
+              </Comment>
+              <StartValue>1.0</StartValue>
+            </Member>
+            <Member Name="fMinSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Low limit speed requested (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Limite basso velocità richiesta/Low limit speed requested (mm/sec)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="fMaxSpeed" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">High speed limit (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Limite alto velocità richiesta/High speed limit (mm/sec)</MultiLanguageText>
+              </Comment>
+              <StartValue>100.0</StartValue>
+            </Member>
+            <Member Name="fFirstStepNepero" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Definisce gardino di ingresso Funzione Nepero</MultiLanguageText>
+              </Comment>
+              <StartValue>6.0</StartValue>
+            </Member>
+            <Member Name="dnTimerStopEnable" Datatype="DInt">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Value timer run inverter request (mS)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Valore timer stop richiesta marcia inverter/Value timer run inveter reques (mS)</MultiLanguageText>
+              </Comment>
+              <StartValue>DINT#300</StartValue>
+            </Member>
+            <Member Name="dnTimerStopEndPos" Datatype="DInt">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Value timer alarm positioner</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Valore timer allarme controllo fine posizionamento/Value timer alarm positioner</MultiLanguageText>
+              </Comment>
+              <StartValue>DINT#1000</StartValue>
+            </Member>
+          </Section>
+        </Sections>
+      </Interface>
+      <Name>MotorPos_CFG_Type_1</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>

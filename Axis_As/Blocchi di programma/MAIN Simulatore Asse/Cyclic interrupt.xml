@@ -1,0 +1,2122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V21" />
+  <SW.Blocks.OB ID="0">
+    <AttributeList>
+      <CyclicTime>5000</CyclicTime>
+      <Interface>
+        <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+          <Section Name="Input">
+            <Member Name="Initial_Call" Datatype="Bool" Informative="true" />
+            <Member Name="Event_Count" Datatype="Int" Informative="true" />
+          </Section>
+          <Section Name="Temp">
+            <Member Name="virposINT" Datatype="DInt" />
+            <Member Name="appo" Datatype="Real" />
+            <Member Name="VirOnTarget" Datatype="Bool" />
+          </Section>
+          <Section Name="Constant" />
+        </Sections>
+      </Interface>
+      <MemoryLayout>Optimized</MemoryLayout>
+      <Name>Cyclic interrupt</Name>
+      <Namespace />
+      <Number>30</Number>
+      <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SecondaryType>CyclicInterrupt</SecondaryType>
+      <SetENOAutomatically>false</SetENOAutomatically>
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <SW.Blocks.CompileUnit ID="4" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource />
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="5" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="6" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="7" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="8" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="9" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="B" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource>
+            <FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+              <Parts>
+                <Access Scope="GlobalVariable" UId="21">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="tempociclo_T" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="22">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="tempociclo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="23">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="tempociclo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="24">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifTimeScan" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="25">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="f_PositionTarget" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="26">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="27">
+                  <Symbol>
+                    <Component Name="appo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="28">
+                  <Symbol>
+                    <Component Name="appo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="29">
+                  <Symbol>
+                    <Component Name="appo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="30">
+                  <Symbol>
+                    <Component Name="appo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="31">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>5.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="LocalVariable" UId="32">
+                  <Symbol>
+                    <Component Name="VirOnTarget" />
+                  </Symbol>
+                </Access>
+                <Part Name="Runtime" UId="33" />
+                <Part Name="Convert" UId="34" DisabledENO="true">
+                  <TemplateValue Name="SrcType" Type="Type">LReal</TemplateValue>
+                  <TemplateValue Name="DestType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Sub" UId="35" DisabledENO="true">
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Abs" UId="36" DisabledENO="true">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Le" UId="37">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Coil" UId="38" />
+              </Parts>
+              <Wires>
+                <Wire UId="39">
+                  <Powerrail />
+                  <NameCon UId="33" Name="en" />
+                  <NameCon UId="35" Name="en" />
+                </Wire>
+                <Wire UId="40">
+                  <IdentCon UId="21" />
+                  <NameCon UId="33" Name="mem" />
+                </Wire>
+                <Wire UId="41">
+                  <NameCon UId="33" Name="eno" />
+                  <NameCon UId="34" Name="en" />
+                </Wire>
+                <Wire UId="42">
+                  <NameCon UId="33" Name="ret_val" />
+                  <IdentCon UId="22" />
+                </Wire>
+                <Wire UId="43">
+                  <IdentCon UId="23" />
+                  <NameCon UId="34" Name="in" />
+                </Wire>
+                <Wire UId="44">
+                  <NameCon UId="34" Name="out" />
+                  <IdentCon UId="24" />
+                </Wire>
+                <Wire UId="45">
+                  <IdentCon UId="25" />
+                  <NameCon UId="35" Name="in1" />
+                </Wire>
+                <Wire UId="46">
+                  <IdentCon UId="26" />
+                  <NameCon UId="35" Name="in2" />
+                </Wire>
+                <Wire UId="47">
+                  <NameCon UId="35" Name="eno" />
+                  <NameCon UId="36" Name="en" />
+                </Wire>
+                <Wire UId="48">
+                  <NameCon UId="35" Name="out" />
+                  <IdentCon UId="27" />
+                </Wire>
+                <Wire UId="49">
+                  <IdentCon UId="28" />
+                  <NameCon UId="36" Name="in" />
+                </Wire>
+                <Wire UId="50">
+                  <NameCon UId="36" Name="eno" />
+                  <NameCon UId="37" Name="pre" />
+                </Wire>
+                <Wire UId="51">
+                  <NameCon UId="36" Name="out" />
+                  <IdentCon UId="29" />
+                </Wire>
+                <Wire UId="52">
+                  <IdentCon UId="30" />
+                  <NameCon UId="37" Name="in1" />
+                </Wire>
+                <Wire UId="53">
+                  <IdentCon UId="31" />
+                  <NameCon UId="37" Name="in2" />
+                </Wire>
+                <Wire UId="54">
+                  <NameCon UId="37" Name="out" />
+                  <NameCon UId="38" Name="in" />
+                </Wire>
+                <Wire UId="55">
+                  <IdentCon UId="32" />
+                  <NameCon UId="38" Name="operand" />
+                </Wire>
+              </Wires>
+            </FlgNet>
+          </NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="C" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="F" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="10" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="11" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="12" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource>
+            <FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+              <Parts>
+                <Access Scope="GlobalVariable" UId="21">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="22">
+                  <Symbol>
+                    <Component Name="virposINT" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="23">
+                  <Symbol>
+                    <Component Name="ALWAYS OFF" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="24">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fOutSpeedMot" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="25">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="26">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixAbort" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="27">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="xCalc" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>13</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="28">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Cfg" />
+                    <Component Name="xDisablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="29">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="30">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="reale" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>59</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="31">
+                  <Constant>
+                    <ConstantType>LReal</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="32">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="33">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Cfg" />
+                    <Component Name="xDisablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="34">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="xDecStop" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="35">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="36">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>0.7</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="37">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="38">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="xCalc" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>13</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="39">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Cfg" />
+                    <Component Name="xDisablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="40">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fOutSpeedMot" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="41">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="42">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="43">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>1.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="44">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="45">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="interi" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>0</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="46">
+                  <Constant>
+                    <ConstantType>Int</ConstantType>
+                    <ConstantValue>1</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="47">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="interi" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>0</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="48">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="interi" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>0</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="49">
+                  <Constant>
+                    <ConstantType>Int</ConstantType>
+                    <ConstantValue>360</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="LiteralConstant" UId="50">
+                  <Constant>
+                    <ConstantType>Int</ConstantType>
+                    <ConstantValue>1</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="51">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="interi" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>0</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="52">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="interi" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>0</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="53">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="reale" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>60</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="54">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxEndPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="55">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdMotorForw" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="56">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdMotorBack" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="57">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="58">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>4000.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="59">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="reale" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>60</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="60">
+                  <Constant>
+                    <ConstantType>LReal</ConstantType>
+                    <ConstantValue>1.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="61">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="reale" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>59</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="62">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="63">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>4000.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="64">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="reale" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>60</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="65">
+                  <Constant>
+                    <ConstantType>LReal</ConstantType>
+                    <ConstantValue>1.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="66">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="reale" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>59</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="67">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixEnablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="68">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixAbort" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="69">
+                  <Constant>
+                    <ConstantType>LReal</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="70">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="reale" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>59</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="71">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdMotorForw" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="72">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdMotorBack" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="73">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fOutSpeedMot" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="74">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>110.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="LiteralConstant" UId="75">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="76">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="reale" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>59</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="77">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fOutSpeedMot" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="78">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="79">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifSpeedRequest" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="80">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="81">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixEnablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="82">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixEnableLevRes" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="83">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixLevelReached" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="84">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixEnableLevRes" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="85">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxPosError" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="86">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxEndPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="87">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdMotorBack" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="88">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="89">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>-1.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="90">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="91">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="92">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>-1.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="93">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="94">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdMotorForw" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="95">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="96">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>1.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="97">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="98">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="99">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>1.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="100">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Call UId="101">
+                  <CallInfo Name="AxisAS_Mng_v2.0" BlockType="FB">
+                    <Instance Scope="GlobalVariable" UId="102">
+                      <Component Name="Axis_1" />
+                    </Instance>
+                  </CallInfo>
+                </Call>
+                <Part Name="Convert" UId="103" DisabledENO="true">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                  <TemplateValue Name="DestType" Type="Type">DInt</TemplateValue>
+                </Part>
+                <Part Name="Contact" UId="104">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Gt" UId="105">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Contact" UId="106">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="107">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="108">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="O" UId="109">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                </Part>
+                <Part Name="Add" UId="110" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">3</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Contact" UId="111" />
+                <Part Name="Contact" UId="112">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Mul" UId="113" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Contact" UId="114" />
+                <Part Name="Contact" UId="115" />
+                <Part Name="Gt" UId="116">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Add" UId="117" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Add" UId="118" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Gt" UId="119">
+                  <TemplateValue Name="SrcType" Type="Type">Int</TemplateValue>
+                </Part>
+                <Part Name="Move" UId="120" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+                <Part Name="Cos" UId="121" DisabledENO="true">
+                  <TemplateValue Name="SrcType" Type="Type">LReal</TemplateValue>
+                </Part>
+                <Part Name="Contact" UId="122">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="123" />
+                <Part Name="Contact" UId="124" />
+                <Part Name="O" UId="125">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                </Part>
+                <Part Name="Gt" UId="126">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Mul" UId="127" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Lt" UId="128">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Mul" UId="129" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Contact" UId="130">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="131">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Move" UId="132" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+                <Part Name="Contact" UId="133">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="134">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Le" UId="135">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="O" UId="136">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                </Part>
+                <Part Name="Move" UId="137" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+                <Part Name="Eq" UId="138">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Gt" UId="139">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Contact" UId="140" />
+                <Part Name="Contact" UId="141" />
+                <Part Name="Contact" UId="142">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="143">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="O" UId="144">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                </Part>
+                <Part Name="Contact" UId="145">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="146">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="147" />
+                <Part Name="Add" UId="148" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Add" UId="149" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Contact" UId="150" />
+                <Part Name="Add" UId="151" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Add" UId="152" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+              </Parts>
+              <Wires>
+                <Wire UId="153">
+                  <Powerrail />
+                  <NameCon UId="101" Name="en" />
+                  <NameCon UId="118" Name="en" />
+                  <NameCon UId="121" Name="en" />
+                  <NameCon UId="133" Name="in" />
+                  <NameCon UId="135" Name="pre" />
+                  <NameCon UId="138" Name="pre" />
+                </Wire>
+                <Wire UId="154">
+                  <NameCon UId="101" Name="eno" />
+                  <NameCon UId="103" Name="en" />
+                </Wire>
+                <Wire UId="155">
+                  <IdentCon UId="21" />
+                  <NameCon UId="103" Name="in" />
+                </Wire>
+                <Wire UId="156">
+                  <NameCon UId="103" Name="eno" />
+                  <NameCon UId="104" Name="in" />
+                </Wire>
+                <Wire UId="157">
+                  <NameCon UId="103" Name="out" />
+                  <IdentCon UId="22" />
+                </Wire>
+                <Wire UId="158">
+                  <IdentCon UId="23" />
+                  <NameCon UId="104" Name="operand" />
+                </Wire>
+                <Wire UId="159">
+                  <NameCon UId="104" Name="out" />
+                  <NameCon UId="105" Name="pre" />
+                </Wire>
+                <Wire UId="160">
+                  <IdentCon UId="24" />
+                  <NameCon UId="105" Name="in1" />
+                </Wire>
+                <Wire UId="161">
+                  <IdentCon UId="25" />
+                  <NameCon UId="105" Name="in2" />
+                </Wire>
+                <Wire UId="162">
+                  <NameCon UId="105" Name="out" />
+                  <NameCon UId="106" Name="in" />
+                </Wire>
+                <Wire UId="163">
+                  <IdentCon UId="26" />
+                  <NameCon UId="106" Name="operand" />
+                </Wire>
+                <Wire UId="164">
+                  <NameCon UId="106" Name="out" />
+                  <NameCon UId="107" Name="in" />
+                  <NameCon UId="108" Name="in" />
+                  <NameCon UId="114" Name="in" />
+                </Wire>
+                <Wire UId="165">
+                  <IdentCon UId="27" />
+                  <NameCon UId="107" Name="operand" />
+                </Wire>
+                <Wire UId="166">
+                  <NameCon UId="107" Name="out" />
+                  <NameCon UId="109" Name="in1" />
+                </Wire>
+                <Wire UId="167">
+                  <IdentCon UId="28" />
+                  <NameCon UId="108" Name="operand" />
+                </Wire>
+                <Wire UId="168">
+                  <NameCon UId="108" Name="out" />
+                  <NameCon UId="109" Name="in2" />
+                </Wire>
+                <Wire UId="169">
+                  <NameCon UId="109" Name="out" />
+                  <NameCon UId="110" Name="en" />
+                </Wire>
+                <Wire UId="170">
+                  <IdentCon UId="29" />
+                  <NameCon UId="110" Name="in1" />
+                </Wire>
+                <Wire UId="171">
+                  <IdentCon UId="30" />
+                  <NameCon UId="110" Name="in2" />
+                </Wire>
+                <Wire UId="172">
+                  <IdentCon UId="31" />
+                  <NameCon UId="110" Name="in3" />
+                </Wire>
+                <Wire UId="173">
+                  <NameCon UId="110" Name="eno" />
+                  <NameCon UId="111" Name="in" />
+                </Wire>
+                <Wire UId="174">
+                  <NameCon UId="110" Name="out" />
+                  <IdentCon UId="32" />
+                </Wire>
+                <Wire UId="175">
+                  <IdentCon UId="33" />
+                  <NameCon UId="111" Name="operand" />
+                </Wire>
+                <Wire UId="176">
+                  <NameCon UId="111" Name="out" />
+                  <NameCon UId="112" Name="in" />
+                </Wire>
+                <Wire UId="177">
+                  <IdentCon UId="34" />
+                  <NameCon UId="112" Name="operand" />
+                </Wire>
+                <Wire UId="178">
+                  <NameCon UId="112" Name="out" />
+                  <NameCon UId="113" Name="en" />
+                </Wire>
+                <Wire UId="179">
+                  <IdentCon UId="35" />
+                  <NameCon UId="113" Name="in1" />
+                </Wire>
+                <Wire UId="180">
+                  <IdentCon UId="36" />
+                  <NameCon UId="113" Name="in2" />
+                </Wire>
+                <Wire UId="181">
+                  <NameCon UId="113" Name="out" />
+                  <IdentCon UId="37" />
+                </Wire>
+                <Wire UId="182">
+                  <IdentCon UId="38" />
+                  <NameCon UId="114" Name="operand" />
+                </Wire>
+                <Wire UId="183">
+                  <NameCon UId="114" Name="out" />
+                  <NameCon UId="115" Name="in" />
+                </Wire>
+                <Wire UId="184">
+                  <IdentCon UId="39" />
+                  <NameCon UId="115" Name="operand" />
+                </Wire>
+                <Wire UId="185">
+                  <NameCon UId="115" Name="out" />
+                  <NameCon UId="116" Name="pre" />
+                </Wire>
+                <Wire UId="186">
+                  <IdentCon UId="40" />
+                  <NameCon UId="116" Name="in1" />
+                </Wire>
+                <Wire UId="187">
+                  <IdentCon UId="41" />
+                  <NameCon UId="116" Name="in2" />
+                </Wire>
+                <Wire UId="188">
+                  <NameCon UId="116" Name="out" />
+                  <NameCon UId="117" Name="en" />
+                </Wire>
+                <Wire UId="189">
+                  <IdentCon UId="42" />
+                  <NameCon UId="117" Name="in1" />
+                </Wire>
+                <Wire UId="190">
+                  <IdentCon UId="43" />
+                  <NameCon UId="117" Name="in2" />
+                </Wire>
+                <Wire UId="191">
+                  <NameCon UId="117" Name="out" />
+                  <IdentCon UId="44" />
+                </Wire>
+                <Wire UId="192">
+                  <IdentCon UId="45" />
+                  <NameCon UId="118" Name="in1" />
+                </Wire>
+                <Wire UId="193">
+                  <IdentCon UId="46" />
+                  <NameCon UId="118" Name="in2" />
+                </Wire>
+                <Wire UId="194">
+                  <NameCon UId="118" Name="eno" />
+                  <NameCon UId="119" Name="pre" />
+                </Wire>
+                <Wire UId="195">
+                  <NameCon UId="118" Name="out" />
+                  <IdentCon UId="47" />
+                </Wire>
+                <Wire UId="196">
+                  <IdentCon UId="48" />
+                  <NameCon UId="119" Name="in1" />
+                </Wire>
+                <Wire UId="197">
+                  <IdentCon UId="49" />
+                  <NameCon UId="119" Name="in2" />
+                </Wire>
+                <Wire UId="198">
+                  <NameCon UId="119" Name="out" />
+                  <NameCon UId="120" Name="en" />
+                </Wire>
+                <Wire UId="199">
+                  <IdentCon UId="50" />
+                  <NameCon UId="120" Name="in" />
+                </Wire>
+                <Wire UId="200">
+                  <NameCon UId="120" Name="out1" />
+                  <IdentCon UId="51" />
+                </Wire>
+                <Wire UId="201">
+                  <IdentCon UId="52" />
+                  <NameCon UId="121" Name="in" />
+                </Wire>
+                <Wire UId="202">
+                  <NameCon UId="121" Name="eno" />
+                  <NameCon UId="122" Name="in" />
+                </Wire>
+                <Wire UId="203">
+                  <NameCon UId="121" Name="out" />
+                  <IdentCon UId="53" />
+                </Wire>
+                <Wire UId="204">
+                  <IdentCon UId="54" />
+                  <NameCon UId="122" Name="operand" />
+                </Wire>
+                <Wire UId="205">
+                  <NameCon UId="122" Name="out" />
+                  <NameCon UId="123" Name="in" />
+                  <NameCon UId="124" Name="in" />
+                  <NameCon UId="130" Name="in" />
+                </Wire>
+                <Wire UId="206">
+                  <IdentCon UId="55" />
+                  <NameCon UId="123" Name="operand" />
+                </Wire>
+                <Wire UId="207">
+                  <NameCon UId="123" Name="out" />
+                  <NameCon UId="125" Name="in1" />
+                </Wire>
+                <Wire UId="208">
+                  <IdentCon UId="56" />
+                  <NameCon UId="124" Name="operand" />
+                </Wire>
+                <Wire UId="209">
+                  <NameCon UId="124" Name="out" />
+                  <NameCon UId="125" Name="in2" />
+                </Wire>
+                <Wire UId="210">
+                  <NameCon UId="125" Name="out" />
+                  <NameCon UId="126" Name="pre" />
+                  <NameCon UId="128" Name="pre" />
+                </Wire>
+                <Wire UId="211">
+                  <IdentCon UId="57" />
+                  <NameCon UId="126" Name="in1" />
+                </Wire>
+                <Wire UId="212">
+                  <IdentCon UId="58" />
+                  <NameCon UId="126" Name="in2" />
+                </Wire>
+                <Wire UId="213">
+                  <NameCon UId="126" Name="out" />
+                  <NameCon UId="127" Name="en" />
+                </Wire>
+                <Wire UId="214">
+                  <IdentCon UId="59" />
+                  <NameCon UId="127" Name="in1" />
+                </Wire>
+                <Wire UId="215">
+                  <IdentCon UId="60" />
+                  <NameCon UId="127" Name="in2" />
+                </Wire>
+                <Wire UId="216">
+                  <NameCon UId="127" Name="out" />
+                  <IdentCon UId="61" />
+                </Wire>
+                <Wire UId="217">
+                  <IdentCon UId="62" />
+                  <NameCon UId="128" Name="in1" />
+                </Wire>
+                <Wire UId="218">
+                  <IdentCon UId="63" />
+                  <NameCon UId="128" Name="in2" />
+                </Wire>
+                <Wire UId="219">
+                  <NameCon UId="128" Name="out" />
+                  <NameCon UId="129" Name="en" />
+                </Wire>
+                <Wire UId="220">
+                  <IdentCon UId="64" />
+                  <NameCon UId="129" Name="in1" />
+                </Wire>
+                <Wire UId="221">
+                  <IdentCon UId="65" />
+                  <NameCon UId="129" Name="in2" />
+                </Wire>
+                <Wire UId="222">
+                  <NameCon UId="129" Name="out" />
+                  <IdentCon UId="66" />
+                </Wire>
+                <Wire UId="223">
+                  <IdentCon UId="67" />
+                  <NameCon UId="130" Name="operand" />
+                </Wire>
+                <Wire UId="224">
+                  <NameCon UId="130" Name="out" />
+                  <NameCon UId="131" Name="in" />
+                </Wire>
+                <Wire UId="225">
+                  <IdentCon UId="68" />
+                  <NameCon UId="131" Name="operand" />
+                </Wire>
+                <Wire UId="226">
+                  <NameCon UId="131" Name="out" />
+                  <NameCon UId="132" Name="en" />
+                </Wire>
+                <Wire UId="227">
+                  <IdentCon UId="69" />
+                  <NameCon UId="132" Name="in" />
+                </Wire>
+                <Wire UId="228">
+                  <NameCon UId="132" Name="out1" />
+                  <IdentCon UId="70" />
+                </Wire>
+                <Wire UId="229">
+                  <IdentCon UId="71" />
+                  <NameCon UId="133" Name="operand" />
+                </Wire>
+                <Wire UId="230">
+                  <NameCon UId="133" Name="out" />
+                  <NameCon UId="134" Name="in" />
+                </Wire>
+                <Wire UId="231">
+                  <IdentCon UId="72" />
+                  <NameCon UId="134" Name="operand" />
+                </Wire>
+                <Wire UId="232">
+                  <NameCon UId="134" Name="out" />
+                  <NameCon UId="136" Name="in1" />
+                </Wire>
+                <Wire UId="233">
+                  <IdentCon UId="73" />
+                  <NameCon UId="135" Name="in1" />
+                </Wire>
+                <Wire UId="234">
+                  <IdentCon UId="74" />
+                  <NameCon UId="135" Name="in2" />
+                </Wire>
+                <Wire UId="235">
+                  <NameCon UId="135" Name="out" />
+                  <NameCon UId="136" Name="in2" />
+                </Wire>
+                <Wire UId="236">
+                  <NameCon UId="136" Name="out" />
+                  <NameCon UId="137" Name="en" />
+                </Wire>
+                <Wire UId="237">
+                  <IdentCon UId="75" />
+                  <NameCon UId="137" Name="in" />
+                </Wire>
+                <Wire UId="238">
+                  <NameCon UId="137" Name="out1" />
+                  <IdentCon UId="76" />
+                </Wire>
+                <Wire UId="239">
+                  <IdentCon UId="77" />
+                  <NameCon UId="138" Name="in1" />
+                </Wire>
+                <Wire UId="240">
+                  <IdentCon UId="78" />
+                  <NameCon UId="138" Name="in2" />
+                </Wire>
+                <Wire UId="241">
+                  <NameCon UId="138" Name="out" />
+                  <NameCon UId="139" Name="pre" />
+                </Wire>
+                <Wire UId="242">
+                  <IdentCon UId="79" />
+                  <NameCon UId="139" Name="in1" />
+                </Wire>
+                <Wire UId="243">
+                  <IdentCon UId="80" />
+                  <NameCon UId="139" Name="in2" />
+                </Wire>
+                <Wire UId="244">
+                  <NameCon UId="139" Name="out" />
+                  <NameCon UId="140" Name="in" />
+                </Wire>
+                <Wire UId="245">
+                  <IdentCon UId="81" />
+                  <NameCon UId="140" Name="operand" />
+                </Wire>
+                <Wire UId="246">
+                  <NameCon UId="140" Name="out" />
+                  <NameCon UId="141" Name="in" />
+                  <NameCon UId="143" Name="in" />
+                </Wire>
+                <Wire UId="247">
+                  <IdentCon UId="82" />
+                  <NameCon UId="141" Name="operand" />
+                </Wire>
+                <Wire UId="248">
+                  <NameCon UId="141" Name="out" />
+                  <NameCon UId="142" Name="in" />
+                </Wire>
+                <Wire UId="249">
+                  <IdentCon UId="83" />
+                  <NameCon UId="142" Name="operand" />
+                </Wire>
+                <Wire UId="250">
+                  <NameCon UId="142" Name="out" />
+                  <NameCon UId="144" Name="in1" />
+                </Wire>
+                <Wire UId="251">
+                  <IdentCon UId="84" />
+                  <NameCon UId="143" Name="operand" />
+                </Wire>
+                <Wire UId="252">
+                  <NameCon UId="143" Name="out" />
+                  <NameCon UId="144" Name="in2" />
+                </Wire>
+                <Wire UId="253">
+                  <NameCon UId="144" Name="out" />
+                  <NameCon UId="145" Name="in" />
+                </Wire>
+                <Wire UId="254">
+                  <IdentCon UId="85" />
+                  <NameCon UId="145" Name="operand" />
+                </Wire>
+                <Wire UId="255">
+                  <NameCon UId="145" Name="out" />
+                  <NameCon UId="146" Name="in" />
+                </Wire>
+                <Wire UId="256">
+                  <IdentCon UId="86" />
+                  <NameCon UId="146" Name="operand" />
+                </Wire>
+                <Wire UId="257">
+                  <NameCon UId="146" Name="out" />
+                  <NameCon UId="147" Name="in" />
+                  <NameCon UId="150" Name="in" />
+                </Wire>
+                <Wire UId="258">
+                  <IdentCon UId="87" />
+                  <NameCon UId="147" Name="operand" />
+                </Wire>
+                <Wire UId="259">
+                  <NameCon UId="147" Name="out" />
+                  <NameCon UId="148" Name="en" />
+                </Wire>
+                <Wire UId="260">
+                  <IdentCon UId="88" />
+                  <NameCon UId="148" Name="in1" />
+                </Wire>
+                <Wire UId="261">
+                  <IdentCon UId="89" />
+                  <NameCon UId="148" Name="in2" />
+                </Wire>
+                <Wire UId="262">
+                  <NameCon UId="148" Name="eno" />
+                  <NameCon UId="149" Name="en" />
+                </Wire>
+                <Wire UId="263">
+                  <NameCon UId="148" Name="out" />
+                  <IdentCon UId="90" />
+                </Wire>
+                <Wire UId="264">
+                  <IdentCon UId="91" />
+                  <NameCon UId="149" Name="in1" />
+                </Wire>
+                <Wire UId="265">
+                  <IdentCon UId="92" />
+                  <NameCon UId="149" Name="in2" />
+                </Wire>
+                <Wire UId="266">
+                  <NameCon UId="149" Name="out" />
+                  <IdentCon UId="93" />
+                </Wire>
+                <Wire UId="267">
+                  <IdentCon UId="94" />
+                  <NameCon UId="150" Name="operand" />
+                </Wire>
+                <Wire UId="268">
+                  <NameCon UId="150" Name="out" />
+                  <NameCon UId="151" Name="en" />
+                </Wire>
+                <Wire UId="269">
+                  <IdentCon UId="95" />
+                  <NameCon UId="151" Name="in1" />
+                </Wire>
+                <Wire UId="270">
+                  <IdentCon UId="96" />
+                  <NameCon UId="151" Name="in2" />
+                </Wire>
+                <Wire UId="271">
+                  <NameCon UId="151" Name="eno" />
+                  <NameCon UId="152" Name="en" />
+                </Wire>
+                <Wire UId="272">
+                  <NameCon UId="151" Name="out" />
+                  <IdentCon UId="97" />
+                </Wire>
+                <Wire UId="273">
+                  <IdentCon UId="98" />
+                  <NameCon UId="152" Name="in1" />
+                </Wire>
+                <Wire UId="274">
+                  <IdentCon UId="99" />
+                  <NameCon UId="152" Name="in2" />
+                </Wire>
+                <Wire UId="275">
+                  <NameCon UId="152" Name="out" />
+                  <IdentCon UId="100" />
+                </Wire>
+              </Wires>
+            </FlgNet>
+          </NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="13" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="14" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="15" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="16" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="17" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="18" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="19" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource>
+            <FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+              <Parts>
+                <Access Scope="GlobalVariable" UId="21">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdMotorForw" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="22">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdMotorBack" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="23">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="oxCmdBrake" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="24">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="pulse" AccessModifier="Array">
+                      <Access Scope="LiteralConstant">
+                        <Constant>
+                          <ConstantType>DInt</ConstantType>
+                          <ConstantValue>0</ConstantValue>
+                        </Constant>
+                      </Access>
+                    </Component>
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="25">
+                  <Constant>
+                    <ConstantType>LReal</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="26">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="tempo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="27">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="tempociclo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="28">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="tempo" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="29">
+                  <Symbol>
+                    <Component Name="Calc" />
+                    <Component Name="tempo" />
+                  </Symbol>
+                </Access>
+                <Part Name="Contact" UId="30" />
+                <Part Name="Contact" UId="31" />
+                <Part Name="O" UId="32">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                </Part>
+                <Part Name="Contact" UId="33" />
+                <Part Name="PBox" UId="34" />
+                <Part Name="Move" UId="35" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+                <Part Name="Add" UId="36" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+              </Parts>
+              <Wires>
+                <Wire UId="37">
+                  <Powerrail />
+                  <NameCon UId="30" Name="in" />
+                  <NameCon UId="31" Name="in" />
+                </Wire>
+                <Wire UId="38">
+                  <IdentCon UId="21" />
+                  <NameCon UId="30" Name="operand" />
+                </Wire>
+                <Wire UId="39">
+                  <NameCon UId="30" Name="out" />
+                  <NameCon UId="32" Name="in1" />
+                </Wire>
+                <Wire UId="40">
+                  <IdentCon UId="22" />
+                  <NameCon UId="31" Name="operand" />
+                </Wire>
+                <Wire UId="41">
+                  <NameCon UId="31" Name="out" />
+                  <NameCon UId="32" Name="in2" />
+                </Wire>
+                <Wire UId="42">
+                  <NameCon UId="32" Name="out" />
+                  <NameCon UId="33" Name="in" />
+                </Wire>
+                <Wire UId="43">
+                  <IdentCon UId="23" />
+                  <NameCon UId="33" Name="operand" />
+                </Wire>
+                <Wire UId="44">
+                  <NameCon UId="33" Name="out" />
+                  <NameCon UId="34" Name="in" />
+                  <NameCon UId="36" Name="en" />
+                </Wire>
+                <Wire UId="45">
+                  <IdentCon UId="24" />
+                  <NameCon UId="34" Name="bit" />
+                </Wire>
+                <Wire UId="46">
+                  <NameCon UId="34" Name="out" />
+                  <NameCon UId="35" Name="en" />
+                </Wire>
+                <Wire UId="47">
+                  <IdentCon UId="25" />
+                  <NameCon UId="35" Name="in" />
+                </Wire>
+                <Wire UId="48">
+                  <NameCon UId="35" Name="out1" />
+                  <IdentCon UId="26" />
+                </Wire>
+                <Wire UId="49">
+                  <IdentCon UId="27" />
+                  <NameCon UId="36" Name="in1" />
+                </Wire>
+                <Wire UId="50">
+                  <IdentCon UId="28" />
+                  <NameCon UId="36" Name="in2" />
+                </Wire>
+                <Wire UId="51">
+                  <NameCon UId="36" Name="out" />
+                  <IdentCon UId="29" />
+                </Wire>
+              </Wires>
+            </FlgNet>
+          </NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="1A" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="1B" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="1D" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="1E" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="1F" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="20" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource>
+            <FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+              <Parts>
+                <Access Scope="GlobalVariable" UId="21">
+                  <Symbol>
+                    <Component Name="ALWAYS OFF" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="22">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="ofEncMotorPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="23">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>70.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="LiteralConstant" UId="24">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>100.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="25">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifSpeedRequest" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="26">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="ofEncMotorPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="27">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>400.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="LiteralConstant" UId="28">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>300.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="29">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifSpeedRequest" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="30">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataOut" />
+                    <Component Name="ofEncMotorPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="31">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>550.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="LiteralConstant" UId="32">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>100.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="GlobalVariable" UId="33">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ifSpeedRequest" />
+                  </Symbol>
+                </Access>
+                <Part Name="Contact" UId="34" />
+                <Part Name="Ge" UId="35">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Move" UId="36" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+                <Part Name="Ge" UId="37">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Move" UId="38" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+                <Part Name="Ge" UId="39">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Move" UId="40" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+              </Parts>
+              <Wires>
+                <Wire UId="41">
+                  <Powerrail />
+                  <NameCon UId="34" Name="in" />
+                </Wire>
+                <Wire UId="42">
+                  <IdentCon UId="21" />
+                  <NameCon UId="34" Name="operand" />
+                </Wire>
+                <Wire UId="43">
+                  <NameCon UId="34" Name="out" />
+                  <NameCon UId="35" Name="pre" />
+                  <NameCon UId="37" Name="pre" />
+                  <NameCon UId="39" Name="pre" />
+                </Wire>
+                <Wire UId="44">
+                  <IdentCon UId="22" />
+                  <NameCon UId="35" Name="in1" />
+                </Wire>
+                <Wire UId="45">
+                  <IdentCon UId="23" />
+                  <NameCon UId="35" Name="in2" />
+                </Wire>
+                <Wire UId="46">
+                  <NameCon UId="35" Name="out" />
+                  <NameCon UId="36" Name="en" />
+                </Wire>
+                <Wire UId="47">
+                  <IdentCon UId="24" />
+                  <NameCon UId="36" Name="in" />
+                </Wire>
+                <Wire UId="48">
+                  <NameCon UId="36" Name="out1" />
+                  <IdentCon UId="25" />
+                </Wire>
+                <Wire UId="49">
+                  <IdentCon UId="26" />
+                  <NameCon UId="37" Name="in1" />
+                </Wire>
+                <Wire UId="50">
+                  <IdentCon UId="27" />
+                  <NameCon UId="37" Name="in2" />
+                </Wire>
+                <Wire UId="51">
+                  <NameCon UId="37" Name="out" />
+                  <NameCon UId="38" Name="en" />
+                </Wire>
+                <Wire UId="52">
+                  <IdentCon UId="28" />
+                  <NameCon UId="38" Name="in" />
+                </Wire>
+                <Wire UId="53">
+                  <NameCon UId="38" Name="out1" />
+                  <IdentCon UId="29" />
+                </Wire>
+                <Wire UId="54">
+                  <IdentCon UId="30" />
+                  <NameCon UId="39" Name="in1" />
+                </Wire>
+                <Wire UId="55">
+                  <IdentCon UId="31" />
+                  <NameCon UId="39" Name="in2" />
+                </Wire>
+                <Wire UId="56">
+                  <NameCon UId="39" Name="out" />
+                  <NameCon UId="40" Name="en" />
+                </Wire>
+                <Wire UId="57">
+                  <IdentCon UId="32" />
+                  <NameCon UId="40" Name="in" />
+                </Wire>
+                <Wire UId="58">
+                  <NameCon UId="40" Name="out1" />
+                  <IdentCon UId="33" />
+                </Wire>
+              </Wires>
+            </FlgNet>
+          </NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="21" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="22" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="23" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="24" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="25" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="26" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <SW.Blocks.CompileUnit ID="27" CompositionName="CompileUnits">
+        <AttributeList>
+          <NetworkSource>
+            <FlgNet xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/v5">
+              <Parts>
+                <Access Scope="GlobalVariable" UId="21">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixEnablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="GlobalVariable" UId="22">
+                  <Symbol>
+                    <Component Name="Axis_1" />
+                    <Component Name="DataIn" />
+                    <Component Name="ixDriveReady" />
+                  </Symbol>
+                </Access>
+                <Part Name="Contact" UId="23" />
+                <Part Name="Coil" UId="24" />
+              </Parts>
+              <Wires>
+                <Wire UId="25">
+                  <Powerrail />
+                  <NameCon UId="23" Name="in" />
+                </Wire>
+                <Wire UId="26">
+                  <IdentCon UId="21" />
+                  <NameCon UId="23" Name="operand" />
+                </Wire>
+                <Wire UId="27">
+                  <NameCon UId="23" Name="out" />
+                  <NameCon UId="24" Name="in" />
+                </Wire>
+                <Wire UId="28">
+                  <IdentCon UId="22" />
+                  <NameCon UId="24" Name="operand" />
+                </Wire>
+              </Wires>
+            </FlgNet>
+          </NetworkSource>
+          <ProgrammingLanguage>LAD</ProgrammingLanguage>
+        </AttributeList>
+        <ObjectList>
+          <MultilingualText ID="28" CompositionName="Comment">
+            <ObjectList>
+              <MultilingualTextItem ID="29" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2A" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+          <MultilingualText ID="2B" CompositionName="Title">
+            <ObjectList>
+              <MultilingualTextItem ID="2C" CompositionName="Items">
+                <AttributeList>
+                  <Culture>en-GB</Culture>
+                  <Text />
+                </AttributeList>
+              </MultilingualTextItem>
+              <MultilingualTextItem ID="2D" CompositionName="Items">
+                <AttributeList>
+                  <Culture>it-IT</Culture>
+                  <Text>Inverter magnetizzato</Text>
+                </AttributeList>
+              </MultilingualTextItem>
+            </ObjectList>
+          </MultilingualText>
+        </ObjectList>
+      </SW.Blocks.CompileUnit>
+      <MultilingualText ID="2E" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="2F" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="30" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Blocks.OB>
+</Document>

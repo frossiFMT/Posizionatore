@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Document>
+  <Engineering version="V21" />
+  <SW.Types.PlcStruct ID="0">
+    <AttributeList>
+      <Interface>
+        <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
+          <Section Name="None">
+            <Member Name="ixEnablePos" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Enable positioner</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Abilita asse</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ixDriveReady" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Inverter magnetizzato</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ixEnableLevRes" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Enable level research</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Abilita ricerca livello</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ixMotorReadyReq" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Richiede magnetizzazione Motore</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ixAlarmReset" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Reset alarms</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Reset allarmi</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ixAbort" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Initializing motor encoder position</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Abort sistema</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ixJogPos" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Manual Jog positive</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Manuale JOG +</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ixJogNeg" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Manual Jog negative</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Manuale JOG -</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="xAutoSpeedDetect" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Calcolo velocità automatico su movimento</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="xAutoAccDecCalculation" Datatype="Bool">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Calcolo Acc Dec automatico su velocità</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ifPositionRequest" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Position requested (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Quota richiesta (mm)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ifSpeedRequest" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Speed requested (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Velocità richiesta (mm/sec)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ifPositionStartLev" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Position start research (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Quota inizio ricerca (mm)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ifSpeedLev" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Research speed (mm/sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Velocità ricerca (mm/sec)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ifAccRamp" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Acceleration ramp (mm/sec^2)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">* Rampa accelerazione (mm/sec^2)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ifDecRamp" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Deceleration ramp (mm/sec^2)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">* Rampa decelerazione (mm/sec^2)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ifTimeScan" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Time last scan (sec)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Tempo ultima scansione (sec)</MultiLanguageText>
+              </Comment>
+            </Member>
+            <Member Name="ifEncoder" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="en-GB">Actual encoder position (encoder)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Posizione attuale encoder</MultiLanguageText>
+              </Comment>
+            </Member>
+          </Section>
+        </Sections>
+      </Interface>
+      <Name>AxixAS_DataIn_Type_v1.3</Name>
+      <Namespace />
+    </AttributeList>
+    <ObjectList>
+      <MultilingualText ID="1" CompositionName="Comment">
+        <ObjectList>
+          <MultilingualTextItem ID="2" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="3" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+      <MultilingualText ID="4" CompositionName="Title">
+        <ObjectList>
+          <MultilingualTextItem ID="5" CompositionName="Items">
+            <AttributeList>
+              <Culture>en-GB</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+          <MultilingualTextItem ID="6" CompositionName="Items">
+            <AttributeList>
+              <Culture>it-IT</Culture>
+              <Text />
+            </AttributeList>
+          </MultilingualTextItem>
+        </ObjectList>
+      </MultilingualText>
+    </ObjectList>
+  </SW.Types.PlcStruct>
+</Document>
