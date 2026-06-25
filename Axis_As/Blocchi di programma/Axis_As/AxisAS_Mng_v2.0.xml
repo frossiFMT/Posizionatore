@@ -442,7 +442,6 @@
           </Section>
         </Sections>
       </Interface>
-      <MemoryLayout>Optimized</MemoryLayout>
       <MemoryReserve>100</MemoryReserve>
       <Name>AxisAS_Mng_v2.0</Name>
       <Namespace />
@@ -536,10 +535,10 @@ v2.0 - 01/03/2024 - Michele Montanari
         - ricerca livello in entrambi i sensi di moto
         - aggiornamento continuo ctr valori anello posizione di VirSpeed
         - predisposizione funzione assi Geraing &amp; Sincro
-        
-v2.1 - 19/12/2024 - Michele Montanari
+------------------------------------------------------------------------
+v2.1 - 01/12/2024 - Michele Montanari       
         - Seg.4 tolto il negato di "#DataIn.ixEnableLevRes" nel reset memoria "#Work.xINEnable" altrimeni non faceva l'inversione
-        
+------------------------------------------------------------------------        
 v3.0 - 12/02/2025 - Michele Montanari       
         inserito cfg.fOffSResLevel per precalcolo cambio velocità in ricerca livello 50 se mm 5 se gradi
 ------------------------------------------------------------------------
@@ -4492,35 +4491,47 @@ controllo.</Text>
                 </Symbol>
               </Access>
               <Blank UId="296" />
-              <Token Text="THEN" UId="297" />
-              <NewLine UId="298" />
-              <Blank Num="8" UId="299" />
-              <Access Scope="LocalVariable" UId="300">
-                <Symbol UId="301">
-                  <Component Name="Work" UId="302" />
-                  <Token Text="." UId="303" />
-                  <Component Name="fVirSpeedLinear" UId="304" />
+              <Token Text="AND" UId="297" />
+              <Blank UId="298" />
+              <Token Text="NOT" UId="299" />
+              <Blank UId="300" />
+              <Access Scope="LocalVariable" UId="301">
+                <Symbol UId="302">
+                  <Component Name="Cfg" UId="303" />
+                  <Token Text="." UId="304" />
+                  <Component Name="xDisablePos" UId="305" />
                 </Symbol>
               </Access>
-              <Blank UId="305" />
-              <Token Text=":=" UId="306" />
-              <Blank UId="307" />
-              <Access Scope="LocalVariable" UId="308">
-                <Symbol UId="309">
-                  <Component Name="Cfg" UId="310" />
-                  <Token Text="." UId="311" />
-                  <Component Name="fMinSpeed" UId="312" />
+              <Blank UId="306" />
+              <Token Text="THEN" UId="307" />
+              <NewLine UId="308" />
+              <Blank Num="8" UId="309" />
+              <Access Scope="LocalVariable" UId="310">
+                <Symbol UId="311">
+                  <Component Name="Work" UId="312" />
+                  <Token Text="." UId="313" />
+                  <Component Name="fVirSpeedLinear" UId="314" />
                 </Symbol>
               </Access>
-              <Token Text=";" UId="313" />
-              <NewLine UId="314" />
-              <Blank Num="4" UId="315" />
-              <Token Text="END_IF" UId="316" />
-              <Token Text=";" UId="317" />
-              <NewLine UId="318" />
-              <Token Text="END_IF" UId="319" />
-              <Token Text=";" UId="320" />
-              <NewLine UId="321" />
+              <Blank UId="315" />
+              <Token Text=":=" UId="316" />
+              <Blank UId="317" />
+              <Access Scope="LocalVariable" UId="318">
+                <Symbol UId="319">
+                  <Component Name="Cfg" UId="320" />
+                  <Token Text="." UId="321" />
+                  <Component Name="fMinSpeed" UId="322" />
+                </Symbol>
+              </Access>
+              <Token Text=";" UId="323" />
+              <NewLine UId="324" />
+              <Blank Num="4" UId="325" />
+              <Token Text="END_IF" UId="326" />
+              <Token Text=";" UId="327" />
+              <NewLine UId="328" />
+              <Token Text="END_IF" UId="329" />
+              <Token Text=";" UId="330" />
+              <NewLine UId="331" />
             </StructuredText>
           </NetworkSource>
           <ProgrammingLanguage>SCL</ProgrammingLanguage>
@@ -7797,383 +7808,459 @@ generato dal tempo di scansione della CPU.</Text>
         <AttributeList>
           <NetworkSource>
             <StructuredText xmlns="http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/v4">
-              <Token Text="IF" UId="21" />
-              <Blank UId="22" />
-              <Token Text="NOT" UId="23" />
-              <Blank UId="24" />
-              <Access Scope="LocalVariable" UId="25">
-                <Symbol UId="26">
-                  <Component Name="Work" UId="27" />
-                  <Token Text="." UId="28" />
-                  <Component Name="xStopVirPositioner" UId="29" />
+              <NewLine UId="21" />
+              <Token Text="IF" UId="22" />
+              <Blank UId="23" />
+              <Access Scope="LocalVariable" UId="24">
+                <Symbol UId="25">
+                  <Component Name="Cfg" UId="26" />
+                  <Token Text="." UId="27" />
+                  <Component Name="xDisablePos" UId="28" />
                 </Symbol>
               </Access>
-              <Blank UId="30" />
-              <Token Text="THEN" UId="31" />
-              <NewLine UId="32" />
-              <Blank Num="4" UId="33" />
-              <Token Text="CASE" UId="34" />
-              <Blank UId="35" />
-              <Access Scope="LocalVariable" UId="36">
-                <Symbol UId="37">
-                  <Component Name="Cfg" UId="38" />
-                  <Token Text="." UId="39" />
-                  <Component Name="xCurveS-L" UId="40" />
+              <Blank UId="29" />
+              <Token Text="THEN" UId="30" />
+              <NewLine UId="31" />
+              <Blank Num="4" UId="32" />
+              <Access Scope="LocalVariable" UId="33">
+                <Symbol UId="34">
+                  <Component Name="Cfg" UId="35" />
+                  <Token Text="." UId="36" />
+                  <Component Name="xCurveS-L" UId="37" />
                 </Symbol>
               </Access>
-              <Blank UId="41" />
-              <Token Text="OF" UId="42" />
-              <NewLine UId="43" />
-              <Blank Num="8" UId="44" />
-              <Access Scope="LiteralConstant" UId="45">
-                <Constant UId="46">
-                  <ConstantValue UId="48">0</ConstantValue>
+              <Blank UId="38" />
+              <Token Text=":=" UId="39" />
+              <Blank UId="40" />
+              <Access Scope="LiteralConstant" UId="41">
+                <Constant UId="42">
+                  <ConstantValue UId="44">3</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=":" UId="49" />
-              <NewLine UId="50" />
-              <Blank Num="12" UId="51" />
-              <Access Scope="LocalVariable" UId="52">
-                <Symbol UId="53">
-                  <Component Name="Work" UId="54" />
-                  <Token Text="." UId="55" />
-                  <Component Name="fVirSpeed" UId="56" />
+              <Token Text=";" UId="45" />
+              <NewLine UId="46" />
+              <Token Text="END_IF" UId="47" />
+              <Token Text=";" UId="48" />
+              <NewLine Num="2" UId="49" />
+              <Token Text="IF" UId="50" />
+              <Blank UId="51" />
+              <Token Text="NOT" UId="52" />
+              <Blank UId="53" />
+              <Access Scope="LocalVariable" UId="54">
+                <Symbol UId="55">
+                  <Component Name="Work" UId="56" />
+                  <Token Text="." UId="57" />
+                  <Component Name="xStopVirPositioner" UId="58" />
                 </Symbol>
               </Access>
-              <Blank UId="57" />
-              <Token Text=":=" UId="58" />
               <Blank UId="59" />
-              <Access Scope="LocalVariable" UId="60">
-                <Symbol UId="61">
-                  <Component Name="Work" UId="62" />
-                  <Token Text="." UId="63" />
-                  <Component Name="fVirSpeedLinear" UId="64" />
+              <Token Text="THEN" UId="60" />
+              <NewLine UId="61" />
+              <Blank Num="4" UId="62" />
+              <Token Text="CASE" UId="63" />
+              <Blank UId="64" />
+              <Access Scope="LocalVariable" UId="65">
+                <Symbol UId="66">
+                  <Component Name="Cfg" UId="67" />
+                  <Token Text="." UId="68" />
+                  <Component Name="xCurveS-L" UId="69" />
                 </Symbol>
               </Access>
-              <Token Text=";" UId="65" />
-              <NewLine UId="66" />
-              <Blank Num="8" UId="67" />
-              <Access Scope="LiteralConstant" UId="68">
-                <Constant UId="69">
-                  <ConstantValue UId="71">1</ConstantValue>
+              <Blank UId="70" />
+              <Token Text="OF" UId="71" />
+              <NewLine UId="72" />
+              <Blank Num="8" UId="73" />
+              <Access Scope="LiteralConstant" UId="74">
+                <Constant UId="75">
+                  <ConstantValue UId="77">0</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=":" UId="72" />
-              <NewLine UId="73" />
-              <Blank Num="12" UId="74" />
-              <Token Text="IF" UId="75" />
-              <Blank UId="76" />
-              <Access Scope="LocalVariable" UId="77">
-                <Symbol UId="78">
-                  <Component Name="Work" UId="79" />
-                  <Token Text="." UId="80" />
-                  <Component Name="xCurveS-L" UId="81" />
+              <Token Text=":" UId="78" />
+              <NewLine UId="79" />
+              <Blank Num="12" UId="80" />
+              <Access Scope="LocalVariable" UId="81">
+                <Symbol UId="82">
+                  <Component Name="Work" UId="83" />
+                  <Token Text="." UId="84" />
+                  <Component Name="fVirSpeed" UId="85" />
                 </Symbol>
               </Access>
-              <Blank UId="82" />
-              <Token Text="THEN" UId="83" />
-              <NewLine UId="84" />
-              <Blank Num="16" UId="85" />
-              <Token Text="IF" UId="86" />
-              <Blank UId="87" />
-              <Access Scope="LocalVariable" UId="88">
-                <Symbol UId="89">
-                  <Component Name="Work" UId="90" />
-                  <Token Text="." UId="91" />
-                  <Component Name="fVirSpeedLog" UId="92" />
+              <Blank UId="86" />
+              <Token Text=":=" UId="87" />
+              <Blank UId="88" />
+              <Access Scope="LocalVariable" UId="89">
+                <Symbol UId="90">
+                  <Component Name="Work" UId="91" />
+                  <Token Text="." UId="92" />
+                  <Component Name="fVirSpeedLinear" UId="93" />
                 </Symbol>
               </Access>
-              <Blank UId="93" />
-              <Token Text="&gt;=" UId="94" />
-              <Blank UId="95" />
-              <Access Scope="LiteralConstant" UId="96">
-                <Constant UId="97">
-                  <ConstantValue UId="99">1</ConstantValue>
+              <Token Text=";" UId="94" />
+              <NewLine UId="95" />
+              <Blank Num="8" UId="96" />
+              <Access Scope="LiteralConstant" UId="97">
+                <Constant UId="98">
+                  <ConstantValue UId="100">1</ConstantValue>
                 </Constant>
               </Access>
-              <Blank UId="100" />
-              <Token Text="THEN" UId="101" />
+              <Token Text=":" UId="101" />
               <NewLine UId="102" />
-              <Blank Num="20" UId="103" />
-              <Access Scope="LocalVariable" UId="104">
-                <Symbol UId="105">
-                  <Component Name="Work" UId="106" />
-                  <Token Text="." UId="107" />
-                  <Component Name="fVirSpeed" UId="108" />
+              <Blank Num="12" UId="103" />
+              <Token Text="IF" UId="104" />
+              <Blank UId="105" />
+              <Access Scope="LocalVariable" UId="106">
+                <Symbol UId="107">
+                  <Component Name="Work" UId="108" />
+                  <Token Text="." UId="109" />
+                  <Component Name="xCurveS-L" UId="110" />
                 </Symbol>
               </Access>
-              <Blank UId="109" />
-              <Token Text=":=" UId="110" />
               <Blank UId="111" />
-              <Access Scope="LocalVariable" UId="112">
-                <Symbol UId="113">
-                  <Component Name="Work" UId="114" />
-                  <Token Text="." UId="115" />
-                  <Component Name="fVirSpeedLog" UId="116" />
+              <Token Text="THEN" UId="112" />
+              <NewLine UId="113" />
+              <Blank Num="16" UId="114" />
+              <Token Text="IF" UId="115" />
+              <Blank UId="116" />
+              <Access Scope="LocalVariable" UId="117">
+                <Symbol UId="118">
+                  <Component Name="Work" UId="119" />
+                  <Token Text="." UId="120" />
+                  <Component Name="fVirSpeedLog" UId="121" />
                 </Symbol>
               </Access>
-              <Token Text=";" UId="117" />
-              <NewLine UId="118" />
-              <Blank Num="16" UId="119" />
-              <Token Text="ELSE" UId="120" />
-              <NewLine UId="121" />
-              <Blank Num="20" UId="122" />
-              <Access Scope="LocalVariable" UId="123">
-                <Symbol UId="124">
-                  <Component Name="Work" UId="125" />
-                  <Token Text="." UId="126" />
-                  <Component Name="fVirSpeed" UId="127" />
-                </Symbol>
-              </Access>
-              <Blank UId="128" />
-              <Token Text=":=" UId="129" />
-              <Blank UId="130" />
-              <Access Scope="LiteralConstant" UId="131">
-                <Constant UId="132">
-                  <ConstantValue UId="134">0</ConstantValue>
+              <Blank UId="122" />
+              <Token Text="&gt;=" UId="123" />
+              <Blank UId="124" />
+              <Access Scope="LiteralConstant" UId="125">
+                <Constant UId="126">
+                  <ConstantValue UId="128">1</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=";" UId="135" />
-              <NewLine UId="136" />
-              <Blank Num="16" UId="137" />
-              <Token Text="END_IF" UId="138" />
-              <Token Text=";" UId="139" />
-              <NewLine UId="140" />
-              <Blank Num="12" UId="141" />
-              <Token Text="ELSE" UId="142" />
-              <NewLine UId="143" />
-              <Blank Num="16" UId="144" />
-              <Access Scope="LocalVariable" UId="145">
-                <Symbol UId="146">
-                  <Component Name="Work" UId="147" />
-                  <Token Text="." UId="148" />
-                  <Component Name="fVirSpeed" UId="149" />
+              <Blank UId="129" />
+              <Token Text="THEN" UId="130" />
+              <NewLine UId="131" />
+              <Blank Num="20" UId="132" />
+              <Access Scope="LocalVariable" UId="133">
+                <Symbol UId="134">
+                  <Component Name="Work" UId="135" />
+                  <Token Text="." UId="136" />
+                  <Component Name="fVirSpeed" UId="137" />
                 </Symbol>
               </Access>
-              <Blank UId="150" />
-              <Token Text=":=" UId="151" />
-              <Blank UId="152" />
-              <Access Scope="LocalVariable" UId="153">
-                <Symbol UId="154">
-                  <Component Name="Work" UId="155" />
-                  <Token Text="." UId="156" />
-                  <Component Name="fVirSpeedLinear" UId="157" />
+              <Blank UId="138" />
+              <Token Text=":=" UId="139" />
+              <Blank UId="140" />
+              <Access Scope="LocalVariable" UId="141">
+                <Symbol UId="142">
+                  <Component Name="Work" UId="143" />
+                  <Token Text="." UId="144" />
+                  <Component Name="fVirSpeedLog" UId="145" />
                 </Symbol>
               </Access>
-              <Token Text=";" UId="158" />
-              <NewLine UId="159" />
-              <Blank Num="12" UId="160" />
-              <Token Text="END_IF" UId="161" />
-              <Token Text=";" UId="162" />
-              <NewLine UId="163" />
-              <Blank Num="8" UId="164" />
-              <Access Scope="LiteralConstant" UId="165">
-                <Constant UId="166">
-                  <ConstantValue UId="168">2</ConstantValue>
+              <Token Text=";" UId="146" />
+              <NewLine UId="147" />
+              <Blank Num="16" UId="148" />
+              <Token Text="ELSE" UId="149" />
+              <NewLine UId="150" />
+              <Blank Num="20" UId="151" />
+              <Access Scope="LocalVariable" UId="152">
+                <Symbol UId="153">
+                  <Component Name="Work" UId="154" />
+                  <Token Text="." UId="155" />
+                  <Component Name="fVirSpeed" UId="156" />
+                </Symbol>
+              </Access>
+              <Blank UId="157" />
+              <Token Text=":=" UId="158" />
+              <Blank UId="159" />
+              <Access Scope="LiteralConstant" UId="160">
+                <Constant UId="161">
+                  <ConstantValue UId="163">0</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=":" UId="169" />
-              <NewLine UId="170" />
-              <Blank Num="12" UId="171" />
-              <Access Scope="LocalVariable" UId="172">
-                <Symbol UId="173">
-                  <Component Name="Work" UId="174" />
-                  <Token Text="." UId="175" />
-                  <Component Name="fVirSpeed" UId="176" />
+              <Token Text=";" UId="164" />
+              <NewLine UId="165" />
+              <Blank Num="16" UId="166" />
+              <Token Text="END_IF" UId="167" />
+              <Token Text=";" UId="168" />
+              <NewLine UId="169" />
+              <Blank Num="12" UId="170" />
+              <Token Text="ELSE" UId="171" />
+              <NewLine UId="172" />
+              <Blank Num="16" UId="173" />
+              <Access Scope="LocalVariable" UId="174">
+                <Symbol UId="175">
+                  <Component Name="Work" UId="176" />
+                  <Token Text="." UId="177" />
+                  <Component Name="fVirSpeed" UId="178" />
                 </Symbol>
               </Access>
-              <Blank UId="177" />
-              <Token Text=":=" UId="178" />
               <Blank UId="179" />
-              <Access Scope="LocalVariable" UId="180">
-                <Symbol UId="181">
-                  <Component Name="Work" UId="182" />
-                  <Token Text="." UId="183" />
-                  <Component Name="fVirSpeedCos" UId="184" />
+              <Token Text=":=" UId="180" />
+              <Blank UId="181" />
+              <Access Scope="LocalVariable" UId="182">
+                <Symbol UId="183">
+                  <Component Name="Work" UId="184" />
+                  <Token Text="." UId="185" />
+                  <Component Name="fVirSpeedLinear" UId="186" />
                 </Symbol>
               </Access>
-              <Token Text=";" UId="185" />
-              <NewLine UId="186" />
-              <Blank Num="4" UId="187" />
-              <Token Text="END_CASE" UId="188" />
-              <Token Text=";" UId="189" />
-              <NewLine UId="190" />
-              <Blank Num="4" UId="191" />
+              <Token Text=";" UId="187" />
+              <NewLine UId="188" />
+              <Blank Num="12" UId="189" />
+              <Token Text="END_IF" UId="190" />
+              <Token Text=";" UId="191" />
               <NewLine UId="192" />
-              <Blank Num="4" UId="193" />
-              <Token Text="IF" UId="194" />
-              <Blank UId="195" />
-              <Token Text="(" UId="196" />
-              <Access Scope="LocalVariable" UId="197">
-                <Symbol UId="198">
-                  <Component Name="Work" UId="199" />
-                  <Token Text="." UId="200" />
-                  <Component Name="fVirSpeed" UId="201" />
+              <Blank Num="8" UId="193" />
+              <Access Scope="LiteralConstant" UId="194">
+                <Constant UId="195">
+                  <ConstantValue UId="197">2</ConstantValue>
+                </Constant>
+              </Access>
+              <Token Text=":" UId="198" />
+              <NewLine UId="199" />
+              <Blank Num="12" UId="200" />
+              <Access Scope="LocalVariable" UId="201">
+                <Symbol UId="202">
+                  <Component Name="Work" UId="203" />
+                  <Token Text="." UId="204" />
+                  <Component Name="fVirSpeed" UId="205" />
                 </Symbol>
               </Access>
-              <Blank UId="202" />
-              <Token Text="&lt;" UId="203" />
-              <Blank UId="204" />
-              <Access Scope="LocalVariable" UId="205">
-                <Symbol UId="206">
-                  <Component Name="Cfg" UId="207" />
-                  <Token Text="." UId="208" />
-                  <Component Name="fMinSpeed" UId="209" />
+              <Blank UId="206" />
+              <Token Text=":=" UId="207" />
+              <Blank UId="208" />
+              <Access Scope="LocalVariable" UId="209">
+                <Symbol UId="210">
+                  <Component Name="Work" UId="211" />
+                  <Token Text="." UId="212" />
+                  <Component Name="fVirSpeedCos" UId="213" />
                 </Symbol>
               </Access>
-              <Token Text=")" UId="210" />
-              <Blank UId="211" />
-              <Token Text="AND" UId="212" />
-              <Blank UId="213" />
-              <Access Scope="LocalVariable" UId="214">
-                <Symbol UId="215">
-                  <Component Name="Work" UId="216" />
-                  <Token Text="." UId="217" />
-                  <Component Name="xINEnable" UId="218" />
+              <Token Text=";" UId="214" />
+              <NewLine UId="215" />
+              <Blank Num="12" UId="216" />
+              <NewLine UId="217" />
+              <Blank Num="8" UId="218" />
+              <Access Scope="LiteralConstant" UId="219">
+                <Constant UId="220">
+                  <ConstantValue UId="222">3</ConstantValue>
+                </Constant>
+              </Access>
+              <Token Text=":" UId="223" />
+              <NewLine UId="224" />
+              <Blank Num="12" UId="225" />
+              <Access Scope="LocalVariable" UId="226">
+                <Symbol UId="227">
+                  <Component Name="Work" UId="228" />
+                  <Token Text="." UId="229" />
+                  <Component Name="fVirSpeed" UId="230" />
                 </Symbol>
               </Access>
-              <Blank UId="219" />
-              <Token Text="AND" UId="220" />
-              <Blank UId="221" />
-              <Token Text="NOT" UId="222" />
-              <Blank UId="223" />
-              <Token Text="(" UId="224" />
-              <Access Scope="LocalVariable" UId="225">
-                <Symbol UId="226">
-                  <Component Name="DataOut" UId="227" />
-                  <Token Text="." UId="228" />
-                  <Component Name="oxPosError" UId="229" />
-                </Symbol>
-              </Access>
-              <Token Text=")" UId="230" />
               <Blank UId="231" />
-              <Token Text="AND" UId="232" />
+              <Token Text=":=" UId="232" />
               <Blank UId="233" />
               <Access Scope="LocalVariable" UId="234">
                 <Symbol UId="235">
                   <Component Name="Work" UId="236" />
                   <Token Text="." UId="237" />
-                  <Component Name="xDriveReady" UId="238" />
+                  <Component Name="fVirSpeedLinear" UId="238" />
                 </Symbol>
               </Access>
-              <Blank UId="239" />
-              <Token Text="THEN" UId="240" />
-              <NewLine UId="241" />
-              <Blank Num="8" UId="242" />
-              <Access Scope="LocalVariable" UId="243">
-                <Symbol UId="244">
-                  <Component Name="Work" UId="245" />
-                  <Token Text="." UId="246" />
-                  <Component Name="fVirSpeed" UId="247" />
-                </Symbol>
-              </Access>
-              <Blank UId="248" />
-              <Token Text=":=" UId="249" />
-              <Blank UId="250" />
+              <Token Text=";" UId="239" />
+              <NewLine UId="240" />
+              <Blank Num="4" UId="241" />
+              <Token Text="END_CASE" UId="242" />
+              <Token Text=";" UId="243" />
+              <NewLine UId="244" />
+              <Blank Num="4" UId="245" />
+              <NewLine UId="246" />
+              <Blank Num="4" UId="247" />
+              <Token Text="IF" UId="248" />
+              <Blank UId="249" />
+              <Token Text="(" UId="250" />
               <Access Scope="LocalVariable" UId="251">
                 <Symbol UId="252">
-                  <Component Name="Cfg" UId="253" />
+                  <Component Name="Work" UId="253" />
                   <Token Text="." UId="254" />
-                  <Component Name="fMinSpeed" UId="255" />
+                  <Component Name="fVirSpeed" UId="255" />
                 </Symbol>
               </Access>
-              <Token Text=";" UId="256" />
-              <NewLine UId="257" />
-              <Blank Num="4" UId="258" />
-              <Token Text="END_IF" UId="259" />
-              <Token Text=";" UId="260" />
-              <NewLine UId="261" />
-              <Blank Num="4" UId="262" />
-              <NewLine UId="263" />
-              <Blank Num="4" UId="264" />
-              <Token Text="IF" UId="265" />
-              <Blank UId="266" />
-              <Access Scope="LocalVariable" UId="267">
-                <Symbol UId="268">
-                  <Component Name="DataIn" UId="269" />
-                  <Token Text="." UId="270" />
-                  <Component Name="ixEnableLevRes" UId="271" />
+              <Blank UId="256" />
+              <Token Text="&lt;" UId="257" />
+              <Blank UId="258" />
+              <Access Scope="LocalVariable" UId="259">
+                <Symbol UId="260">
+                  <Component Name="Cfg" UId="261" />
+                  <Token Text="." UId="262" />
+                  <Component Name="fMinSpeed" UId="263" />
                 </Symbol>
               </Access>
-              <Blank UId="272" />
-              <Token Text="AND" UId="273" />
-              <Blank UId="274" />
-              <Access Scope="LocalVariable" UId="275">
-                <Symbol UId="276">
-                  <Component Name="DataIn" UId="277" />
-                  <Token Text="." UId="278" />
-                  <Component Name="ixLevelReached" UId="279" />
+              <Token Text=")" UId="264" />
+              <Blank UId="265" />
+              <Token Text="AND" UId="266" />
+              <Blank UId="267" />
+              <Access Scope="LocalVariable" UId="268">
+                <Symbol UId="269">
+                  <Component Name="Work" UId="270" />
+                  <Token Text="." UId="271" />
+                  <Component Name="xINEnable" UId="272" />
                 </Symbol>
               </Access>
-              <Blank UId="280" />
-              <Token Text="AND" UId="281" />
-              <Blank UId="282" />
-              <Access Scope="LocalVariable" UId="283">
-                <Symbol UId="284">
-                  <Component Name="Work" UId="285" />
-                  <Token Text="." UId="286" />
-                  <Component Name="fVirSpeed" UId="287" />
+              <Blank UId="273" />
+              <Token Text="AND" UId="274" />
+              <Blank UId="275" />
+              <Token Text="NOT" UId="276" />
+              <Blank UId="277" />
+              <Token Text="(" UId="278" />
+              <Access Scope="LocalVariable" UId="279">
+                <Symbol UId="280">
+                  <Component Name="DataOut" UId="281" />
+                  <Token Text="." UId="282" />
+                  <Component Name="oxPosError" UId="283" />
                 </Symbol>
               </Access>
-              <Blank UId="288" />
-              <Token Text="=" UId="289" />
-              <Blank UId="290" />
-              <Access Scope="LocalVariable" UId="291">
-                <Symbol UId="292">
-                  <Component Name="Cfg" UId="293" />
-                  <Token Text="." UId="294" />
-                  <Component Name="fMinSpeed" UId="295" />
+              <Token Text=")" UId="284" />
+              <Blank UId="285" />
+              <Token Text="AND" UId="286" />
+              <Blank UId="287" />
+              <Access Scope="LocalVariable" UId="288">
+                <Symbol UId="289">
+                  <Component Name="Work" UId="290" />
+                  <Token Text="." UId="291" />
+                  <Component Name="xDriveReady" UId="292" />
                 </Symbol>
               </Access>
-              <Blank UId="296" />
-              <Token Text="THEN" UId="297" />
-              <NewLine UId="298" />
-              <Blank Num="8" UId="299" />
-              <Access Scope="LocalVariable" UId="300">
-                <Symbol UId="301">
-                  <Component Name="Work" UId="302" />
-                  <Token Text="." UId="303" />
-                  <Component Name="fVirSpeed" UId="304" />
+              <Blank UId="293" />
+              <Token Text="AND" UId="294" />
+              <Blank UId="295" />
+              <Token Text="NOT" UId="296" />
+              <Blank UId="297" />
+              <Access Scope="LocalVariable" UId="298">
+                <Symbol UId="299">
+                  <Component Name="Cfg" UId="300" />
+                  <Token Text="." UId="301" />
+                  <Component Name="xDisablePos" UId="302" />
                 </Symbol>
               </Access>
-              <Blank UId="305" />
-              <Token Text=":=" UId="306" />
-              <Blank UId="307" />
-              <Access Scope="LiteralConstant" UId="308">
-                <Constant UId="309">
-                  <ConstantValue UId="311">0</ConstantValue>
-                </Constant>
+              <Blank UId="303" />
+              <Token Text="THEN" UId="304" />
+              <NewLine UId="305" />
+              <Blank Num="8" UId="306" />
+              <Access Scope="LocalVariable" UId="307">
+                <Symbol UId="308">
+                  <Component Name="Work" UId="309" />
+                  <Token Text="." UId="310" />
+                  <Component Name="fVirSpeed" UId="311" />
+                </Symbol>
               </Access>
-              <Token Text=";" UId="312" />
-              <NewLine UId="313" />
-              <Blank Num="4" UId="314" />
-              <Token Text="END_IF" UId="315" />
-              <Token Text=";" UId="316" />
-              <NewLine UId="317" />
-              <Blank Num="8" UId="318" />
-              <NewLine UId="319" />
-              <Token Text="ELSE" UId="320" />
+              <Blank UId="312" />
+              <Token Text=":=" UId="313" />
+              <Blank UId="314" />
+              <Access Scope="LocalVariable" UId="315">
+                <Symbol UId="316">
+                  <Component Name="Cfg" UId="317" />
+                  <Token Text="." UId="318" />
+                  <Component Name="fMinSpeed" UId="319" />
+                </Symbol>
+              </Access>
+              <Token Text=";" UId="320" />
               <NewLine UId="321" />
               <Blank Num="4" UId="322" />
-              <Access Scope="LocalVariable" UId="323">
-                <Symbol UId="324">
-                  <Component Name="Work" UId="325" />
-                  <Token Text="." UId="326" />
-                  <Component Name="xCmdVirSpeedChanged" UId="327" />
+              <Token Text="END_IF" UId="323" />
+              <Token Text=";" UId="324" />
+              <NewLine UId="325" />
+              <Blank Num="4" UId="326" />
+              <NewLine UId="327" />
+              <Blank Num="4" UId="328" />
+              <Token Text="IF" UId="329" />
+              <Blank UId="330" />
+              <Access Scope="LocalVariable" UId="331">
+                <Symbol UId="332">
+                  <Component Name="DataIn" UId="333" />
+                  <Token Text="." UId="334" />
+                  <Component Name="ixEnableLevRes" UId="335" />
                 </Symbol>
               </Access>
-              <Blank UId="328" />
-              <Token Text=":=" UId="329" />
-              <Blank UId="330" />
-              <Access Scope="LiteralConstant" UId="331">
-                <Constant UId="332">
-                  <ConstantValue UId="334">FALSE</ConstantValue>
+              <Blank UId="336" />
+              <Token Text="AND" UId="337" />
+              <Blank UId="338" />
+              <Access Scope="LocalVariable" UId="339">
+                <Symbol UId="340">
+                  <Component Name="DataIn" UId="341" />
+                  <Token Text="." UId="342" />
+                  <Component Name="ixLevelReached" UId="343" />
+                </Symbol>
+              </Access>
+              <Blank UId="344" />
+              <Token Text="AND" UId="345" />
+              <Blank UId="346" />
+              <Access Scope="LocalVariable" UId="347">
+                <Symbol UId="348">
+                  <Component Name="Work" UId="349" />
+                  <Token Text="." UId="350" />
+                  <Component Name="fVirSpeed" UId="351" />
+                </Symbol>
+              </Access>
+              <Blank UId="352" />
+              <Token Text="=" UId="353" />
+              <Blank UId="354" />
+              <Access Scope="LocalVariable" UId="355">
+                <Symbol UId="356">
+                  <Component Name="Cfg" UId="357" />
+                  <Token Text="." UId="358" />
+                  <Component Name="fMinSpeed" UId="359" />
+                </Symbol>
+              </Access>
+              <Blank UId="360" />
+              <Token Text="THEN" UId="361" />
+              <NewLine UId="362" />
+              <Blank Num="8" UId="363" />
+              <Access Scope="LocalVariable" UId="364">
+                <Symbol UId="365">
+                  <Component Name="Work" UId="366" />
+                  <Token Text="." UId="367" />
+                  <Component Name="fVirSpeed" UId="368" />
+                </Symbol>
+              </Access>
+              <Blank UId="369" />
+              <Token Text=":=" UId="370" />
+              <Blank UId="371" />
+              <Access Scope="LiteralConstant" UId="372">
+                <Constant UId="373">
+                  <ConstantValue UId="375">0</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=";" UId="335" />
-              <NewLine UId="336" />
-              <Token Text="END_IF" UId="337" />
-              <Token Text=";" UId="338" />
+              <Token Text=";" UId="376" />
+              <NewLine UId="377" />
+              <Blank Num="4" UId="378" />
+              <Token Text="END_IF" UId="379" />
+              <Token Text=";" UId="380" />
+              <NewLine UId="381" />
+              <Blank Num="8" UId="382" />
+              <NewLine UId="383" />
+              <Token Text="ELSE" UId="384" />
+              <NewLine UId="385" />
+              <Blank Num="4" UId="386" />
+              <Access Scope="LocalVariable" UId="387">
+                <Symbol UId="388">
+                  <Component Name="Work" UId="389" />
+                  <Token Text="." UId="390" />
+                  <Component Name="xCmdVirSpeedChanged" UId="391" />
+                </Symbol>
+              </Access>
+              <Blank UId="392" />
+              <Token Text=":=" UId="393" />
+              <Blank UId="394" />
+              <Access Scope="LiteralConstant" UId="395">
+                <Constant UId="396">
+                  <ConstantValue UId="398">FALSE</ConstantValue>
+                </Constant>
+              </Access>
+              <Token Text=";" UId="399" />
+              <NewLine UId="400" />
+              <Token Text="END_IF" UId="401" />
+              <Token Text=";" UId="402" />
             </StructuredText>
           </NetworkSource>
           <ProgrammingLanguage>SCL</ProgrammingLanguage>
@@ -8963,7 +9050,7 @@ di scansione della CPU.</Text>
               <NewLine UId="295" />
               <Token Text="END_IF" UId="296" />
               <Token Text=";" UId="297" />
-              <NewLine Num="2" UId="298" />
+              <NewLine Num="5" UId="298" />
               <Token Text="IF" UId="299" />
               <Blank UId="300" />
               <Access Scope="LocalVariable" UId="301">
@@ -9953,14 +10040,14 @@ di scansione della CPU.</Text>
               <Parts>
                 <Access Scope="LocalVariable" UId="21">
                   <Symbol>
-                    <Component Name="Work" />
-                    <Component Name="fMemoOldPos" />
+                    <Component Name="Cfg" />
+                    <Component Name="xDisablePos" />
                   </Symbol>
                 </Access>
                 <Access Scope="LocalVariable" UId="22">
                   <Symbol>
                     <Component Name="Work" />
-                    <Component Name="f_PositionTarget" />
+                    <Component Name="fMemoOldPos" />
                   </Symbol>
                 </Access>
                 <Access Scope="LocalVariable" UId="23">
@@ -9972,12 +10059,13 @@ di scansione della CPU.</Text>
                 <Access Scope="LocalVariable" UId="24">
                   <Symbol>
                     <Component Name="Work" />
-                    <Component Name="fVirPos" />
+                    <Component Name="f_PositionTarget" />
                   </Symbol>
                 </Access>
                 <Access Scope="LocalVariable" UId="25">
                   <Symbol>
-                    <Component Name="tfSuppCalc" />
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
                   </Symbol>
                 </Access>
                 <Access Scope="LocalVariable" UId="26">
@@ -9997,44 +10085,43 @@ di scansione della CPU.</Text>
                 </Access>
                 <Access Scope="LocalVariable" UId="29">
                   <Symbol>
+                    <Component Name="tfSuppCalc" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="30">
+                  <Symbol>
                     <Component Name="Cfg" />
                     <Component Name="fVirt_EncWindPos" />
                   </Symbol>
                 </Access>
-                <Access Scope="LocalVariable" UId="30">
+                <Access Scope="LocalVariable" UId="31">
+                  <Symbol>
+                    <Component Name="Cfg" />
+                    <Component Name="xDisablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="32">
                   <Symbol>
                     <Component Name="Work" />
                     <Component Name="xEnableJog" />
                   </Symbol>
                 </Access>
-                <Access Scope="LocalVariable" UId="31">
+                <Access Scope="LocalVariable" UId="33">
                   <Symbol>
                     <Component Name="Work" />
                     <Component Name="xStopVirPositioner" />
                   </Symbol>
                 </Access>
-                <Access Scope="LiteralConstant" UId="32">
+                <Access Scope="LiteralConstant" UId="34">
                   <Constant>
                     <ConstantType>Real</ConstantType>
                     <ConstantValue>0.0</ConstantValue>
                   </Constant>
                 </Access>
-                <Access Scope="LocalVariable" UId="33">
-                  <Symbol>
-                    <Component Name="Work" />
-                    <Component Name="fVirSpeed" />
-                  </Symbol>
-                </Access>
-                <Access Scope="LocalVariable" UId="34">
-                  <Symbol>
-                    <Component Name="Work" />
-                    <Component Name="f_PositionTarget" />
-                  </Symbol>
-                </Access>
                 <Access Scope="LocalVariable" UId="35">
                   <Symbol>
                     <Component Name="Work" />
-                    <Component Name="fVirPos" />
+                    <Component Name="fVirSpeed" />
                   </Symbol>
                 </Access>
                 <Access Scope="LocalVariable" UId="36">
@@ -10046,136 +10133,397 @@ di scansione della CPU.</Text>
                 <Access Scope="LocalVariable" UId="37">
                   <Symbol>
                     <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="38">
+                  <Symbol>
+                    <Component Name="Cfg" />
+                    <Component Name="xDisablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="39">
+                  <Symbol>
+                    <Component Name="Work" />
                     <Component Name="fMemoOldPos" />
                   </Symbol>
                 </Access>
-                <Part Name="Eq" UId="38">
+                <Access Scope="LocalVariable" UId="40">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="f_PositionTarget" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="41">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="f_PositionTarget" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="42">
+                  <Symbol>
+                    <Component Name="DataIn" />
+                    <Component Name="ifEncoder" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="43">
+                  <Symbol>
+                    <Component Name="tfSuppCalc" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="44">
+                  <Symbol>
+                    <Component Name="tfSuppCalc" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="45">
+                  <Symbol>
+                    <Component Name="tfSuppCalc" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="46">
+                  <Symbol>
+                    <Component Name="tfSuppCalc" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="47">
+                  <Symbol>
+                    <Component Name="Cfg" />
+                    <Component Name="fMotWindPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="48">
+                  <Symbol>
+                    <Component Name="Cfg" />
+                    <Component Name="xDisablePos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="49">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="xEnableJog" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="50">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="xStopVirPositioner" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LiteralConstant" UId="51">
+                  <Constant>
+                    <ConstantType>Real</ConstantType>
+                    <ConstantValue>0.0</ConstantValue>
+                  </Constant>
+                </Access>
+                <Access Scope="LocalVariable" UId="52">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="fVirSpeed" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="53">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="f_PositionTarget" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="54">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="fVirPos" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="55">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="f_PositionTarget" />
+                  </Symbol>
+                </Access>
+                <Access Scope="LocalVariable" UId="56">
+                  <Symbol>
+                    <Component Name="Work" />
+                    <Component Name="fMemoOldPos" />
+                  </Symbol>
+                </Access>
+                <Part Name="Contact" UId="57">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Eq" UId="58">
                   <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
                 </Part>
-                <Part Name="Sub" UId="39" DisabledENO="true">
+                <Part Name="Sub" UId="59" DisabledENO="true">
                   <AutomaticTyped Name="SrcType" />
                 </Part>
-                <Part Name="Abs" UId="40" DisabledENO="true">
+                <Part Name="Abs" UId="60" DisabledENO="true">
                   <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
                 </Part>
-                <Part Name="Le" UId="41">
+                <Part Name="Le" UId="61">
                   <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
                 </Part>
-                <Part Name="Contact" UId="42" />
-                <Part Name="O" UId="43">
+                <Part Name="Contact" UId="62">
+                  <Negated Name="operand" />
+                </Part>
+                <Part Name="Contact" UId="63" />
+                <Part Name="O" UId="64">
                   <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
                 </Part>
-                <Part Name="SCoil" UId="44" />
-                <Part Name="Move" UId="45" DisabledENO="true">
+                <Part Name="SCoil" UId="65" />
+                <Part Name="Move" UId="66" DisabledENO="true">
                   <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
                 </Part>
-                <Part Name="Move" UId="46" DisabledENO="true">
+                <Part Name="Move" UId="67" DisabledENO="true">
                   <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
                 </Part>
-                <Part Name="Move" UId="47" DisabledENO="true">
+                <Part Name="Contact" UId="68" />
+                <Part Name="Eq" UId="69">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Sub" UId="70" DisabledENO="true">
+                  <AutomaticTyped Name="SrcType" />
+                </Part>
+                <Part Name="Abs" UId="71" DisabledENO="true">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Le" UId="72">
+                  <TemplateValue Name="SrcType" Type="Type">Real</TemplateValue>
+                </Part>
+                <Part Name="Contact" UId="73" />
+                <Part Name="Contact" UId="74" />
+                <Part Name="O" UId="75">
+                  <TemplateValue Name="Card" Type="Cardinality">2</TemplateValue>
+                </Part>
+                <Part Name="SCoil" UId="76" />
+                <Part Name="Move" UId="77" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+                <Part Name="Move" UId="78" DisabledENO="true">
+                  <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
+                </Part>
+                <Part Name="Move" UId="79" DisabledENO="true">
                   <TemplateValue Name="Card" Type="Cardinality">1</TemplateValue>
                 </Part>
               </Parts>
               <Wires>
-                <Wire UId="48">
+                <Wire UId="80">
                   <Powerrail />
-                  <NameCon UId="38" Name="pre" />
-                  <NameCon UId="42" Name="in" />
-                  <NameCon UId="47" Name="en" />
+                  <NameCon UId="57" Name="in" />
+                  <NameCon UId="62" Name="in" />
+                  <NameCon UId="68" Name="in" />
+                  <NameCon UId="73" Name="in" />
+                  <NameCon UId="79" Name="en" />
                 </Wire>
-                <Wire UId="49">
+                <Wire UId="81">
                   <IdentCon UId="21" />
-                  <NameCon UId="38" Name="in1" />
+                  <NameCon UId="57" Name="operand" />
                 </Wire>
-                <Wire UId="50">
+                <Wire UId="82">
+                  <NameCon UId="57" Name="out" />
+                  <NameCon UId="58" Name="pre" />
+                </Wire>
+                <Wire UId="83">
                   <IdentCon UId="22" />
-                  <NameCon UId="38" Name="in2" />
+                  <NameCon UId="58" Name="in1" />
                 </Wire>
-                <Wire UId="51">
-                  <NameCon UId="38" Name="out" />
-                  <NameCon UId="39" Name="en" />
-                </Wire>
-                <Wire UId="52">
+                <Wire UId="84">
                   <IdentCon UId="23" />
-                  <NameCon UId="39" Name="in1" />
+                  <NameCon UId="58" Name="in2" />
                 </Wire>
-                <Wire UId="53">
+                <Wire UId="85">
+                  <NameCon UId="58" Name="out" />
+                  <NameCon UId="59" Name="en" />
+                </Wire>
+                <Wire UId="86">
                   <IdentCon UId="24" />
-                  <NameCon UId="39" Name="in2" />
+                  <NameCon UId="59" Name="in1" />
                 </Wire>
-                <Wire UId="54">
-                  <NameCon UId="39" Name="eno" />
-                  <NameCon UId="40" Name="en" />
-                </Wire>
-                <Wire UId="55">
-                  <NameCon UId="39" Name="out" />
+                <Wire UId="87">
                   <IdentCon UId="25" />
+                  <NameCon UId="59" Name="in2" />
                 </Wire>
-                <Wire UId="56">
+                <Wire UId="88">
+                  <NameCon UId="59" Name="eno" />
+                  <NameCon UId="60" Name="en" />
+                </Wire>
+                <Wire UId="89">
+                  <NameCon UId="59" Name="out" />
                   <IdentCon UId="26" />
-                  <NameCon UId="40" Name="in" />
                 </Wire>
-                <Wire UId="57">
-                  <NameCon UId="40" Name="eno" />
-                  <NameCon UId="41" Name="pre" />
-                </Wire>
-                <Wire UId="58">
-                  <NameCon UId="40" Name="out" />
+                <Wire UId="90">
                   <IdentCon UId="27" />
+                  <NameCon UId="60" Name="in" />
                 </Wire>
-                <Wire UId="59">
+                <Wire UId="91">
+                  <NameCon UId="60" Name="eno" />
+                  <NameCon UId="61" Name="pre" />
+                </Wire>
+                <Wire UId="92">
+                  <NameCon UId="60" Name="out" />
                   <IdentCon UId="28" />
-                  <NameCon UId="41" Name="in1" />
                 </Wire>
-                <Wire UId="60">
+                <Wire UId="93">
                   <IdentCon UId="29" />
-                  <NameCon UId="41" Name="in2" />
+                  <NameCon UId="61" Name="in1" />
                 </Wire>
-                <Wire UId="61">
-                  <NameCon UId="41" Name="out" />
-                  <NameCon UId="43" Name="in1" />
-                </Wire>
-                <Wire UId="62">
+                <Wire UId="94">
                   <IdentCon UId="30" />
-                  <NameCon UId="42" Name="operand" />
+                  <NameCon UId="61" Name="in2" />
                 </Wire>
-                <Wire UId="63">
-                  <NameCon UId="42" Name="out" />
-                  <NameCon UId="43" Name="in2" />
+                <Wire UId="95">
+                  <NameCon UId="61" Name="out" />
+                  <NameCon UId="64" Name="in1" />
                 </Wire>
-                <Wire UId="64">
-                  <NameCon UId="43" Name="out" />
-                  <NameCon UId="44" Name="in" />
-                  <NameCon UId="45" Name="en" />
-                  <NameCon UId="46" Name="en" />
-                </Wire>
-                <Wire UId="65">
+                <Wire UId="96">
                   <IdentCon UId="31" />
-                  <NameCon UId="44" Name="operand" />
+                  <NameCon UId="62" Name="operand" />
                 </Wire>
-                <Wire UId="66">
+                <Wire UId="97">
+                  <NameCon UId="62" Name="out" />
+                  <NameCon UId="63" Name="in" />
+                </Wire>
+                <Wire UId="98">
                   <IdentCon UId="32" />
-                  <NameCon UId="45" Name="in" />
+                  <NameCon UId="63" Name="operand" />
                 </Wire>
-                <Wire UId="67">
-                  <NameCon UId="45" Name="out1" />
+                <Wire UId="99">
+                  <NameCon UId="63" Name="out" />
+                  <NameCon UId="64" Name="in2" />
+                </Wire>
+                <Wire UId="100">
+                  <NameCon UId="64" Name="out" />
+                  <NameCon UId="65" Name="in" />
+                  <NameCon UId="66" Name="en" />
+                  <NameCon UId="67" Name="en" />
+                </Wire>
+                <Wire UId="101">
                   <IdentCon UId="33" />
+                  <NameCon UId="65" Name="operand" />
                 </Wire>
-                <Wire UId="68">
+                <Wire UId="102">
                   <IdentCon UId="34" />
-                  <NameCon UId="46" Name="in" />
+                  <NameCon UId="66" Name="in" />
                 </Wire>
-                <Wire UId="69">
-                  <NameCon UId="46" Name="out1" />
+                <Wire UId="103">
+                  <NameCon UId="66" Name="out1" />
                   <IdentCon UId="35" />
                 </Wire>
-                <Wire UId="70">
+                <Wire UId="104">
                   <IdentCon UId="36" />
-                  <NameCon UId="47" Name="in" />
+                  <NameCon UId="67" Name="in" />
                 </Wire>
-                <Wire UId="71">
-                  <NameCon UId="47" Name="out1" />
+                <Wire UId="105">
+                  <NameCon UId="67" Name="out1" />
                   <IdentCon UId="37" />
+                </Wire>
+                <Wire UId="106">
+                  <IdentCon UId="38" />
+                  <NameCon UId="68" Name="operand" />
+                </Wire>
+                <Wire UId="107">
+                  <NameCon UId="68" Name="out" />
+                  <NameCon UId="69" Name="pre" />
+                </Wire>
+                <Wire UId="108">
+                  <IdentCon UId="39" />
+                  <NameCon UId="69" Name="in1" />
+                </Wire>
+                <Wire UId="109">
+                  <IdentCon UId="40" />
+                  <NameCon UId="69" Name="in2" />
+                </Wire>
+                <Wire UId="110">
+                  <NameCon UId="69" Name="out" />
+                  <NameCon UId="70" Name="en" />
+                </Wire>
+                <Wire UId="111">
+                  <IdentCon UId="41" />
+                  <NameCon UId="70" Name="in1" />
+                </Wire>
+                <Wire UId="112">
+                  <IdentCon UId="42" />
+                  <NameCon UId="70" Name="in2" />
+                </Wire>
+                <Wire UId="113">
+                  <NameCon UId="70" Name="eno" />
+                  <NameCon UId="71" Name="en" />
+                </Wire>
+                <Wire UId="114">
+                  <NameCon UId="70" Name="out" />
+                  <IdentCon UId="43" />
+                </Wire>
+                <Wire UId="115">
+                  <IdentCon UId="44" />
+                  <NameCon UId="71" Name="in" />
+                </Wire>
+                <Wire UId="116">
+                  <NameCon UId="71" Name="eno" />
+                  <NameCon UId="72" Name="pre" />
+                </Wire>
+                <Wire UId="117">
+                  <NameCon UId="71" Name="out" />
+                  <IdentCon UId="45" />
+                </Wire>
+                <Wire UId="118">
+                  <IdentCon UId="46" />
+                  <NameCon UId="72" Name="in1" />
+                </Wire>
+                <Wire UId="119">
+                  <IdentCon UId="47" />
+                  <NameCon UId="72" Name="in2" />
+                </Wire>
+                <Wire UId="120">
+                  <NameCon UId="72" Name="out" />
+                  <NameCon UId="75" Name="in1" />
+                </Wire>
+                <Wire UId="121">
+                  <IdentCon UId="48" />
+                  <NameCon UId="73" Name="operand" />
+                </Wire>
+                <Wire UId="122">
+                  <NameCon UId="73" Name="out" />
+                  <NameCon UId="74" Name="in" />
+                </Wire>
+                <Wire UId="123">
+                  <IdentCon UId="49" />
+                  <NameCon UId="74" Name="operand" />
+                </Wire>
+                <Wire UId="124">
+                  <NameCon UId="74" Name="out" />
+                  <NameCon UId="75" Name="in2" />
+                </Wire>
+                <Wire UId="125">
+                  <NameCon UId="75" Name="out" />
+                  <NameCon UId="76" Name="in" />
+                  <NameCon UId="77" Name="en" />
+                  <NameCon UId="78" Name="en" />
+                </Wire>
+                <Wire UId="126">
+                  <IdentCon UId="50" />
+                  <NameCon UId="76" Name="operand" />
+                </Wire>
+                <Wire UId="127">
+                  <IdentCon UId="51" />
+                  <NameCon UId="77" Name="in" />
+                </Wire>
+                <Wire UId="128">
+                  <NameCon UId="77" Name="out1" />
+                  <IdentCon UId="52" />
+                </Wire>
+                <Wire UId="129">
+                  <IdentCon UId="53" />
+                  <NameCon UId="78" Name="in" />
+                </Wire>
+                <Wire UId="130">
+                  <NameCon UId="78" Name="out1" />
+                  <IdentCon UId="54" />
+                </Wire>
+                <Wire UId="131">
+                  <IdentCon UId="55" />
+                  <NameCon UId="79" Name="in" />
+                </Wire>
+                <Wire UId="132">
+                  <NameCon UId="79" Name="out1" />
+                  <IdentCon UId="56" />
                 </Wire>
               </Wires>
             </FlgNet>
