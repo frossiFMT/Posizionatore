@@ -291,6 +291,12 @@
               </Comment>
               <StartValue>false</StartValue>
             </Member>
+            <Member Name="fOffSResLevel" Datatype="Real">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">50 se mm 5 se gradi</MultiLanguageText>
+              </Comment>
+              <StartValue>50.0</StartValue>
+            </Member>
           </Section>
         </Sections>
       </Interface>

@@ -539,7 +539,9 @@ v2.0 - 01/03/2024 - Michele Montanari
         
 v2.1 - 19/12/2024 - Michele Montanari
         - Seg.4 tolto il negato di "#DataIn.ixEnableLevRes" nel reset memoria "#Work.xINEnable" altrimeni non faceva l'inversione
-
+        
+v3.0 - 12/02/2025 - Michele Montanari       
+        inserito cfg.fOffSResLevel per precalcolo cambio velocità in ricerca livello 50 se mm 5 se gradi
 ------------------------------------------------------------------------
 </Text>
               </LineComment>
@@ -9199,546 +9201,548 @@ di scansione della CPU.</Text>
               <Blank UId="491" />
               <Token Text="+" UId="492" />
               <Blank UId="493" />
-              <Access Scope="LiteralConstant" UId="494">
-                <Constant UId="495">
-                  <ConstantValue UId="497">50</ConstantValue>
-                </Constant>
-              </Access>
-              <Token Text=";" UId="498" />
-              <NewLine UId="499" />
-              <Access Scope="LocalVariable" UId="500">
-                <Symbol UId="501">
-                  <Component Name="DataOut" UId="502" />
-                  <Token Text="." UId="503" />
-                  <Component Name="oxAccOnWork" UId="504" />
+              <Access Scope="LocalVariable" UId="494">
+                <Symbol UId="495">
+                  <Component Name="Cfg" UId="496" />
+                  <Token Text="." UId="497" />
+                  <Component Name="fOffSResLevel" UId="498" />
                 </Symbol>
               </Access>
-              <Blank UId="505" />
-              <Token Text=":=" UId="506" />
-              <Blank UId="507" />
-              <Access Scope="Call" UId="508">
-                <Instruction Name="ABS" UId="509">
-                  <Token Text="(" UId="510" />
-                  <NamelessParameter UId="511">
-                    <Access Scope="LocalVariable" UId="512">
-                      <Symbol UId="513">
-                        <Component Name="Work" UId="514" />
-                        <Token Text="." UId="515" />
-                        <Component Name="fCalc" UId="516">
-                          <Token Text="[" UId="517" />
-                          <Access Scope="LiteralConstant" UId="518">
-                            <Constant UId="519">
-                              <ConstantValue UId="521">20</ConstantValue>
+              <Token Text=";" UId="499" />
+              <NewLine UId="500" />
+              <Access Scope="LocalVariable" UId="501">
+                <Symbol UId="502">
+                  <Component Name="DataOut" UId="503" />
+                  <Token Text="." UId="504" />
+                  <Component Name="oxAccOnWork" UId="505" />
+                </Symbol>
+              </Access>
+              <Blank UId="506" />
+              <Token Text=":=" UId="507" />
+              <Blank UId="508" />
+              <Access Scope="Call" UId="509">
+                <Instruction Name="ABS" UId="510">
+                  <Token Text="(" UId="511" />
+                  <NamelessParameter UId="512">
+                    <Access Scope="LocalVariable" UId="513">
+                      <Symbol UId="514">
+                        <Component Name="Work" UId="515" />
+                        <Token Text="." UId="516" />
+                        <Component Name="fCalc" UId="517">
+                          <Token Text="[" UId="518" />
+                          <Access Scope="LiteralConstant" UId="519">
+                            <Constant UId="520">
+                              <ConstantValue UId="522">20</ConstantValue>
                             </Constant>
                           </Access>
-                          <Token Text="]" UId="522" />
+                          <Token Text="]" UId="523" />
                         </Component>
                       </Symbol>
                     </Access>
-                    <Blank UId="523" />
-                    <Token Text="-" UId="524" />
-                    <Blank UId="525" />
-                    <Access Scope="LocalVariable" UId="526">
-                      <Symbol UId="527">
-                        <Component Name="DataIn" UId="528" />
-                        <Token Text="." UId="529" />
-                        <Component Name="ifEncoder" UId="530" />
+                    <Blank UId="524" />
+                    <Token Text="-" UId="525" />
+                    <Blank UId="526" />
+                    <Access Scope="LocalVariable" UId="527">
+                      <Symbol UId="528">
+                        <Component Name="DataIn" UId="529" />
+                        <Token Text="." UId="530" />
+                        <Component Name="ifEncoder" UId="531" />
                       </Symbol>
                     </Access>
                   </NamelessParameter>
-                  <Token Text=")" UId="532" />
+                  <Token Text=")" UId="533" />
                 </Instruction>
               </Access>
-              <Blank UId="533" />
-              <Token Text="&lt;" UId="534" />
-              <Blank UId="535" />
-              <Access Scope="LocalVariable" UId="536">
-                <Symbol UId="537">
-                  <Component Name="DataOut" UId="538" />
-                  <Token Text="." UId="539" />
-                  <Component Name="ofSpaceStart" UId="540" />
+              <Blank UId="534" />
+              <Token Text="&lt;" UId="535" />
+              <Blank UId="536" />
+              <Access Scope="LocalVariable" UId="537">
+                <Symbol UId="538">
+                  <Component Name="DataOut" UId="539" />
+                  <Token Text="." UId="540" />
+                  <Component Name="ofSpaceStart" UId="541" />
                 </Symbol>
               </Access>
-              <Token Text=";" UId="541" />
-              <NewLine UId="542" />
-              <Access Scope="LocalVariable" UId="543">
-                <Symbol UId="544">
-                  <Component Name="DataOut" UId="545" />
-                  <Token Text="." UId="546" />
-                  <Component Name="oxDecOnWork" UId="547" />
+              <Token Text=";" UId="542" />
+              <NewLine UId="543" />
+              <Access Scope="LocalVariable" UId="544">
+                <Symbol UId="545">
+                  <Component Name="DataOut" UId="546" />
+                  <Token Text="." UId="547" />
+                  <Component Name="oxDecOnWork" UId="548" />
                 </Symbol>
               </Access>
-              <Blank UId="548" />
-              <Token Text=":=" UId="549" />
-              <Blank UId="550" />
-              <Access Scope="LocalVariable" UId="551">
-                <Symbol UId="552">
-                  <Component Name="Work" UId="553" />
-                  <Token Text="." UId="554" />
-                  <Component Name="xDecStop" UId="555" />
+              <Blank UId="549" />
+              <Token Text=":=" UId="550" />
+              <Blank UId="551" />
+              <Access Scope="LocalVariable" UId="552">
+                <Symbol UId="553">
+                  <Component Name="Work" UId="554" />
+                  <Token Text="." UId="555" />
+                  <Component Name="xDecStop" UId="556" />
                 </Symbol>
               </Access>
-              <Blank UId="556" />
-              <Token Text="OR" UId="557" />
-              <Blank UId="558" />
-              <Token Text="(" UId="559" />
+              <Blank UId="557" />
+              <Token Text="OR" UId="558" />
+              <Blank UId="559" />
               <Token Text="(" UId="560" />
-              <Access Scope="LocalVariable" UId="561">
-                <Symbol UId="562">
-                  <Component Name="Work" UId="563" />
-                  <Token Text="." UId="564" />
-                  <Component Name="fOutSpeedMot" UId="565" />
+              <Token Text="(" UId="561" />
+              <Access Scope="LocalVariable" UId="562">
+                <Symbol UId="563">
+                  <Component Name="Work" UId="564" />
+                  <Token Text="." UId="565" />
+                  <Component Name="fOutSpeedMot" UId="566" />
                 </Symbol>
               </Access>
-              <Blank UId="566" />
-              <Token Text="&gt;" UId="567" />
-              <Blank UId="568" />
-              <Access Scope="LiteralConstant" UId="569">
-                <Constant UId="570">
-                  <ConstantValue UId="572">0</ConstantValue>
+              <Blank UId="567" />
+              <Token Text="&gt;" UId="568" />
+              <Blank UId="569" />
+              <Access Scope="LiteralConstant" UId="570">
+                <Constant UId="571">
+                  <ConstantValue UId="573">0</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=")" UId="573" />
-              <Blank UId="574" />
-              <Token Text="AND" UId="575" />
-              <Blank UId="576" />
-              <Token Text="NOT" UId="577" />
-              <Blank UId="578" />
-              <Access Scope="LocalVariable" UId="579">
-                <Symbol UId="580">
-                  <Component Name="Work" UId="581" />
-                  <Token Text="." UId="582" />
-                  <Component Name="xINEnable" UId="583" />
+              <Token Text=")" UId="574" />
+              <Blank UId="575" />
+              <Token Text="AND" UId="576" />
+              <Blank UId="577" />
+              <Token Text="NOT" UId="578" />
+              <Blank UId="579" />
+              <Access Scope="LocalVariable" UId="580">
+                <Symbol UId="581">
+                  <Component Name="Work" UId="582" />
+                  <Token Text="." UId="583" />
+                  <Component Name="xINEnable" UId="584" />
                 </Symbol>
               </Access>
-              <Token Text=")" UId="584" />
-              <Token Text=";" UId="585" />
-              <NewLine Num="2" UId="586" />
-              <Token Text="IF" UId="587" />
-              <Blank UId="588" />
-              <Token Text="NOT" UId="589" />
-              <Blank UId="590" />
-              <Access Scope="LocalVariable" UId="591">
-                <Symbol UId="592">
-                  <Component Name="Cfg" UId="593" />
-                  <Token Text="." UId="594" />
-                  <Component Name="xDisablePos" UId="595" />
+              <Token Text=")" UId="585" />
+              <Token Text=";" UId="586" />
+              <NewLine Num="2" UId="587" />
+              <Token Text="IF" UId="588" />
+              <Blank UId="589" />
+              <Token Text="NOT" UId="590" />
+              <Blank UId="591" />
+              <Access Scope="LocalVariable" UId="592">
+                <Symbol UId="593">
+                  <Component Name="Cfg" UId="594" />
+                  <Token Text="." UId="595" />
+                  <Component Name="xDisablePos" UId="596" />
                 </Symbol>
               </Access>
-              <Blank UId="596" />
-              <Token Text="THEN" UId="597" />
-              <NewLine UId="598" />
-              <Blank Num="4" UId="599" />
-              <Token Text="IF" UId="600" />
-              <Blank UId="601" />
-              <Token Text="(" UId="602" />
-              <Access Scope="Call" UId="603">
-                <Instruction Name="ABS" UId="604">
-                  <Token Text="(" UId="605" />
-                  <NamelessParameter UId="606">
-                    <Access Scope="LocalVariable" UId="607">
-                      <Symbol UId="608">
-                        <Component Name="Work" UId="609" />
-                        <Token Text="." UId="610" />
-                        <Component Name="f_PositionTarget" UId="611" />
+              <Blank UId="597" />
+              <Token Text="THEN" UId="598" />
+              <NewLine UId="599" />
+              <Blank Num="4" UId="600" />
+              <Token Text="IF" UId="601" />
+              <Blank UId="602" />
+              <Token Text="(" UId="603" />
+              <Access Scope="Call" UId="604">
+                <Instruction Name="ABS" UId="605">
+                  <Token Text="(" UId="606" />
+                  <NamelessParameter UId="607">
+                    <Access Scope="LocalVariable" UId="608">
+                      <Symbol UId="609">
+                        <Component Name="Work" UId="610" />
+                        <Token Text="." UId="611" />
+                        <Component Name="f_PositionTarget" UId="612" />
                       </Symbol>
                     </Access>
-                    <Blank UId="612" />
-                    <Token Text="-" UId="613" />
-                    <Blank UId="614" />
-                    <Access Scope="LocalVariable" UId="615">
-                      <Symbol UId="616">
-                        <Component Name="Work" UId="617" />
-                        <Token Text="." UId="618" />
-                        <Component Name="fVirPos" UId="619" />
-                      </Symbol>
-                    </Access>
-                  </NamelessParameter>
-                  <Token Text=")" UId="621" />
-                </Instruction>
-              </Access>
-              <Token Text=")" UId="622" />
-              <Blank UId="623" />
-              <Token Text="&lt;=" UId="624" />
-              <Blank UId="625" />
-              <Access Scope="LocalVariable" UId="626">
-                <Symbol UId="627">
-                  <Component Name="DataOut" UId="628" />
-                  <Token Text="." UId="629" />
-                  <Component Name="ofSpaceStop" UId="630" />
-                </Symbol>
-              </Access>
-              <Blank UId="631" />
-              <Token Text="THEN" UId="632" />
-              <NewLine UId="633" />
-              <Blank Num="8" UId="634" />
-              <Access Scope="LocalVariable" UId="635">
-                <Symbol UId="636">
-                  <Component Name="Work" UId="637" />
-                  <Token Text="." UId="638" />
-                  <Component Name="xDecStop" UId="639" />
-                </Symbol>
-              </Access>
-              <Blank UId="640" />
-              <Token Text=":=" UId="641" />
-              <Blank UId="642" />
-              <Access Scope="LiteralConstant" UId="643">
-                <Constant UId="644">
-                  <ConstantValue UId="646">1</ConstantValue>
-                </Constant>
-              </Access>
-              <Token Text=";" UId="647" />
-              <NewLine UId="648" />
-              <Blank Num="4" UId="649" />
-              <Token Text="END_IF" UId="650" />
-              <Token Text=";" UId="651" />
-              <NewLine UId="652" />
-              <Token Text="ELSE" UId="653" />
-              <NewLine UId="654" />
-              <Blank Num="4" UId="655" />
-              <Token Text="IF" UId="656" />
-              <Blank UId="657" />
-              <Token Text="(" UId="658" />
-              <Access Scope="Call" UId="659">
-                <Instruction Name="ABS" UId="660">
-                  <Token Text="(" UId="661" />
-                  <NamelessParameter UId="662">
-                    <Access Scope="LocalVariable" UId="663">
-                      <Symbol UId="664">
-                        <Component Name="Work" UId="665" />
-                        <Token Text="." UId="666" />
-                        <Component Name="f_PositionTarget" UId="667" />
-                      </Symbol>
-                    </Access>
-                    <Blank UId="668" />
-                    <Token Text="-" UId="669" />
-                    <Blank UId="670" />
-                    <Access Scope="LocalVariable" UId="671">
-                      <Symbol UId="672">
-                        <Component Name="DataIn" UId="673" />
-                        <Token Text="." UId="674" />
-                        <Component Name="ifEncoder" UId="675" />
+                    <Blank UId="613" />
+                    <Token Text="-" UId="614" />
+                    <Blank UId="615" />
+                    <Access Scope="LocalVariable" UId="616">
+                      <Symbol UId="617">
+                        <Component Name="Work" UId="618" />
+                        <Token Text="." UId="619" />
+                        <Component Name="fVirPos" UId="620" />
                       </Symbol>
                     </Access>
                   </NamelessParameter>
-                  <Token Text=")" UId="677" />
+                  <Token Text=")" UId="622" />
                 </Instruction>
               </Access>
-              <Token Text=")" UId="678" />
-              <Blank UId="679" />
-              <Token Text="&lt;=" UId="680" />
-              <Blank UId="681" />
-              <Access Scope="LocalVariable" UId="682">
-                <Symbol UId="683">
-                  <Component Name="DataOut" UId="684" />
-                  <Token Text="." UId="685" />
-                  <Component Name="ofSpaceStop" UId="686" />
+              <Token Text=")" UId="623" />
+              <Blank UId="624" />
+              <Token Text="&lt;=" UId="625" />
+              <Blank UId="626" />
+              <Access Scope="LocalVariable" UId="627">
+                <Symbol UId="628">
+                  <Component Name="DataOut" UId="629" />
+                  <Token Text="." UId="630" />
+                  <Component Name="ofSpaceStop" UId="631" />
                 </Symbol>
               </Access>
-              <Blank UId="687" />
-              <Token Text="THEN" UId="688" />
-              <NewLine UId="689" />
-              <Blank Num="8" UId="690" />
-              <Access Scope="LocalVariable" UId="691">
-                <Symbol UId="692">
-                  <Component Name="Work" UId="693" />
-                  <Token Text="." UId="694" />
-                  <Component Name="xDecStop" UId="695" />
+              <Blank UId="632" />
+              <Token Text="THEN" UId="633" />
+              <NewLine UId="634" />
+              <Blank Num="8" UId="635" />
+              <Access Scope="LocalVariable" UId="636">
+                <Symbol UId="637">
+                  <Component Name="Work" UId="638" />
+                  <Token Text="." UId="639" />
+                  <Component Name="xDecStop" UId="640" />
                 </Symbol>
               </Access>
-              <Blank UId="696" />
-              <Token Text=":=" UId="697" />
-              <Blank UId="698" />
-              <Access Scope="LiteralConstant" UId="699">
-                <Constant UId="700">
-                  <ConstantValue UId="702">1</ConstantValue>
+              <Blank UId="641" />
+              <Token Text=":=" UId="642" />
+              <Blank UId="643" />
+              <Access Scope="LiteralConstant" UId="644">
+                <Constant UId="645">
+                  <ConstantValue UId="647">1</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=";" UId="703" />
-              <NewLine UId="704" />
-              <Blank Num="4" UId="705" />
-              <Token Text="END_IF" UId="706" />
-              <Token Text=";" UId="707" />
-              <NewLine UId="708" />
-              <Token Text="END_IF" UId="709" />
-              <Token Text=";" UId="710" />
-              <NewLine Num="2" UId="711" />
-              <LineComment UId="712">
-                <Text UId="713"> IF NOT (#Work.xEnablePos) OR (#Work.xStopVirPositioner AND NOT (#Cfg.xDisablePos))</Text>
-              </LineComment>
-              <NewLine UId="714" />
-              <LineComment UId="715">
-                <Text UId="716">     OR (#DataOut.oxEndPos AND #Cfg.xDisablePos)THEN</Text>
-              </LineComment>
-              <NewLine UId="717" />
-              <LineComment UId="718">
-                <Text UId="719">     #Work.xDecStop := 0;</Text>
-              </LineComment>
-              <NewLine UId="720" />
-              <LineComment UId="721">
-                <Text UId="722"> END_IF;</Text>
-              </LineComment>
-              <NewLine UId="723" />
-              <LineComment UId="724">
-                <Text UId="725"> test</Text>
-              </LineComment>
-              <NewLine UId="726" />
-              <Token Text="IF" UId="727" />
-              <Blank UId="728" />
-              <Token Text="NOT" UId="729" />
-              <Blank UId="730" />
-              <Token Text="(" UId="731" />
-              <Access Scope="LocalVariable" UId="732">
-                <Symbol UId="733">
-                  <Component Name="Work" UId="734" />
-                  <Token Text="." UId="735" />
-                  <Component Name="xEnablePos" UId="736" />
+              <Token Text=";" UId="648" />
+              <NewLine UId="649" />
+              <Blank Num="4" UId="650" />
+              <Token Text="END_IF" UId="651" />
+              <Token Text=";" UId="652" />
+              <NewLine UId="653" />
+              <Token Text="ELSE" UId="654" />
+              <NewLine UId="655" />
+              <Blank Num="4" UId="656" />
+              <Token Text="IF" UId="657" />
+              <Blank UId="658" />
+              <Token Text="(" UId="659" />
+              <Access Scope="Call" UId="660">
+                <Instruction Name="ABS" UId="661">
+                  <Token Text="(" UId="662" />
+                  <NamelessParameter UId="663">
+                    <Access Scope="LocalVariable" UId="664">
+                      <Symbol UId="665">
+                        <Component Name="Work" UId="666" />
+                        <Token Text="." UId="667" />
+                        <Component Name="f_PositionTarget" UId="668" />
+                      </Symbol>
+                    </Access>
+                    <Blank UId="669" />
+                    <Token Text="-" UId="670" />
+                    <Blank UId="671" />
+                    <Access Scope="LocalVariable" UId="672">
+                      <Symbol UId="673">
+                        <Component Name="DataIn" UId="674" />
+                        <Token Text="." UId="675" />
+                        <Component Name="ifEncoder" UId="676" />
+                      </Symbol>
+                    </Access>
+                  </NamelessParameter>
+                  <Token Text=")" UId="678" />
+                </Instruction>
+              </Access>
+              <Token Text=")" UId="679" />
+              <Blank UId="680" />
+              <Token Text="&lt;=" UId="681" />
+              <Blank UId="682" />
+              <Access Scope="LocalVariable" UId="683">
+                <Symbol UId="684">
+                  <Component Name="DataOut" UId="685" />
+                  <Token Text="." UId="686" />
+                  <Component Name="ofSpaceStop" UId="687" />
                 </Symbol>
               </Access>
-              <Token Text=")" UId="737" />
-              <Blank UId="738" />
-              <Token Text="THEN" UId="739" />
-              <NewLine UId="740" />
-              <Blank Num="4" UId="741" />
-              <Access Scope="LocalVariable" UId="742">
-                <Symbol UId="743">
-                  <Component Name="Work" UId="744" />
-                  <Token Text="." UId="745" />
-                  <Component Name="xDecStop" UId="746" />
+              <Blank UId="688" />
+              <Token Text="THEN" UId="689" />
+              <NewLine UId="690" />
+              <Blank Num="8" UId="691" />
+              <Access Scope="LocalVariable" UId="692">
+                <Symbol UId="693">
+                  <Component Name="Work" UId="694" />
+                  <Token Text="." UId="695" />
+                  <Component Name="xDecStop" UId="696" />
                 </Symbol>
               </Access>
-              <Blank UId="747" />
-              <Token Text=":=" UId="748" />
-              <Blank UId="749" />
-              <Access Scope="LiteralConstant" UId="750">
-                <Constant UId="751">
-                  <ConstantValue UId="753">0</ConstantValue>
+              <Blank UId="697" />
+              <Token Text=":=" UId="698" />
+              <Blank UId="699" />
+              <Access Scope="LiteralConstant" UId="700">
+                <Constant UId="701">
+                  <ConstantValue UId="703">1</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=";" UId="754" />
-              <NewLine UId="755" />
-              <Token Text="END_IF" UId="756" />
-              <Token Text=";" UId="757" />
-              <NewLine Num="2" UId="758" />
-              <Token Text="IF" UId="759" />
-              <Blank UId="760" />
-              <Access Scope="LocalVariable" UId="761">
-                <Symbol UId="762">
-                  <Component Name="DataIn" UId="763" />
-                  <Token Text="." UId="764" />
-                  <Component Name="ixEnableLevRes" UId="765" />
+              <Token Text=";" UId="704" />
+              <NewLine UId="705" />
+              <Blank Num="4" UId="706" />
+              <Token Text="END_IF" UId="707" />
+              <Token Text=";" UId="708" />
+              <NewLine UId="709" />
+              <Token Text="END_IF" UId="710" />
+              <Token Text=";" UId="711" />
+              <NewLine Num="2" UId="712" />
+              <LineComment UId="713">
+                <Text UId="714"> IF NOT (#Work.xEnablePos) OR (#Work.xStopVirPositioner AND NOT (#Cfg.xDisablePos))</Text>
+              </LineComment>
+              <NewLine UId="715" />
+              <LineComment UId="716">
+                <Text UId="717">     OR (#DataOut.oxEndPos AND #Cfg.xDisablePos)THEN</Text>
+              </LineComment>
+              <NewLine UId="718" />
+              <LineComment UId="719">
+                <Text UId="720">     #Work.xDecStop := 0;</Text>
+              </LineComment>
+              <NewLine UId="721" />
+              <LineComment UId="722">
+                <Text UId="723"> END_IF;</Text>
+              </LineComment>
+              <NewLine UId="724" />
+              <LineComment UId="725">
+                <Text UId="726"> test</Text>
+              </LineComment>
+              <NewLine UId="727" />
+              <Token Text="IF" UId="728" />
+              <Blank UId="729" />
+              <Token Text="NOT" UId="730" />
+              <Blank UId="731" />
+              <Token Text="(" UId="732" />
+              <Access Scope="LocalVariable" UId="733">
+                <Symbol UId="734">
+                  <Component Name="Work" UId="735" />
+                  <Token Text="." UId="736" />
+                  <Component Name="xEnablePos" UId="737" />
                 </Symbol>
               </Access>
-              <Blank UId="766" />
-              <Token Text="AND" UId="767" />
-              <Blank UId="768" />
-              <Access Scope="LocalVariable" UId="769">
-                <Symbol UId="770">
-                  <Component Name="Work" UId="771" />
-                  <Token Text="." UId="772" />
-                  <Component Name="xINEnable" UId="773" />
+              <Token Text=")" UId="738" />
+              <Blank UId="739" />
+              <Token Text="THEN" UId="740" />
+              <NewLine UId="741" />
+              <Blank Num="4" UId="742" />
+              <Access Scope="LocalVariable" UId="743">
+                <Symbol UId="744">
+                  <Component Name="Work" UId="745" />
+                  <Token Text="." UId="746" />
+                  <Component Name="xDecStop" UId="747" />
                 </Symbol>
               </Access>
-              <Blank UId="774" />
-              <Token Text="AND" UId="775" />
-              <Blank UId="776" />
-              <Token Text="NOT" UId="777" />
-              <Blank UId="778" />
-              <Access Scope="LocalVariable" UId="779">
-                <Symbol UId="780">
-                  <Component Name="DataOut" UId="781" />
-                  <Token Text="." UId="782" />
-                  <Component Name="oxEndPos" UId="783" />
-                </Symbol>
-              </Access>
-              <Blank UId="784" />
-              <Token Text="AND" UId="785" />
-              <Blank UId="786" />
-              <Access Scope="LocalVariable" UId="787">
-                <Symbol UId="788">
-                  <Component Name="DataOut" UId="789" />
-                  <Token Text="." UId="790" />
-                  <Component Name="ofSpeedRequest" UId="791" />
-                </Symbol>
-              </Access>
-              <Blank UId="792" />
-              <Token Text="&gt;" UId="793" />
-              <Blank UId="794" />
-              <Access Scope="LiteralConstant" UId="795">
-                <Constant UId="796">
-                  <ConstantValue UId="798">0</ConstantValue>
+              <Blank UId="748" />
+              <Token Text=":=" UId="749" />
+              <Blank UId="750" />
+              <Access Scope="LiteralConstant" UId="751">
+                <Constant UId="752">
+                  <ConstantValue UId="754">0</ConstantValue>
                 </Constant>
               </Access>
-              <Blank UId="799" />
-              <Token Text="THEN" UId="800" />
-              <NewLine UId="801" />
-              <Blank Num="4" UId="802" />
-              <Token Text="IF" UId="803" />
-              <Blank UId="804" />
-              <Access Scope="LocalVariable" UId="805">
-                <Symbol UId="806">
-                  <Component Name="DataOut" UId="807" />
-                  <Token Text="." UId="808" />
-                  <Component Name="oxCmdMotorBack" UId="809" />
+              <Token Text=";" UId="755" />
+              <NewLine UId="756" />
+              <Token Text="END_IF" UId="757" />
+              <Token Text=";" UId="758" />
+              <NewLine Num="2" UId="759" />
+              <Token Text="IF" UId="760" />
+              <Blank UId="761" />
+              <Access Scope="LocalVariable" UId="762">
+                <Symbol UId="763">
+                  <Component Name="DataIn" UId="764" />
+                  <Token Text="." UId="765" />
+                  <Component Name="ixEnableLevRes" UId="766" />
                 </Symbol>
               </Access>
-              <Blank UId="810" />
-              <Token Text="AND" UId="811" />
-              <Blank UId="812" />
-              <Token Text="(" UId="813" />
-              <Access Scope="LocalVariable" UId="814">
-                <Symbol UId="815">
-                  <Component Name="DataIn" UId="816" />
-                  <Token Text="." UId="817" />
-                  <Component Name="ifEncoder" UId="818" />
+              <Blank UId="767" />
+              <Token Text="AND" UId="768" />
+              <Blank UId="769" />
+              <Access Scope="LocalVariable" UId="770">
+                <Symbol UId="771">
+                  <Component Name="Work" UId="772" />
+                  <Token Text="." UId="773" />
+                  <Component Name="xINEnable" UId="774" />
                 </Symbol>
               </Access>
-              <Blank UId="819" />
-              <Token Text="&lt;" UId="820" />
-              <Blank UId="821" />
-              <Token Text="(" UId="822" />
-              <Access Scope="LocalVariable" UId="823">
-                <Symbol UId="824">
-                  <Component Name="DataIn" UId="825" />
-                  <Token Text="." UId="826" />
-                  <Component Name="ifPositionStartLev" UId="827" />
+              <Blank UId="775" />
+              <Token Text="AND" UId="776" />
+              <Blank UId="777" />
+              <Token Text="NOT" UId="778" />
+              <Blank UId="779" />
+              <Access Scope="LocalVariable" UId="780">
+                <Symbol UId="781">
+                  <Component Name="DataOut" UId="782" />
+                  <Token Text="." UId="783" />
+                  <Component Name="oxEndPos" UId="784" />
                 </Symbol>
               </Access>
-              <Blank UId="828" />
-              <Token Text="+" UId="829" />
-              <Blank UId="830" />
-              <Access Scope="LocalVariable" UId="831">
-                <Symbol UId="832">
-                  <Component Name="DataOut" UId="833" />
-                  <Token Text="." UId="834" />
-                  <Component Name="ofSpaceLevRes" UId="835" />
+              <Blank UId="785" />
+              <Token Text="AND" UId="786" />
+              <Blank UId="787" />
+              <Access Scope="LocalVariable" UId="788">
+                <Symbol UId="789">
+                  <Component Name="DataOut" UId="790" />
+                  <Token Text="." UId="791" />
+                  <Component Name="ofSpeedRequest" UId="792" />
                 </Symbol>
               </Access>
-              <Blank UId="836" />
-              <Token Text="+" UId="837" />
-              <Blank UId="838" />
-              <Access Scope="LiteralConstant" UId="839">
-                <Constant UId="840">
-                  <ConstantValue UId="842">1</ConstantValue>
+              <Blank UId="793" />
+              <Token Text="&gt;" UId="794" />
+              <Blank UId="795" />
+              <Access Scope="LiteralConstant" UId="796">
+                <Constant UId="797">
+                  <ConstantValue UId="799">0</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=")" UId="843" />
+              <Blank UId="800" />
+              <Token Text="THEN" UId="801" />
+              <NewLine UId="802" />
+              <Blank Num="4" UId="803" />
+              <Token Text="IF" UId="804" />
+              <Blank UId="805" />
+              <Access Scope="LocalVariable" UId="806">
+                <Symbol UId="807">
+                  <Component Name="DataOut" UId="808" />
+                  <Token Text="." UId="809" />
+                  <Component Name="oxCmdMotorBack" UId="810" />
+                </Symbol>
+              </Access>
+              <Blank UId="811" />
+              <Token Text="AND" UId="812" />
+              <Blank UId="813" />
+              <Token Text="(" UId="814" />
+              <Access Scope="LocalVariable" UId="815">
+                <Symbol UId="816">
+                  <Component Name="DataIn" UId="817" />
+                  <Token Text="." UId="818" />
+                  <Component Name="ifEncoder" UId="819" />
+                </Symbol>
+              </Access>
+              <Blank UId="820" />
+              <Token Text="&lt;" UId="821" />
+              <Blank UId="822" />
+              <Token Text="(" UId="823" />
+              <Access Scope="LocalVariable" UId="824">
+                <Symbol UId="825">
+                  <Component Name="DataIn" UId="826" />
+                  <Token Text="." UId="827" />
+                  <Component Name="ifPositionStartLev" UId="828" />
+                </Symbol>
+              </Access>
+              <Blank UId="829" />
+              <Token Text="+" UId="830" />
+              <Blank UId="831" />
+              <Access Scope="LocalVariable" UId="832">
+                <Symbol UId="833">
+                  <Component Name="DataOut" UId="834" />
+                  <Token Text="." UId="835" />
+                  <Component Name="ofSpaceLevRes" UId="836" />
+                </Symbol>
+              </Access>
+              <Blank UId="837" />
+              <Token Text="+" UId="838" />
+              <Blank UId="839" />
+              <Access Scope="LiteralConstant" UId="840">
+                <Constant UId="841">
+                  <ConstantValue UId="843">1</ConstantValue>
+                </Constant>
+              </Access>
               <Token Text=")" UId="844" />
-              <Blank UId="845" />
-              <Token Text="OR" UId="846" />
-              <NewLine UId="847" />
-              <Blank Num="8" UId="848" />
-              <Access Scope="LocalVariable" UId="849">
-                <Symbol UId="850">
-                  <Component Name="DataOut" UId="851" />
-                  <Token Text="." UId="852" />
-                  <Component Name="oxCmdMotorForw" UId="853" />
+              <Token Text=")" UId="845" />
+              <Blank UId="846" />
+              <Token Text="OR" UId="847" />
+              <NewLine UId="848" />
+              <Blank Num="8" UId="849" />
+              <Access Scope="LocalVariable" UId="850">
+                <Symbol UId="851">
+                  <Component Name="DataOut" UId="852" />
+                  <Token Text="." UId="853" />
+                  <Component Name="oxCmdMotorForw" UId="854" />
                 </Symbol>
               </Access>
-              <Blank UId="854" />
-              <Token Text="AND" UId="855" />
-              <Blank UId="856" />
-              <Token Text="(" UId="857" />
-              <Access Scope="LocalVariable" UId="858">
-                <Symbol UId="859">
-                  <Component Name="DataIn" UId="860" />
-                  <Token Text="." UId="861" />
-                  <Component Name="ifEncoder" UId="862" />
+              <Blank UId="855" />
+              <Token Text="AND" UId="856" />
+              <Blank UId="857" />
+              <Token Text="(" UId="858" />
+              <Access Scope="LocalVariable" UId="859">
+                <Symbol UId="860">
+                  <Component Name="DataIn" UId="861" />
+                  <Token Text="." UId="862" />
+                  <Component Name="ifEncoder" UId="863" />
                 </Symbol>
               </Access>
-              <Blank UId="863" />
-              <Token Text="&gt;" UId="864" />
-              <Blank UId="865" />
-              <Token Text="(" UId="866" />
-              <Access Scope="LocalVariable" UId="867">
-                <Symbol UId="868">
-                  <Component Name="DataIn" UId="869" />
-                  <Token Text="." UId="870" />
-                  <Component Name="ifPositionStartLev" UId="871" />
+              <Blank UId="864" />
+              <Token Text="&gt;" UId="865" />
+              <Blank UId="866" />
+              <Token Text="(" UId="867" />
+              <Access Scope="LocalVariable" UId="868">
+                <Symbol UId="869">
+                  <Component Name="DataIn" UId="870" />
+                  <Token Text="." UId="871" />
+                  <Component Name="ifPositionStartLev" UId="872" />
                 </Symbol>
               </Access>
-              <Blank UId="872" />
-              <Token Text="-" UId="873" />
-              <Blank UId="874" />
-              <Access Scope="LocalVariable" UId="875">
-                <Symbol UId="876">
-                  <Component Name="DataOut" UId="877" />
-                  <Token Text="." UId="878" />
-                  <Component Name="ofSpaceLevRes" UId="879" />
+              <Blank UId="873" />
+              <Token Text="-" UId="874" />
+              <Blank UId="875" />
+              <Access Scope="LocalVariable" UId="876">
+                <Symbol UId="877">
+                  <Component Name="DataOut" UId="878" />
+                  <Token Text="." UId="879" />
+                  <Component Name="ofSpaceLevRes" UId="880" />
                 </Symbol>
               </Access>
-              <Blank UId="880" />
-              <Token Text="-" UId="881" />
-              <Blank UId="882" />
-              <Access Scope="LiteralConstant" UId="883">
-                <Constant UId="884">
-                  <ConstantValue UId="886">1</ConstantValue>
+              <Blank UId="881" />
+              <Token Text="-" UId="882" />
+              <Blank UId="883" />
+              <Access Scope="LiteralConstant" UId="884">
+                <Constant UId="885">
+                  <ConstantValue UId="887">1</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=")" UId="887" />
               <Token Text=")" UId="888" />
-              <Blank Num="2" UId="889" />
-              <Token Text="THEN" UId="890" />
-              <NewLine UId="891" />
-              <Blank Num="8" UId="892" />
-              <Access Scope="LocalVariable" UId="893">
-                <Symbol UId="894">
-                  <Component Name="Work" UId="895" />
-                  <Token Text="." UId="896" />
-                  <Component Name="xDecResearch" UId="897" />
+              <Token Text=")" UId="889" />
+              <Blank Num="2" UId="890" />
+              <Token Text="THEN" UId="891" />
+              <NewLine UId="892" />
+              <Blank Num="8" UId="893" />
+              <Access Scope="LocalVariable" UId="894">
+                <Symbol UId="895">
+                  <Component Name="Work" UId="896" />
+                  <Token Text="." UId="897" />
+                  <Component Name="xDecResearch" UId="898" />
                 </Symbol>
               </Access>
-              <Blank UId="898" />
-              <Token Text=":=" UId="899" />
-              <Blank UId="900" />
-              <Access Scope="LiteralConstant" UId="901">
-                <Constant UId="902">
-                  <ConstantValue UId="904">1</ConstantValue>
+              <Blank UId="899" />
+              <Token Text=":=" UId="900" />
+              <Blank UId="901" />
+              <Access Scope="LiteralConstant" UId="902">
+                <Constant UId="903">
+                  <ConstantValue UId="905">1</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=";" UId="905" />
-              <NewLine UId="906" />
-              <Blank Num="4" UId="907" />
-              <Token Text="END_IF" UId="908" />
-              <Token Text=";" UId="909" />
-              <NewLine UId="910" />
-              <Token Text="END_IF" UId="911" />
-              <Token Text=";" UId="912" />
-              <NewLine Num="2" UId="913" />
-              <Token Text="IF" UId="914" />
-              <Blank UId="915" />
-              <Token Text="NOT" UId="916" />
-              <Blank UId="917" />
-              <Access Scope="LocalVariable" UId="918">
-                <Symbol UId="919">
-                  <Component Name="DataIn" UId="920" />
-                  <Token Text="." UId="921" />
-                  <Component Name="ixEnableLevRes" UId="922" />
+              <Token Text=";" UId="906" />
+              <NewLine UId="907" />
+              <Blank Num="4" UId="908" />
+              <Token Text="END_IF" UId="909" />
+              <Token Text=";" UId="910" />
+              <NewLine UId="911" />
+              <Token Text="END_IF" UId="912" />
+              <Token Text=";" UId="913" />
+              <NewLine Num="2" UId="914" />
+              <Token Text="IF" UId="915" />
+              <Blank UId="916" />
+              <Token Text="NOT" UId="917" />
+              <Blank UId="918" />
+              <Access Scope="LocalVariable" UId="919">
+                <Symbol UId="920">
+                  <Component Name="DataIn" UId="921" />
+                  <Token Text="." UId="922" />
+                  <Component Name="ixEnableLevRes" UId="923" />
                 </Symbol>
               </Access>
-              <Blank UId="923" />
-              <Token Text="THEN" UId="924" />
-              <NewLine UId="925" />
-              <Blank Num="4" UId="926" />
-              <Access Scope="LocalVariable" UId="927">
-                <Symbol UId="928">
-                  <Component Name="Work" UId="929" />
-                  <Token Text="." UId="930" />
-                  <Component Name="xDecResearch" UId="931" />
+              <Blank UId="924" />
+              <Token Text="THEN" UId="925" />
+              <NewLine UId="926" />
+              <Blank Num="4" UId="927" />
+              <Access Scope="LocalVariable" UId="928">
+                <Symbol UId="929">
+                  <Component Name="Work" UId="930" />
+                  <Token Text="." UId="931" />
+                  <Component Name="xDecResearch" UId="932" />
                 </Symbol>
               </Access>
-              <Blank UId="932" />
-              <Token Text=":=" UId="933" />
-              <Blank UId="934" />
-              <Access Scope="LiteralConstant" UId="935">
-                <Constant UId="936">
-                  <ConstantValue UId="938">0</ConstantValue>
+              <Blank UId="933" />
+              <Token Text=":=" UId="934" />
+              <Blank UId="935" />
+              <Access Scope="LiteralConstant" UId="936">
+                <Constant UId="937">
+                  <ConstantValue UId="939">0</ConstantValue>
                 </Constant>
               </Access>
-              <Token Text=";" UId="939" />
-              <NewLine UId="940" />
-              <Token Text="END_IF" UId="941" />
-              <Token Text=";" UId="942" />
+              <Token Text=";" UId="940" />
+              <NewLine UId="941" />
+              <Token Text="END_IF" UId="942" />
+              <Token Text=";" UId="943" />
             </StructuredText>
           </NetworkSource>
           <ProgrammingLanguage>SCL</ProgrammingLanguage>
