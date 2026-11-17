@@ -2,141 +2,121 @@
 { S7_Optimized_Access := 'TRUE' }
 AUTHOR : FMT
 FAMILY : AxisAS
-VERSION : 0.1
-//Generatore di profilo di velocità (modulo, >= 0) per AxisAS_Mng_v4.
-//Ogni variazione della velocità obiettivo avvia un nuovo segmento di rampa dalla velocità attuale.
-//Forma del segmento: 0 = TRAPEZIO (lineare), 1 = LOGARITMICA (sigmoide normalizzata), 2 = COSENO.
-//La durata del segmento è calcolata in modo che il PICCO di accelerazione sia esattamente ifAcc / ifDec:
-//   T = fattore * |dV| / a     con fattore: TRA = 1   COS = PI/2   LOG = c / (2*N)
-//Spazio percorso in un segmento (curve simmetriche): (V0 + V1) / 2 * T
+VERSION : 0.2
+//Generatore di velocità TRAPEZIO con jerk limitato (profilo a S) per AxisAS_Mng_v4.
+//Lavora ciclo per ciclo: segue la velocità obiettivo ifCmdSpeed con accelerazione massima ifAcc,
+//decelerazione massima ifDec e variazione massima dell'accelerazione ifJerk.
+//ifJerk = 0 -> trapezio puro (accelerazione a gradino).
+//Se la velocità obiettivo cambia a metà rampa, l'accelerazione si adegua senza salti.
    VAR_INPUT
       ifCmdSpeed : Real;   // Velocità obiettivo (>= 0)
-      ifAcc : Real;   // Accelerazione di picco (unità/s^2)
-      ifDec : Real;   // Decelerazione di picco (unità/s^2)
-      iiCurve : Int;   // 0 = TRAPEZIO  1 = LOGARITMICA  2 = COSENO
-      ifNepero : Real;   // Pendenza sigmoide (curva 1), tipico 6
+      ifAcc : Real;   // Accelerazione massima (unità/s^2)
+      ifDec : Real;   // Decelerazione massima (unità/s^2)
+      ifJerk : Real;   // Jerk (unità/s^3). 0 = trapezio puro
       ifDt : Real;   // Tempo ciclo (s)
-      ixReset : Bool;   // Azzera profilo (velocità = 0)
+      ixReset : Bool;   // Azzera profilo (velocità e accelerazione = 0)
    END_VAR
 
    VAR_OUTPUT
       ofSpeed : Real;   // Velocità generata (>= 0)
-      oxAcc : Bool;   // Rampa di accelerazione in corso
-      oxDec : Bool;   // Rampa di decelerazione in corso
+      ofAcc : Real;   // Accelerazione attuale (+ accelera, - decelera)
+      oxAcc : Bool;   // Accelerazione in corso
+      oxDec : Bool;   // Decelerazione in corso
       oxDone : Bool;   // Velocità = obiettivo
    END_VAR
 
    VAR
       fV : Real;   // Velocità attuale
-      fV0 : Real;   // Velocità inizio segmento
-      fV1 : Real;   // Velocità fine segmento
-      fT : Real;   // Tempo trascorso nel segmento (s)
-      fTseg : Real;   // Durata segmento (s)
-      iCurveSeg : Int;   // Curva del segmento in corso
-      fC : Real;   // Pendenza sigmoide del segmento
-      fN : Real;   // Normalizzazione sigmoide: sig(c) - sig(-c)
-      fSigM : Real;   // sig(-c)
+      fA : Real;   // Accelerazione attuale
    END_VAR
 
    VAR_TEMP
-      tfU : Real;
-      tfG : Real;
-      tfA : Real;
-      tfDv : Real;
-      tfFactor : Real;
       tfCmd : Real;
-   END_VAR
-
-   VAR CONSTANT
-      PI_R : Real := 3.1415927;
+      tfDv : Real;
+      tfJ : Real;
+      tfVNew : Real;
    END_VAR
 
 
 BEGIN
 	REGION Reset
+	    #tfCmd := #ifCmdSpeed;
 	    IF #ixReset THEN
 	        #fV := 0.0;
-	        #fV0 := 0.0;
-	        #fV1 := 0.0;
-	        #fT := 0.0;
-	        #fTseg := 0.0;
-	    END_IF;
-	END_REGION
-
-	REGION Nuovo segmento
-	    #tfCmd := #ifCmdSpeed;
-	    IF #tfCmd < 0.0 OR #ixReset THEN
+	        #fA := 0.0;
 	        #tfCmd := 0.0;
 	    END_IF;
+	    IF #tfCmd < 0.0 THEN
+	        #tfCmd := 0.0;
+	    END_IF;
+	END_REGION
 
-	    IF (#tfCmd <> #fV1) OR (#iiCurve <> #iCurveSeg) THEN
-	        #fV0 := #fV;
-	        #fV1 := #tfCmd;
-	        #iCurveSeg := #iiCurve;
-	        #fT := 0.0;
-
-	        // parametri sigmoide
-	        #fC := #ifNepero;
-	        IF #fC < 1.0 THEN
-	            #fC := 6.0;
+	REGION Accelerazione
+	    #tfDv := #tfCmd - #fV;
+	    IF #ifJerk <= 0.0 THEN
+	        // trapezio puro
+	        IF #tfDv > 0.0 THEN
+	            #fA := #ifAcc;
+	        ELSIF #tfDv < 0.0 THEN
+	            #fA := -#ifDec;
+	        ELSE
+	            #fA := 0.0;
 	        END_IF;
-	        #fSigM := 1.0 / (1.0 + EXP(#fC));
-	        #fN := 1.0 / (1.0 + EXP(-#fC)) - #fSigM;
-
-	        CASE #iCurveSeg OF
-	            1:
-	                #tfFactor := #fC / (2.0 * #fN);
-	            2:
-	                #tfFactor := #PI_R / 2.0;
+	    ELSE
+	        #tfJ := #ifJerk * #ifDt;
+	        IF #tfDv > 0.0 THEN
+	            // devo accelerare: se riportando a zero l'accelerazione arrivo già all'obiettivo, inizio a ridurla
+	            IF #fA > 0.0 AND #tfDv <= #fA * #fA / (2.0 * #ifJerk) THEN
+	                #fA := #fA - #tfJ;
+	                IF #fA < 0.0 THEN
+	                    #fA := 0.0;
+	                END_IF;
 	            ELSE
-	                #tfFactor := 1.0;
-	        END_CASE;
-
-	        #tfDv := ABS(#fV1 - #fV0);
-	        IF #fV1 > #fV0 THEN
-	            #tfA := #ifAcc;
+	                #fA := #fA + #tfJ;
+	                IF #fA > #ifAcc THEN
+	                    #fA := #ifAcc;
+	                END_IF;
+	            END_IF;
+	        ELSIF #tfDv < 0.0 THEN
+	            // devo decelerare
+	            IF #fA < 0.0 AND -#tfDv <= #fA * #fA / (2.0 * #ifJerk) THEN
+	                #fA := #fA + #tfJ;
+	                IF #fA > 0.0 THEN
+	                    #fA := 0.0;
+	                END_IF;
+	            ELSE
+	                #fA := #fA - #tfJ;
+	                IF #fA < -#ifDec THEN
+	                    #fA := -#ifDec;
+	                END_IF;
+	            END_IF;
 	        ELSE
-	            #tfA := #ifDec;
-	        END_IF;
-
-	        IF #tfA > 0.0 AND #tfDv > 0.0 THEN
-	            #fTseg := #tfFactor * #tfDv / #tfA;
-	        ELSE
-	            #fTseg := 0.0;
+	            #fA := 0.0;
 	        END_IF;
 	    END_IF;
 	END_REGION
 
-	REGION Calcolo velocità
-	    IF #fT < #fTseg THEN
-	        #fT := #fT + #ifDt;
-	    END_IF;
-
-	    IF #fT >= #fTseg THEN
-	        #fV := #fV1;
+	REGION Velocità
+	    #tfVNew := #fV + #fA * #ifDt;
+	    // obiettivo raggiunto o superato: aggancio
+	    IF (#tfDv > 0.0 AND #tfVNew >= #tfCmd) OR (#tfDv < 0.0 AND #tfVNew <= #tfCmd) OR (#tfDv = 0.0) THEN
+	        #fV := #tfCmd;
+	        #fA := 0.0;
 	    ELSE
-	        #tfU := #fT / #fTseg;
-	        CASE #iCurveSeg OF
-	            1:  // sigmoide normalizzata: parte da 0 e arriva esattamente a 1
-	                #tfG := (1.0 / (1.0 + EXP(-#fC * (2.0 * #tfU - 1.0))) - #fSigM) / #fN;
-	            2:  // coseno
-	                #tfG := 0.5 * (1.0 - COS(#PI_R * #tfU));
-	            ELSE  // trapezio
-	                #tfG := #tfU;
-	        END_CASE;
-	        #fV := #fV0 + (#fV1 - #fV0) * #tfG;
+	        #fV := #tfVNew;
 	    END_IF;
-
 	    IF #fV < 0.0 THEN
 	        #fV := 0.0;
+	        #fA := 0.0;
 	    END_IF;
 	END_REGION
 
 	REGION Uscite
 	    #ofSpeed := #fV;
-	    #oxDone := (#fV = #fV1);
-	    #oxAcc := NOT #oxDone AND (#fV1 > #fV0);
-	    #oxDec := NOT #oxDone AND (#fV1 < #fV0);
+	    #ofAcc := #fA;
+	    #oxDone := (#fV = #tfCmd) AND (#fA = 0.0);
+	    #oxAcc := #fA > 0.0;
+	    #oxDec := #fA < 0.0;
 	END_REGION
 END_FUNCTION_BLOCK
 

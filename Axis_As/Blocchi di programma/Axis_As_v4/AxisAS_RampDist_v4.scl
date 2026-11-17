@@ -2,47 +2,52 @@
 { S7_Optimized_Access := 'TRUE' }
 AUTHOR : FMT
 FAMILY : AxisAS
-VERSION : 0.1
-//Spazio necessario per passare dalla velocità ifV0 alla velocità ifV1 con accelerazione/decelerazione di picco ifA,
-//per la curva iiCurve (0 = TRAPEZIO, 1 = LOGARITMICA, 2 = COSENO). Stesse formule di AxisAS_Profile_v4.
+VERSION : 0.2
+//Spazio necessario per passare dalla velocità ifV0 (con accelerazione attuale ifA0) alla velocità ifV1 < ifV0,
+//con decelerazione massima ifDec e jerk ifJerk (0 = trapezio puro). Stesso profilo di AxisAS_Profile_v4.
+//Se ifA0 > 0 (sto ancora accelerando) prima l'accelerazione va riportata a zero: la velocità sale ancora un po'.
+//Usata anche per lo spazio di accelerazione (stesso calcolo, profilo simmetrico).
    VAR_INPUT
-      ifV0 : Real;   // Velocità iniziale (>= 0)
+      ifV0 : Real;   // Velocità attuale (>= 0)
+      ifA0 : Real;   // Accelerazione attuale (> 0 se sta accelerando)
       ifV1 : Real;   // Velocità finale (>= 0)
-      ifA : Real;   // Acc./dec. di picco
-      iiCurve : Int;   // Curva
-      ifNepero : Real;   // Pendenza sigmoide (curva 1)
+      ifDec : Real;   // Decelerazione massima
+      ifJerk : Real;   // Jerk (0 = trapezio puro)
    END_VAR
 
    VAR_TEMP
-      tfC : Real;
-      tfN : Real;
-      tfFactor : Real;
-   END_VAR
-
-   VAR CONSTANT
-      PI_R : Real := 3.1415927;
+      tfV : Real;
+      tfD : Real;
+      tfT1 : Real;
+      tfDv : Real;
+      tfT : Real;
    END_VAR
 
 
 BEGIN
-	CASE #iiCurve OF
-	    1:
-	        #tfC := #ifNepero;
-	        IF #tfC < 1.0 THEN
-	            #tfC := 6.0;
-	        END_IF;
-	        #tfN := 1.0 / (1.0 + EXP(-#tfC)) - 1.0 / (1.0 + EXP(#tfC));
-	        #tfFactor := #tfC / (2.0 * #tfN);
-	    2:
-	        #tfFactor := #PI_R / 2.0;
-	    ELSE
-	        #tfFactor := 1.0;
-	END_CASE;
+	#tfV := #ifV0;
+	#tfD := 0.0;
 
-	IF #ifA > 0.0 THEN
-	    #AxisAS_RampDist_v4 := (#ifV0 + #ifV1) * 0.5 * #tfFactor * ABS(#ifV1 - #ifV0) / #ifA;
-	ELSE
-	    #AxisAS_RampDist_v4 := 0.0;
+	// fase 1: accelerazione residua riportata a zero
+	IF #ifJerk > 0.0 AND #ifA0 > 0.0 THEN
+	    #tfT1 := #ifA0 / #ifJerk;
+	    #tfD := #ifV0 * #tfT1 + #ifA0 * #tfT1 * #tfT1 / 2.0 - #ifJerk * #tfT1 * #tfT1 * #tfT1 / 6.0;
+	    #tfV := #ifV0 + #ifA0 * #tfT1 / 2.0;
 	END_IF;
+
+	// fase 2: rampa a S simmetrica da tfV a ifV1
+	#tfDv := #tfV - #ifV1;
+	IF #tfDv > 0.0 AND #ifDec > 0.0 THEN
+	    IF #ifJerk <= 0.0 THEN
+	        #tfT := #tfDv / #ifDec;
+	    ELSIF #tfDv >= #ifDec * #ifDec / #ifJerk THEN
+	        #tfT := #tfDv / #ifDec + #ifDec / #ifJerk;
+	    ELSE
+	        #tfT := 2.0 * SQRT(#tfDv / #ifJerk);
+	    END_IF;
+	    #tfD := #tfD + (#tfV + #ifV1) * 0.5 * #tfT;
+	END_IF;
+
+	#AxisAS_RampDist_v4 := #tfD;
 END_FUNCTION
 

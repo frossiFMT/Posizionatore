@@ -1,0 +1,128 @@
+﻿FUNCTION_BLOCK "AxisAS_Test_v4"
+{ S7_Optimized_Access := 'TRUE' }
+AUTHOR : FMT
+FAMILY : AxisAS
+VERSION : 0.1
+//Banco di prova per AxisAS_Mng_v4: contiene l'asse (multi-istanza), i comandi e la configurazione.
+//Con ixUseSim = TRUE l'encoder e l'inverter pronto arrivano dal simulatore PC (DB "AxisAS_SimIO",
+//app AxisAS_Sim_v4.py via snap7) e i comandi motore vanno al simulatore; le uscite reali restano a 0.
+//Comandi (Cmd) e configurazione (Cfg) si scrivono da HMI o da tabella di controllo;
+//lo stato si legge in Axis.oxxx / Axis.ofxxx dell'istanza; il grafico in Trace.aPlanPos/aActPos/aPlanSpd/aActSpd.
+//Chiamare in un OB ciclico (es. OB30, 10 ms).
+   VAR_INPUT
+      ixUseSim : Bool;   // TRUE = encoder e comandi verso il simulatore PC (AxisAS_SimIO)
+      ifEncoderReal : Real;   // Encoder reale (mm), usato con ixUseSim = FALSE
+      ixDriveReadyReal : Bool;   // Inverter pronto reale, usato con ixUseSim = FALSE
+      ixLevelSensor : Bool;   // Sensore livello
+   END_VAR
+
+   VAR_OUTPUT
+      oxCmdMotorForw : Bool;   // Marcia avanti reale
+      oxCmdMotorBack : Bool;   // Marcia indietro reale
+      oxCmdBrake : Bool;   // Sblocco freno reale
+      ofSpeedRequest : Real;   // Riferimento velocità reale (mm/s)
+   END_VAR
+
+   VAR
+      Cmd : Struct   // Comandi (da HMI)
+         xEnable : Bool;   // Abilita posizionatore
+         fPositionRequest : Real;   // Quota richiesta (mm)
+         fSpeedRequest : Real := 100.0;   // Velocità (mm/s)
+         fAccRamp : Real := 500.0;   // Accelerazione (mm/s^2)
+         fDecRamp : Real := 500.0;   // Decelerazione (mm/s^2)
+         xAutoSpeed : Bool;   // Autocalcolo velocità
+         xAutoAccDec : Bool;   // Autocalcolo acc/dec
+         xJogPos : Bool;   // JOG +
+         xJogNeg : Bool;   // JOG -
+         xLevelSearch : Bool;   // Ricerca livello
+         fPositionStartLev : Real;   // Quota inizio ricerca livello (mm)
+         fSpeedLev : Real := 10.0;   // Velocità ricerca livello (mm/s)
+         xMotorReadyReq : Bool;   // Richiesta magnetizzazione
+         xAbort : Bool;   // Abort
+         xReset : Bool;   // Reset allarmi
+         xPreview : Bool;   // Calcola traiettoria prevista (anteprima) senza muovere
+      END_STRUCT;
+      Cfg : "AxisAS_CFG_Type_v4";   // Configurazione asse
+      Axis : "AxisAS_Mng_v4";   // Asse
+      Trace : "AxisAS_Trace_v4";   // Traiettoria prevista e registrazione per il grafico HMI
+   END_VAR
+
+   VAR_TEMP
+      tfEncoder : Real;
+      txDriveReady : Bool;
+   END_VAR
+
+
+BEGIN
+	REGION Sorgente encoder
+	    IF #ixUseSim THEN
+	        #tfEncoder := "AxisAS_SimIO".fEncoder;
+	        #txDriveReady := "AxisAS_SimIO".xDriveReady;
+	    ELSE
+	        #tfEncoder := #ifEncoderReal;
+	        #txDriveReady := #ixDriveReadyReal;
+	    END_IF;
+	END_REGION
+
+	REGION Asse
+	    #Axis(ixEnable := #Cmd.xEnable,
+	          ifPositionRequest := #Cmd.fPositionRequest,
+	          ifSpeedRequest := #Cmd.fSpeedRequest,
+	          ifAccRamp := #Cmd.fAccRamp,
+	          ifDecRamp := #Cmd.fDecRamp,
+	          ixAutoSpeed := #Cmd.xAutoSpeed,
+	          ixAutoAccDec := #Cmd.xAutoAccDec,
+	          ixJogPos := #Cmd.xJogPos,
+	          ixJogNeg := #Cmd.xJogNeg,
+	          ixLevelSearch := #Cmd.xLevelSearch,
+	          ixLevelSensor := #ixLevelSensor,
+	          ifPositionStartLev := #Cmd.fPositionStartLev,
+	          ifSpeedLev := #Cmd.fSpeedLev,
+	          ixDriveReady := #txDriveReady,
+	          ixMotorReadyReq := #Cmd.xMotorReadyReq,
+	          ixAbort := #Cmd.xAbort,
+	          ixReset := #Cmd.xReset,
+	          ifEncoder := #tfEncoder,
+	          Cfg := #Cfg);
+	END_REGION
+
+	REGION Grafico
+	    #Trace(ixPreview := #Cmd.xPreview,
+	           ifPreviewTarget := #Cmd.fPositionRequest,
+	           ifPreviewSpeed := #Cmd.fSpeedRequest,
+	           ifPreviewAcc := #Cmd.fAccRamp,
+	           ifPreviewDec := #Cmd.fDecRamp,
+	           ixBusy := #Axis.oxBusy,
+	           iiAxisState := #Axis.oiState,
+	           ifEncoder := #tfEncoder,
+	           ifActualSpeed := #Axis.ofActualSpeed,
+	           ifTarget := #Axis.ofTarget,
+	           ifSpeedMove := #Axis.ofSpeedMove,
+	           ifAccWork := #Axis.ofAccWork,
+	           ifDecWork := #Axis.ofDecWork,
+	           Cfg := #Cfg);
+	END_REGION
+	
+	REGION Uscite motore
+	    IF #ixUseSim THEN
+	        "AxisAS_SimIO".xCmdForw := #Axis.oxCmdMotorForw;
+	        "AxisAS_SimIO".xCmdBack := #Axis.oxCmdMotorBack;
+	        "AxisAS_SimIO".xCmdBrake := #Axis.oxCmdBrake;
+	        "AxisAS_SimIO".fSpeedRef := #Axis.ofSpeedRequest;
+	        #oxCmdMotorForw := FALSE;
+	        #oxCmdMotorBack := FALSE;
+	        #oxCmdBrake := FALSE;
+	        #ofSpeedRequest := 0.0;
+	    ELSE
+	        #oxCmdMotorForw := #Axis.oxCmdMotorForw;
+	        #oxCmdMotorBack := #Axis.oxCmdMotorBack;
+	        #oxCmdBrake := #Axis.oxCmdBrake;
+	        #ofSpeedRequest := #Axis.ofSpeedRequest;
+	        "AxisAS_SimIO".xCmdForw := FALSE;
+	        "AxisAS_SimIO".xCmdBack := FALSE;
+	        "AxisAS_SimIO".xCmdBrake := FALSE;
+	        "AxisAS_SimIO".fSpeedRef := 0.0;
+	    END_IF;
+	END_REGION
+END_FUNCTION_BLOCK
+

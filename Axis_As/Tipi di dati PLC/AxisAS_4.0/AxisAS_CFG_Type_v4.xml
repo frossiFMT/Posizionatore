@@ -20,7 +20,7 @@
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Velocità minima / di accostamento finale (mm/s). 0 = nessun accostamento lento</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Velocità minima di accostamento e correzione finale (mm/s), deve essere &gt; 0</MultiLanguageText>
               </Comment>
               <StartValue>5.0</StartValue>
             </Member>
@@ -60,30 +60,12 @@
               </Comment>
               <StartValue>800.0</StartValue>
             </Member>
-            <Member Name="iCurve" Datatype="Int">
+            <Member Name="fJerk" Datatype="Real">
               <AttributeList>
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Profilo: 0=TRAPEZIO 1=LOGARITMICA(sigmoide) 2=COSENO. Acc/dec impostate = picco reale</MultiLanguageText>
-              </Comment>
-              <StartValue>0</StartValue>
-            </Member>
-            <Member Name="fFirstStepNepero" Datatype="Real">
-              <AttributeList>
-                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
-              </AttributeList>
-              <Comment>
-                <MultiLanguageText Lang="it-IT">Pendenza sigmoide (curva 1): valori tipici 4..8</MultiLanguageText>
-              </Comment>
-              <StartValue>6.0</StartValue>
-            </Member>
-            <Member Name="fAutoCurveSwitchDist" Datatype="Real">
-              <AttributeList>
-                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
-              </AttributeList>
-              <Comment>
-                <MultiLanguageText Lang="it-IT">Spostamenti piu' corti di questo valore usano il TRAPEZIO (0=disabilitato)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Jerk (mm/s^3): 0 = trapezio puro. Valori tipici 5..10 x accelerazione per un profilo morbido</MultiLanguageText>
               </Comment>
               <StartValue>0.0</StartValue>
             </Member>
@@ -105,21 +87,12 @@
               </Comment>
               <StartValue>0.0</StartValue>
             </Member>
-            <Member Name="fVirtWindPos" Datatype="Real">
-              <AttributeList>
-                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
-              </AttributeList>
-              <Comment>
-                <MultiLanguageText Lang="it-IT">Finestra di arrivo asse virtuale (mm)</MultiLanguageText>
-              </Comment>
-              <StartValue>1.0</StartValue>
-            </Member>
             <Member Name="fMotWindPos" Datatype="Real">
               <AttributeList>
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Finestra di posizione motore per In posizione (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Finestra di posizione per In posizione (mm), deve essere &gt; 0</MultiLanguageText>
               </Comment>
               <StartValue>1.0</StartValue>
             </Member>
@@ -137,7 +110,7 @@
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Velocità massima per considerare il motore fermo (mm/s)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Velocità reale massima per considerare il motore fermo (mm/s)</MultiLanguageText>
               </Comment>
               <StartValue>10.0</StartValue>
             </Member>
@@ -146,9 +119,18 @@
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Anticipo (+) / ritardo (-) inizio decelerazione (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Anticipo (+) / ritardo (-) inizio decelerazione (mm): compensa inerzie e ritardi</MultiLanguageText>
               </Comment>
               <StartValue>0.0</StartValue>
+            </Member>
+            <Member Name="tAdvStop" Datatype="Time">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Compensazione inerzia: ritardo tra riferimento e velocità reale. Anticipa decelerazione e arresto in proporzione alla velocità</MultiLanguageText>
+              </Comment>
+              <StartValue>T#0ms</StartValue>
             </Member>
             <Member Name="fReposWindow" Datatype="Real">
               <AttributeList>
@@ -159,30 +141,30 @@
               </Comment>
               <StartValue>0.0</StartValue>
             </Member>
-            <Member Name="fKPpid_Pos" Datatype="Real">
+            <Member Name="xPosLoop" Datatype="Bool">
               <AttributeList>
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Guadagno proporzionale anello posizione (1/s)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">=1 il motore insegue l'asse virtuale (tempi ripetibili, coordinamento assi). =0 solo profilo, decisioni su encoder</MultiLanguageText>
               </Comment>
-              <StartValue>1.0</StartValue>
+              <StartValue>false</StartValue>
             </Member>
-            <Member Name="fKPpidDec_Pos" Datatype="Real">
+            <Member Name="fKp_Pos" Datatype="Real">
               <AttributeList>
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Guadagno aggiuntivo 'a piramide' durante la decelerazione (1/s)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">xPosLoop: guadagno proporzionale sull'errore di inseguimento (1/s)</MultiLanguageText>
               </Comment>
-              <StartValue>4.0</StartValue>
+              <StartValue>2.0</StartValue>
             </Member>
-            <Member Name="fPpidLimitPct" Datatype="Real">
+            <Member Name="fPosLoopLimitPct" Datatype="Real">
               <AttributeList>
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Limite correzione anello posizione in % di fMaxSpeed</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">xPosLoop: limite della correzione in % di fMaxSpeed</MultiLanguageText>
               </Comment>
               <StartValue>20.0</StartValue>
             </Member>
@@ -191,18 +173,9 @@
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Errore di inseguimento massimo per allarme (mm)</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">xPosLoop: errore di inseguimento massimo per allarme (mm). 0 = allarme disabilitato</MultiLanguageText>
               </Comment>
-              <StartValue>10.0</StartValue>
-            </Member>
-            <Member Name="xDisablePos" Datatype="Bool">
-              <AttributeList>
-                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
-              </AttributeList>
-              <Comment>
-                <MultiLanguageText Lang="it-IT">=1 anello aperto: solo profilo, nessuna correzione su encoder</MultiLanguageText>
-              </Comment>
-              <StartValue>false</StartValue>
+              <StartValue>20.0</StartValue>
             </Member>
             <Member Name="fJogSpeed" Datatype="Real">
               <AttributeList>
@@ -281,9 +254,18 @@
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
               </AttributeList>
               <Comment>
-                <MultiLanguageText Lang="it-IT">Tempo massimo per entrare in posizione dopo l'arrivo del virtuale</MultiLanguageText>
+                <MultiLanguageText Lang="it-IT">Tempo massimo per entrare in posizione dall'arrivo in finestra. T#0s = disabilitato</MultiLanguageText>
               </Comment>
-              <StartValue>T#1000ms</StartValue>
+              <StartValue>T#3s</StartValue>
+            </Member>
+            <Member Name="tStallTime" Datatype="Time">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">Allarme asse bloccato: motore comandato ma encoder fermo o in senso opposto. T#0s = disabilitato</MultiLanguageText>
+              </Comment>
+              <StartValue>T#2s</StartValue>
             </Member>
           </Section>
         </Sections>
