@@ -1,0 +1,142 @@
+﻿FUNCTION_BLOCK "AxisAS_Profile_v4"
+{ S7_Optimized_Access := 'TRUE' }
+AUTHOR : FMT
+FAMILY : AxisAS
+VERSION : 0.1
+//Generatore di profilo di velocità (modulo, >= 0) per AxisAS_Mng_v4.
+//Ogni variazione della velocità obiettivo avvia un nuovo segmento di rampa dalla velocità attuale.
+//Forma del segmento: 0 = TRAPEZIO (lineare), 1 = LOGARITMICA (sigmoide normalizzata), 2 = COSENO.
+//La durata del segmento è calcolata in modo che il PICCO di accelerazione sia esattamente ifAcc / ifDec:
+//   T = fattore * |dV| / a     con fattore: TRA = 1   COS = PI/2   LOG = c / (2*N)
+//Spazio percorso in un segmento (curve simmetriche): (V0 + V1) / 2 * T
+   VAR_INPUT
+      ifCmdSpeed : Real;   // Velocità obiettivo (>= 0)
+      ifAcc : Real;   // Accelerazione di picco (unità/s^2)
+      ifDec : Real;   // Decelerazione di picco (unità/s^2)
+      iiCurve : Int;   // 0 = TRAPEZIO  1 = LOGARITMICA  2 = COSENO
+      ifNepero : Real;   // Pendenza sigmoide (curva 1), tipico 6
+      ifDt : Real;   // Tempo ciclo (s)
+      ixReset : Bool;   // Azzera profilo (velocità = 0)
+   END_VAR
+
+   VAR_OUTPUT
+      ofSpeed : Real;   // Velocità generata (>= 0)
+      oxAcc : Bool;   // Rampa di accelerazione in corso
+      oxDec : Bool;   // Rampa di decelerazione in corso
+      oxDone : Bool;   // Velocità = obiettivo
+   END_VAR
+
+   VAR
+      fV : Real;   // Velocità attuale
+      fV0 : Real;   // Velocità inizio segmento
+      fV1 : Real;   // Velocità fine segmento
+      fT : Real;   // Tempo trascorso nel segmento (s)
+      fTseg : Real;   // Durata segmento (s)
+      iCurveSeg : Int;   // Curva del segmento in corso
+      fC : Real;   // Pendenza sigmoide del segmento
+      fN : Real;   // Normalizzazione sigmoide: sig(c) - sig(-c)
+      fSigM : Real;   // sig(-c)
+   END_VAR
+
+   VAR_TEMP
+      tfU : Real;
+      tfG : Real;
+      tfA : Real;
+      tfDv : Real;
+      tfFactor : Real;
+      tfCmd : Real;
+   END_VAR
+
+   VAR CONSTANT
+      PI_R : Real := 3.1415927;
+   END_VAR
+
+
+BEGIN
+	REGION Reset
+	    IF #ixReset THEN
+	        #fV := 0.0;
+	        #fV0 := 0.0;
+	        #fV1 := 0.0;
+	        #fT := 0.0;
+	        #fTseg := 0.0;
+	    END_IF;
+	END_REGION
+
+	REGION Nuovo segmento
+	    #tfCmd := #ifCmdSpeed;
+	    IF #tfCmd < 0.0 OR #ixReset THEN
+	        #tfCmd := 0.0;
+	    END_IF;
+
+	    IF (#tfCmd <> #fV1) OR (#iiCurve <> #iCurveSeg) THEN
+	        #fV0 := #fV;
+	        #fV1 := #tfCmd;
+	        #iCurveSeg := #iiCurve;
+	        #fT := 0.0;
+
+	        // parametri sigmoide
+	        #fC := #ifNepero;
+	        IF #fC < 1.0 THEN
+	            #fC := 6.0;
+	        END_IF;
+	        #fSigM := 1.0 / (1.0 + EXP(#fC));
+	        #fN := 1.0 / (1.0 + EXP(-#fC)) - #fSigM;
+
+	        CASE #iCurveSeg OF
+	            1:
+	                #tfFactor := #fC / (2.0 * #fN);
+	            2:
+	                #tfFactor := #PI_R / 2.0;
+	            ELSE
+	                #tfFactor := 1.0;
+	        END_CASE;
+
+	        #tfDv := ABS(#fV1 - #fV0);
+	        IF #fV1 > #fV0 THEN
+	            #tfA := #ifAcc;
+	        ELSE
+	            #tfA := #ifDec;
+	        END_IF;
+
+	        IF #tfA > 0.0 AND #tfDv > 0.0 THEN
+	            #fTseg := #tfFactor * #tfDv / #tfA;
+	        ELSE
+	            #fTseg := 0.0;
+	        END_IF;
+	    END_IF;
+	END_REGION
+
+	REGION Calcolo velocità
+	    IF #fT < #fTseg THEN
+	        #fT := #fT + #ifDt;
+	    END_IF;
+
+	    IF #fT >= #fTseg THEN
+	        #fV := #fV1;
+	    ELSE
+	        #tfU := #fT / #fTseg;
+	        CASE #iCurveSeg OF
+	            1:  // sigmoide normalizzata: parte da 0 e arriva esattamente a 1
+	                #tfG := (1.0 / (1.0 + EXP(-#fC * (2.0 * #tfU - 1.0))) - #fSigM) / #fN;
+	            2:  // coseno
+	                #tfG := 0.5 * (1.0 - COS(#PI_R * #tfU));
+	            ELSE  // trapezio
+	                #tfG := #tfU;
+	        END_CASE;
+	        #fV := #fV0 + (#fV1 - #fV0) * #tfG;
+	    END_IF;
+
+	    IF #fV < 0.0 THEN
+	        #fV := 0.0;
+	    END_IF;
+	END_REGION
+
+	REGION Uscite
+	    #ofSpeed := #fV;
+	    #oxDone := (#fV = #fV1);
+	    #oxAcc := NOT #oxDone AND (#fV1 > #fV0);
+	    #oxDec := NOT #oxDone AND (#fV1 < #fV0);
+	END_REGION
+END_FUNCTION_BLOCK
+
