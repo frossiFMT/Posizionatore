@@ -9,7 +9,7 @@ VERSION : 0.1
 //    200 punti) con gli stessi parametri dell'asse e avvia la registrazione di encoder e velocità reale
 //    con la stessa scala di tempo: le curve si sovrappongono.
 //  - Con ixPreview (fronte) calcola la traiettoria prevista dalla posizione attuale a ifPreviewTarget, senza muovere.
-//  - wTrendTransfer: bit 0 = posizione prevista, bit 1 = posizione reale, bit 2 = velocità prevista,
+//  - wTrendTransfer (consegnato con fronte, vedi REGION Consegna al pannello): bit 0 = posizione prevista, bit 1 = posizione reale, bit 2 = velocità prevista,
 //    bit 3 = velocità reale. Il blocco alza il bit quando l'array è pronto, il pannello lo legge e lo azzera.
 //    Durante la registrazione i bit 1 e 3 vengono rialzati ogni 10 punti (aggiornamento in moto).
 //  - Scala del tempo: ofSampleTime secondi per punto (asse X del trend = 200 punti).
@@ -52,6 +52,10 @@ VERSION : 0.1
       aPlanSpd : Array[0..199] of Real;   // Velocità prevista (modulo)
       aActSpd : Array[0..199] of Real;   // Velocità reale (modulo)
       wTrendTransfer : Word;   // Bit di trasferimento per il trend view (il pannello li azzera)
+      wTrendRequest : Word;   // Requisiti curva: scritta dal pannello (curve visualizzate), non usata dal PLC
+      wTrendPend : Word;   // Bit da consegnare al pannello (in attesa)
+      xTrendLow : Bool;   // Bit abbassati in attesa di rialzarli (il pannello reagisce al cambio di valore)
+      fTrendLowT : Real;   // Tempo trascorso con i bit abbassati [s]
       Prof : "AxisAS_Profile_v4";   // Generatore per il calcolo della traiettoria prevista
       lrRuntimeMem : LReal;
       xInitDone : Bool;
@@ -299,7 +303,7 @@ BEGIN
 	        #ofPosMin := MIN(IN1 := #fPlanStart, IN2 := #fPlanTarget) - 0.05 * #tfD - 1.0;
 	        #ofPosMax := MAX(IN1 := #fPlanStart, IN2 := #fPlanTarget) + 0.05 * #tfD + 1.0;
 	        #ofSpeedMax := #tfV * 1.3;
-	        #wTrendTransfer := #wTrendTransfer OR 16#0005;   // posizione e velocità previste pronte
+	        #wTrendPend := #wTrendPend OR 16#0005;   // posizione e velocità previste pronte
 	    END_IF;
 	END_REGION
 
@@ -319,13 +323,36 @@ BEGIN
 	        END_WHILE;
 	        IF #iLiveCnt >= 10 THEN
 	            #iLiveCnt := 0;
-	            #wTrendTransfer := #wTrendTransfer OR 16#000A;   // aggiornamento durante il moto
+	            #wTrendPend := #wTrendPend OR 16#000A;   // aggiornamento durante il moto
 	        END_IF;
 	        // fine: asse fermo o array pieno
 	        IF NOT #ixBusy OR #iActIdx > #N_LAST THEN
 	            #oxRecording := FALSE;
 	            #ofActTime := #fActT;
-	            #wTrendTransfer := #wTrendTransfer OR 16#000A;   // posizione e velocità reali pronte
+	            #wTrendPend := #wTrendPend OR 16#000A;   // posizione e velocità reali pronte
+	        END_IF;
+	    END_IF;
+	END_REGION
+
+	REGION Consegna al pannello
+	    // Il pannello legge un array quando vede CAMBIARE il bit di trasferimento e poi lo azzera.
+	    // Se un bit da alzare è ancora alto (dato precedente non letto, es. pagina grafico chiusa),
+	    // lo si abbassa per almeno 300 ms (> ciclo di acquisizione del tag) e poi lo si rialza.
+	    IF #xTrendLow THEN
+	        #fTrendLowT := #fTrendLowT + #tfDt;
+	        IF #fTrendLowT >= 0.3 THEN
+	            #wTrendTransfer := #wTrendTransfer OR #wTrendPend;
+	            #wTrendPend := 16#0000;
+	            #xTrendLow := FALSE;
+	        END_IF;
+	    ELSIF #wTrendPend <> 16#0000 THEN
+	        IF (#wTrendTransfer AND #wTrendPend) <> 16#0000 THEN
+	            #wTrendTransfer := #wTrendTransfer AND NOT #wTrendPend;
+	            #xTrendLow := TRUE;
+	            #fTrendLowT := 0.0;
+	        ELSE
+	            #wTrendTransfer := #wTrendTransfer OR #wTrendPend;
+	            #wTrendPend := 16#0000;
 	        END_IF;
 	    END_IF;
 	END_REGION
