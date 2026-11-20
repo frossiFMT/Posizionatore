@@ -44,6 +44,12 @@
               </Comment>
               <StartValue>false</StartValue>
             </Member>
+            <Member Name="xLevelSensor" Datatype="Bool">
+              <Comment>
+                <MultiLanguageText Lang="it-IT">SIM -&gt; PLC  10.1 Sensore livello virtuale</MultiLanguageText>
+              </Comment>
+              <StartValue>false</StartValue>
+            </Member>
             <Member Name="iHeartbeat" Datatype="Int">
               <Comment>
                 <MultiLanguageText Lang="it-IT">SIM -&gt; PLC  12   Contatore vita del simulatore</MultiLanguageText>

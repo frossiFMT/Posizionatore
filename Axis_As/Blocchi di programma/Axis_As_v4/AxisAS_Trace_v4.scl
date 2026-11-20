@@ -24,7 +24,7 @@ VERSION : 0.1
       ixBusy : Bool;   // Asse in movimento (AxisAS_Mng_v4.oxBusy)
       iiAxisState : Int;   // Stato dell'asse (AxisAS_Mng_v4.oiState): la registrazione parte con il moto (stato 30)
       ifEncoder : Real;   // Posizione encoder (mm)
-      ifActualSpeed : Real;   // Velocità reale (AxisAS_Mng_v4.ofActualSpeed)
+      ifActualSpeed : Real;   // Velocità reale (AxisAS_Mng_v4.ofActualSpeed), nel grafico mediata sul passo
       ifTarget : Real;   // Quota del movimento (AxisAS_Mng_v4.ofTarget)
       ifSpeedMove : Real;   // Velocità di lavoro (AxisAS_Mng_v4.ofSpeedMove)
       ifAccWork : Real;   // Accelerazione di lavoro (AxisAS_Mng_v4.ofAccWork)
@@ -71,6 +71,9 @@ VERSION : 0.1
       fActT : Real;   // Tempo dall'inizio della registrazione (s)
       iActIdx : Int;   // Prossimo punto da registrare
       iLiveCnt : Int;
+      fRecSpdSum : Real;   // Integrale della velocità reale dall'ultimo punto registrato
+      fRecT : Real;   // Tempo dall'ultimo punto registrato (s)
+      fRecSpd : Real;   // Velocità reale media sull'ultimo passo del grafico
    END_VAR
 
    VAR_TEMP
@@ -109,6 +112,7 @@ VERSION : 0.1
    VAR CONSTANT
       N_LAST : Int := 199;   // Ultimo indice degli array
       SUBSTEPS : Int := 5;   // Passi di calcolo per punto
+      TREND_SYNC_BIT : Word := 16#8000;   // Bit 15 di wTrendTransfer richiesto dal pannello insieme ai bit delle curve
    END_VAR
 
 
@@ -312,11 +316,22 @@ BEGIN
 	        IF #iActIdx > 0 THEN
 	            #fActT := #fActT + #tfDt;
 	        END_IF;
+	        // media della velocità reale tra un punto del grafico e il successivo
+	        #fRecSpdSum := #fRecSpdSum + ABS(#ifActualSpeed) * #tfDt;
+	        #fRecT := #fRecT + #tfDt;
 	        WHILE #iActIdx <= #N_LAST AND #fActT >= INT_TO_REAL(#iActIdx) * #fTs DO
+	            // punto del grafico: media della velocità reale sul passo (attenua i ritardi irregolari dell'encoder)
+	            IF #iActIdx = 0 THEN
+	                #fRecSpd := 0.0;
+	            ELSIF #fRecT > 0.0 THEN
+	                #fRecSpd := #fRecSpdSum / #fRecT;
+	            END_IF;   // più punti nello stesso ciclo: resta la velocità precedente
+	            #fRecSpdSum := 0.0;
+	            #fRecT := 0.0;
 	            // i punti futuri restano sull'ultimo valore: la curva si allunga durante il moto
 	            FOR #ti := #iActIdx TO #N_LAST DO
 	                #aActPos[#ti] := #ifEncoder;
-	                #aActSpd[#ti] := ABS(#ifActualSpeed);
+	                #aActSpd[#ti] := #fRecSpd;
 	            END_FOR;
 	            #iActIdx := #iActIdx + 1;
 	            #iLiveCnt := #iLiveCnt + 1;
@@ -336,22 +351,24 @@ BEGIN
 
 	REGION Consegna al pannello
 	    // Il pannello legge un array quando vede CAMBIARE il bit di trasferimento e poi lo azzera.
+	    // Il pannello Comfort reagisce solo se insieme ai bit delle curve è alto anche il bit 15
+	    // (TREND_SYNC_BIT, verificato in prova: 16#0005 non viene letto, 16#8005 sì).
 	    // Se un bit da alzare è ancora alto (dato precedente non letto, es. pagina grafico chiusa),
 	    // lo si abbassa per almeno 300 ms (> ciclo di acquisizione del tag) e poi lo si rialza.
 	    IF #xTrendLow THEN
 	        #fTrendLowT := #fTrendLowT + #tfDt;
 	        IF #fTrendLowT >= 0.3 THEN
-	            #wTrendTransfer := #wTrendTransfer OR #wTrendPend;
+	            #wTrendTransfer := #wTrendTransfer OR #wTrendPend OR #TREND_SYNC_BIT;
 	            #wTrendPend := 16#0000;
 	            #xTrendLow := FALSE;
 	        END_IF;
 	    ELSIF #wTrendPend <> 16#0000 THEN
-	        IF (#wTrendTransfer AND #wTrendPend) <> 16#0000 THEN
-	            #wTrendTransfer := #wTrendTransfer AND NOT #wTrendPend;
+	        IF (#wTrendTransfer AND (#wTrendPend OR #TREND_SYNC_BIT)) <> 16#0000 THEN
+	            #wTrendTransfer := #wTrendTransfer AND NOT (#wTrendPend OR #TREND_SYNC_BIT);
 	            #xTrendLow := TRUE;
 	            #fTrendLowT := 0.0;
 	        ELSE
-	            #wTrendTransfer := #wTrendTransfer OR #wTrendPend;
+	            #wTrendTransfer := #wTrendTransfer OR #wTrendPend OR #TREND_SYNC_BIT;
 	            #wTrendPend := 16#0000;
 	        END_IF;
 	    END_IF;

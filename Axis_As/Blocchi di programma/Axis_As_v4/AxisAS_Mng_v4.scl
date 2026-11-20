@@ -124,6 +124,7 @@ VERSION : 0.2
       fMoveTime : Real;   // Durata movimento in corso (s)
       fStallTime : Real;   // Tempo con motore comandato e encoder fermo (s)
       fEncOld : Real;   // Posizione encoder ciclo precedente
+      fEncChgT : Real;   // Tempo dall'ultimo cambio del valore encoder [s]
       fEncSpeed : Real;   // Velocità reale stimata dall'encoder (filtrata)
       fTarget : Real;   // Quota obiettivo in corso
       fAcceptedRequest : Real;   // Ultima quota richiesta accettata
@@ -179,6 +180,8 @@ VERSION : 0.2
    END_VAR
 
    VAR CONSTANT
+      ENC_FILT_T : Real := 0.03;   // Costante di tempo filtro velocità encoder [s]
+      ENC_STILL_T : Real := 0.1;   // Encoder fermo da più di questo tempo -> velocità verso zero [s]
       ST_DISABLED : Int := 0;
       ST_STANDBY : Int := 10;
       ST_START : Int := 20;
@@ -214,11 +217,19 @@ BEGIN
 	        #fDt := 0.0;
 	    END_IF;
 
-	    // velocità reale dall'encoder (filtro 20 ms)
-	    IF #fDt > 0.0 THEN
-	        #fEncSpeed := #fEncSpeed + ((#ifEncoder - #fEncOld) / #fDt - #fEncSpeed) * (#fDt / (#fDt + 0.02));
+	    // velocità reale dall'encoder: calcolata solo quando il valore cambia, sul tempo trascorso dall'ultimo
+	    // cambio (encoder aggiornato in modo asincrono rispetto al ciclo, es. bus o simulatore), poi filtrata.
+	    // Se l'encoder resta fermo più di ENC_STILL_T la velocità tende a zero.
+	    #fEncChgT := #fEncChgT + #fDt;
+	    IF #ifEncoder <> #fEncOld THEN
+	        IF #fEncChgT > 0.0 THEN
+	            #fEncSpeed := #fEncSpeed + ((#ifEncoder - #fEncOld) / #fEncChgT - #fEncSpeed) * (#fEncChgT / (#fEncChgT + #ENC_FILT_T));
+	        END_IF;
+	        #fEncOld := #ifEncoder;
+	        #fEncChgT := 0.0;
+	    ELSIF #fEncChgT > #ENC_STILL_T THEN
+	        #fEncSpeed := #fEncSpeed - #fEncSpeed * (#fDt / (#fDt + #ENC_FILT_T));
 	    END_IF;
-	    #fEncOld := #ifEncoder;
 
 	    #txResetPulse := #ixReset AND NOT #xResetOld;
 	    #xResetOld := #ixReset;

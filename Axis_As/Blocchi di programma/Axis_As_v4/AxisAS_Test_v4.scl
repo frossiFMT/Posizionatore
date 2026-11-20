@@ -13,7 +13,7 @@ VERSION : 0.1
       ixUseSim : Bool;   // TRUE = encoder e comandi verso il simulatore PC (AxisAS_SimIO)
       ifEncoderReal : Real;   // Encoder reale (mm), usato con ixUseSim = FALSE
       ixDriveReadyReal : Bool;   // Inverter pronto reale, usato con ixUseSim = FALSE
-      ixLevelSensor : Bool;   // Sensore livello
+      ixLevelSensor : Bool;   // Sensore livello reale (con ixUseSim si usa anche il sensore virtuale del simulatore)
    END_VAR
 
    VAR_OUTPUT
@@ -50,6 +50,7 @@ VERSION : 0.1
    VAR_TEMP
       tfEncoder : Real;
       txDriveReady : Bool;
+      txLevelSensor : Bool;
    END_VAR
 
 
@@ -58,7 +59,9 @@ BEGIN
 	    IF #ixUseSim THEN
 	        #tfEncoder := "AxisAS_SimIO".fEncoder;
 	        #txDriveReady := "AxisAS_SimIO".xDriveReady;
+	        #txLevelSensor := #ixLevelSensor OR "AxisAS_SimIO".xLevelSensor;
 	    ELSE
+	        #txLevelSensor := #ixLevelSensor;
 	        #tfEncoder := #ifEncoderReal;
 	        #txDriveReady := #ixDriveReadyReal;
 	    END_IF;
@@ -75,7 +78,7 @@ BEGIN
 	          ixJogPos := #Cmd.xJogPos,
 	          ixJogNeg := #Cmd.xJogNeg,
 	          ixLevelSearch := #Cmd.xLevelSearch,
-	          ixLevelSensor := #ixLevelSensor,
+	          ixLevelSensor := #txLevelSensor,
 	          ifPositionStartLev := #Cmd.fPositionStartLev,
 	          ifSpeedLev := #Cmd.fSpeedLev,
 	          ixDriveReady := #txDriveReady,
