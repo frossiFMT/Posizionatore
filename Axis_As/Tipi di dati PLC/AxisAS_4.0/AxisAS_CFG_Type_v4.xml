@@ -159,6 +159,15 @@
               </Comment>
               <StartValue>2.0</StartValue>
             </Member>
+            <Member Name="fKp_PosDec" Datatype="Real">
+              <AttributeList>
+                <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>
+              </AttributeList>
+              <Comment>
+                <MultiLanguageText Lang="it-IT">xPosLoop: guadagno aggiunto a piramide (1/s), cresce da 0 a fKp_PosDec mentre la velocità scende dal massimo del movimento (come fKPpidDec_Pos v2.0). 0 = disabilitato</MultiLanguageText>
+              </Comment>
+              <StartValue>0.0</StartValue>
+            </Member>
             <Member Name="fPosLoopLimitPct" Datatype="Real">
               <AttributeList>
                 <BooleanAttribute Name="SetPoint" SystemDefined="true">true</BooleanAttribute>

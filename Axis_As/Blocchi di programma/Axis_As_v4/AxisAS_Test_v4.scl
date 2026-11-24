@@ -2,7 +2,7 @@
 { S7_Optimized_Access := 'TRUE' }
 AUTHOR : FMT
 FAMILY : AxisAS
-VERSION : 0.1
+VERSION : 0.2
 //Banco di prova per AxisAS_Mng_v4: contiene l'asse (multi-istanza), i comandi e la configurazione.
 //Con ixUseSim = TRUE l'encoder e l'inverter pronto arrivano dal simulatore PC (DB "AxisAS_SimIO",
 //app AxisAS_Sim_v4.py via snap7) e i comandi motore vanno al simulatore; le uscite reali restano a 0.
@@ -40,6 +40,9 @@ VERSION : 0.1
          xMotorReadyReq : Bool;   // Richiesta magnetizzazione
          xAbort : Bool;   // Abort
          xReset : Bool;   // Reset allarmi
+         fSpeedOverride : Real := 100.0;   // Override velocità (%)
+         xHold : Bool;   // Pausa (arresto in rampa mantenendo la quota)
+         xSincroError : Bool;   // Simula allarme dal coordinamento assi
          xPreview : Bool;   // Calcola traiettoria prevista (anteprima) senza muovere
          xTraceLive : Bool := TRUE;   // Grafico reale aggiornato anche durante il moto (FALSE = solo a fine moto)
       END_STRUCT;
@@ -87,6 +90,10 @@ BEGIN
 	          ixAbort := #Cmd.xAbort,
 	          ixReset := #Cmd.xReset,
 	          ifEncoder := #tfEncoder,
+	          ifSpeedOverride := #Cmd.fSpeedOverride,
+	          ixHold := #Cmd.xHold,
+	          ixSincroError := #Cmd.xSincroError,
+	          ifTimeScan := 0.0,
 	          Cfg := #Cfg);
 	END_REGION
 

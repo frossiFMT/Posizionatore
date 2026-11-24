@@ -2,7 +2,7 @@
 { S7_Optimized_Access := 'TRUE' }
 AUTHOR : FMT
 FAMILY : AxisAS
-VERSION : 0.2
+VERSION : 0.3
 //------------------------------------------------------------------------
 //DESCRIPTION: "AxisAS_Mng_v4"
 //    Gestore ASSE per motore asincrono su inverter (marcia avanti/indietro + riferimento velocità + freno)
@@ -24,10 +24,13 @@ VERSION : 0.2
 //    - JOG con posizionatore disabilitato
 //    - Gestione freno, attesa inverter magnetizzato, mantenimento marcia dopo l'arresto
 //    - Diagnostica di taratura: superamento quota e errore finale dell'ultimo posizionamento
+//    - Coordinamento assi (per il futuro FB Sincro): ifSpeedOverride (0..100 % della velocità di crociera),
+//      ixHold (arresto in rampa mantenendo la quota, ripartenza alla caduta), ixSincroError (allarme 5);
+//      uscite ofProfileSpeed / ofProfileAcc / ofVirPos / ofActualPos / oxHold
 //    - Allarmi (owErrorId): 1 asse bloccato/encoder invertito, 2 timeout fine posizionamento,
-//      3 abort in moto, 4 inverter non pronto, 5 riservato sincro, 6 parametri non validi,
-//      7 inverter perso in moto, 8 errore di inseguimento (solo xPosLoop, Cfg.fMaxErrEnc)
-//    - Tempo ciclo misurato internamente (RUNTIME): chiamare in OB ciclico o OB1
+//      3 abort in moto, 4 inverter non pronto, 5 allarme coordinamento assi (ixSincroError), 6 parametri non validi
+//      (anche JOG e soglie autospeed), 7 inverter perso in moto, 8 errore di inseguimento (solo xPosLoop, Cfg.fMaxErrEnc)
+//    - Tempo ciclo misurato internamente (RUNTIME), oppure da ifTimeScan se > 0: chiamare in OB ciclico o OB1
 //
 //STATI (oiState): 0 Disabilitato | 10 Pronto/fermo | 20 Attesa inverter | 30 Movimento
 //                 40 Accostamento finale | 50 Arresto in rampa | 60 Chiusura freno
@@ -46,8 +49,23 @@ VERSION : 0.2
 //    rampe generate nel PLC (p1120 = p1121 = 0), p1300 = 1 U/f lineare + FCC, freno p1215 = 3,
 //    p1216 = 50 ms, p1217 = 40 ms, OFF3 p1135 = 0,020 s, limite corrente 2 x In, boost p1310 = 50% p1311 = 25%.
 //
+//CORRISPONDENZE CON AxisAS_Mng_v2.0 (DataIn/DataOut/Cfg -> v4):
+//    DataIn.ixEnablePos -> ixEnable | ixEnableLevRes -> ixLevelSearch | ixLevelReached -> ixLevelSensor
+//    ixAlarmReset -> ixReset | xAutoSpeedDetect -> ixAutoSpeed | xAutoAccDecCalculation -> ixAutoAccDec
+//    ifTimeScan -> ifTimeScan (opzionale, 0 = RUNTIME interno)
+//    DataOut.ofEncMotorPos -> ofActualPos | ofMaxError -> ofMaxFollowingError | oxSincroError -> owErrorId = 5
+//    Cfg.xDisablePos = 1 (anello aperto) -> Cfg.xPosLoop = FALSE | fKPpid_Pos -> fKp_Pos | fKPpidDec_Pos -> fKp_PosDec
+//    Eliminati: curve LOG/COS (xCurveS-L, fFirstStepNepero, fAutoChangeS-Lvalue) -> trapezio con jerk (fJerk),
+//    fVirt_EncWindPos, guadagni non usati (fKPpidAcc_Pos, fKPpid_Vel, fKPpidAcc_Vel, fKPpidDec_Vel)
+//    Nuovi: tAdvStop, fReposWindow, fPosLoopLimitPct, tDriveReadyTimeout, tStallTime
+//
+//NOTE S7-1200: RUNTIME e LReal richiedono firmware recente (verificare sulla CPU); in alternativa passare ifTimeScan.
+//
 //CHANGELOG:
 //    v4.0 - 17/11/2026 - Prima stesura (FMT): riscrittura da zero di AxisAS_Mng_v2.0
+//    v0.3 - 24/11/2026 - ifSpeedOverride, ixHold, ixSincroError (allarme 5), oxHold per il futuro FB Sincro;
+//                        Cfg.fKp_PosDec (guadagno a piramide come v2.0); ifTimeScan opzionale;
+//                        validazione parametri estesa a JOG e soglie autospeed
 //------------------------------------------------------------------------
    VAR_INPUT
       ixEnable : Bool;   // Abilita posizionatore (con FALSE durante il moto: arresto in rampa)
@@ -68,6 +86,10 @@ VERSION : 0.2
       ixAbort : Bool;   // Arresto immediato (in movimento genera allarme)
       ixReset : Bool;   // Reset allarmi (fronte di salita)
       ifEncoder : Real;   // Posizione attuale encoder (mm o gradi)
+      ifSpeedOverride : Real := 100.0;   // Override velocità di crociera 0..100 % (coordinamento assi). Non scende sotto Cfg.fMinSpeed
+      ixHold : Bool;   // Pausa: arresto in rampa mantenendo la quota, alla caduta riparte verso la quota (coordinamento assi)
+      ixSincroError : Bool;   // Allarme esterno dal coordinamento assi (genera allarme 5 con asse abilitato)
+      ifTimeScan : Real;   // Tempo ciclo esterno (s). 0 = misurato internamente con RUNTIME
    END_VAR
 
    VAR_OUTPUT
@@ -79,6 +101,7 @@ VERSION : 0.2
       oxEndPosBig : Bool;   // In finestra allargata (Cfg.fMotWindPosBig)
       oxStopSpeed : Bool;   // Riferimento velocità = 0
       oxBusy : Bool;   // Movimento in corso
+      oxHold : Bool;   // Pausa (ixHold) in corso o movimento sospeso in attesa di ripartenza
       oxAccOnWork : Bool;   // Accelerazione in corso
       oxDecOnWork : Bool;   // Decelerazione in corso
       oxLevelReached : Bool;   // Ricerca livello: sensore trovato, asse fermo
@@ -142,6 +165,8 @@ VERSION : 0.2
       fVirPos : Real;   // Posizione asse virtuale
       xStartMove : Bool;   // Richiesta avvio movimento (gestita dopo la macchina a stati)
       xRestart : Bool;   // Dopo l'arresto in rampa riparte verso fTarget
+      xHoldResume : Bool;   // Movimento sospeso da ixHold: alla caduta di ixHold riparte verso fTarget
+      fMemoMaxSpeed : Real;   // Massima velocità profilo nel movimento in corso (Kp a piramide)
       xDecel : Bool;   // Decelerazione verso la quota iniziata
       xSettleCreep : Bool;   // Accostamento finale: correzione a velocità minima in corso
       xLevelPhase : Bool;   // Ricerca livello: velocità di ricerca
@@ -174,6 +199,10 @@ VERSION : 0.2
       tfP : Real;   // Correzione proporzionale
       tfPLim : Real;   // Limite correzione
       tfFErr : Real;   // Errore di inseguimento
+      tfKp : Real;   // Guadagno proporzionale effettivo (fKp_Pos + piramide fKp_PosDec)
+      tfOvr : Real;   // Override velocità (0..1)
+      txCfgOk : Bool;   // Parametri Cfg validi per il posizionamento
+      txJogCfgOk : Bool;   // Parametri Cfg validi per il JOG
       txProfileReset : Bool;
       txActive : Bool;
       txResetPulse : Bool;
@@ -196,7 +225,7 @@ VERSION : 0.2
       ERR_ENDPOS_TIMEOUT : Word := 16#0002;   // Non in posizione entro Cfg.tCtrEndPos dall'arrivo
       ERR_ABORT : Word := 16#0003;   // Abort durante il movimento
       ERR_DRIVE_TIMEOUT : Word := 16#0004;   // Inverter non pronto entro Cfg.tDriveReadyTimeout
-      ERR_SINCRO : Word := 16#0005;   // Riservato coordinamento assi
+      ERR_SINCRO : Word := 16#0005;   // Allarme esterno coordinamento assi (ixSincroError)
       ERR_PARAM : Word := 16#0006;   // Parametri Cfg non validi
       ERR_DRIVE_LOST : Word := 16#0007;   // Inverter non più pronto durante il movimento
       ERR_FOLLOWING : Word := 16#0008;   // Errore di inseguimento > Cfg.fMaxErrEnc (solo xPosLoop)
@@ -205,9 +234,14 @@ VERSION : 0.2
 
 BEGIN
 	REGION Tempo ciclo, velocità reale e fronti
+	    // RUNTIME chiamato sempre (mantiene la memoria aggiornata); ifTimeScan > 0 ha la priorità
 	    #tlrDt := RUNTIME(#lrRuntimeMem);
 	    IF #xInitDone THEN
-	        #fDt := LREAL_TO_REAL(#tlrDt);
+	        IF #ifTimeScan > 0.0 THEN
+	            #fDt := #ifTimeScan;
+	        ELSE
+	            #fDt := LREAL_TO_REAL(#tlrDt);
+	        END_IF;
 	    ELSE
 	        #fDt := 0.0;
 	        #fEncOld := #ifEncoder;
@@ -297,12 +331,35 @@ BEGIN
 	    IF #tfAccAlong < 0.0 THEN
 	        #tfAccAlong := 0.0;
 	    END_IF;
+
+	    // override velocità (coordinamento assi)
+	    #tfOvr := #ifSpeedOverride / 100.0;
+	    IF #tfOvr > 1.0 THEN
+	        #tfOvr := 1.0;
+	    ELSIF #tfOvr < 0.0 THEN
+	        #tfOvr := 0.0;
+	    END_IF;
+
+	    // guadagno proporzionale a piramide (come v2.0): cresce mentre la velocità cala rispetto al massimo del movimento
+	    #tfKp := #Cfg.fKp_Pos;
+	    IF #Cfg.fKp_PosDec > 0.0 AND #fMemoMaxSpeed > 0.0 THEN
+	        #tfKp := #tfKp + #Cfg.fKp_PosDec * (#fMemoMaxSpeed - #fProfSpeed) / #fMemoMaxSpeed;
+	    END_IF;
+
+	    // validità parametri
+	    #txCfgOk := #Cfg.fMaxSpeed > 0.0 AND #Cfg.fMinSpeed > 0.0 AND #Cfg.fMinSpeed <= #Cfg.fMaxSpeed
+	    AND #Cfg.fMinAccRamp > 0.0 AND #Cfg.fMinDecRamp > 0.0
+	    AND #Cfg.fMaxAccRamp >= #Cfg.fMinAccRamp AND #Cfg.fMaxDecRamp >= #Cfg.fMinDecRamp
+	    AND #Cfg.fJerk >= 0.0 AND #Cfg.fMotWindPos > 0.0
+	    AND NOT (#ixAutoSpeed AND #Cfg.fThreshold_SUP_AutoSpeed <= #Cfg.fThreshold_INF_AutoSpeed)
+	    AND NOT (#Cfg.xPosLoop AND (#Cfg.fKp_Pos < 0.0 OR #Cfg.fKp_PosDec < 0.0 OR #Cfg.fPosLoopLimitPct < 0.0));
+	    #txJogCfgOk := #Cfg.fJogSpeed > 0.0 AND #Cfg.fJogAcc > 0.0 AND #Cfg.fJogDec > 0.0 AND #Cfg.fJerk >= 0.0;
 	END_REGION
 
 	REGION Allarmi
 	    IF #txResetPulse THEN
 	        #ofMaxFollowingError := 0.0;
-	        IF #iState = #ST_ERROR AND NOT #ixAbort THEN
+	        IF #iState = #ST_ERROR AND NOT #ixAbort AND NOT #ixSincroError THEN
 	            #wError := 0;
 	            #iState := #ST_DISABLED;
 	        END_IF;
@@ -312,6 +369,12 @@ BEGIN
 	        // abort durante il movimento
 	        IF #ixAbort AND (#iState >= #ST_START) THEN
 	            #wError := #ERR_ABORT;
+	            #iState := #ST_ERROR;
+	        END_IF;
+
+	        // allarme dal coordinamento assi: con asse abilitato o in moto
+	        IF #ixSincroError AND (#iState >= #ST_STANDBY) THEN
+	            #wError := #ERR_SINCRO;
 	            #iState := #ST_ERROR;
 	        END_IF;
 
@@ -371,18 +434,24 @@ BEGIN
 	            #xBrakeOpen := FALSE;
 	            #xLevelFound := FALSE;
 	            #xLevelNotFound := FALSE;
+	            #xHoldResume := FALSE;
 	            #fTarget := #ifEncoder;
 
 	            IF #ixEnable AND NOT #ixAbort THEN
 	                #xFirstStandby := TRUE;
 	                #iState := #ST_STANDBY;
 	            ELSIF (#ixJogPos XOR #ixJogNeg) AND NOT #ixAbort THEN
-	                IF #ixJogPos THEN
-	                    #rDir := 1.0;
+	                IF NOT #txJogCfgOk THEN
+	                    #wError := #ERR_PARAM;
+	                    #iState := #ST_ERROR;
 	                ELSE
-	                    #rDir := -1.0;
+	                    IF #ixJogPos THEN
+	                        #rDir := 1.0;
+	                    ELSE
+	                        #rDir := -1.0;
+	                    END_IF;
+	                    #iState := #ST_JOG_START;
 	                END_IF;
-	                #iState := #ST_JOG_START;
 	            END_IF;
 
 	        10:  // ST_STANDBY
@@ -391,6 +460,19 @@ BEGIN
 
 	            IF NOT #ixEnable OR #ixAbort THEN
 	                #iState := #ST_DISABLED;
+	            ELSIF #ixHold THEN
+	                // pausa: nessuna partenza; le richieste arrivate nel frattempo vengono viste alla caduta di ixHold
+	                #xStartMove := FALSE;
+	            ELSIF #xHoldResume THEN
+	                // fine pausa: riparte verso la quota sospesa (se nel frattempo non è cambiata la richiesta)
+	                #xHoldResume := FALSE;
+	                IF #ifPositionRequest <> #fAcceptedRequest THEN
+	                    #fAcceptedRequest := #ifPositionRequest;
+	                    #fNewTarget := #ifPositionRequest;
+	                ELSE
+	                    #fNewTarget := #fTarget;
+	                END_IF;
+	                #xStartMove := TRUE;
 	            ELSIF #xFirstStandby THEN
 	                // all'abilitazione si porta sulla quota richiesta
 	                #xFirstStandby := FALSE;
@@ -419,6 +501,10 @@ BEGIN
 	            #rOutDir := #rDir;
 	            IF NOT #ixEnable THEN
 	                #iState := #ST_DISABLED;
+	            ELSIF #ixHold THEN
+	                // pausa prima della partenza: freno ancora chiuso, torno in attesa
+	                #xHoldResume := TRUE;
+	                #iState := #ST_STANDBY;
 	            ELSIF #ixDriveReady THEN
 	                #xBrakeOpen := TRUE;
 	                #iState := #ST_MOVING;
@@ -450,6 +536,11 @@ BEGIN
 	            IF NOT #ixEnable THEN
 	                #xRestart := FALSE;
 	                #iState := #ST_STOPPING;
+	            ELSIF #ixHold AND #iState = #ST_MOVING THEN
+	                // pausa: arresto in rampa, la quota resta fTarget
+	                #xRestart := FALSE;
+	                #xHoldResume := TRUE;
+	                #iState := #ST_STOPPING;
 	            END_IF;
 
 	            // --- ricerca livello
@@ -470,7 +561,7 @@ BEGIN
 
 	            IF #iState = #ST_MOVING THEN
 	                // --- velocità obiettivo
-	                #tfVCruise := #fSpeedMove;
+	                #tfVCruise := #fSpeedMove * #tfOvr;
 	                IF #xLevelPhase AND #ifSpeedLev < #tfVCruise THEN
 	                    #tfVCruise := #ifSpeedLev;
 	                END_IF;
@@ -508,6 +599,9 @@ BEGIN
 	                         ifDt := #fDt,
 	                         ixReset := FALSE);
 	                #fProfSpeed := #Profile.ofSpeed;
+	                IF #fProfSpeed > #fMemoMaxSpeed THEN
+	                    #fMemoMaxSpeed := #fProfSpeed;
+	                END_IF;
 	                #fVirPos := #fVirPos + #rDir * #fProfSpeed * #fDt;
 	                // con xPosLoop il virtuale non supera la quota
 	                IF #Cfg.xPosLoop AND #rDir * (#fTarget - #fVirPos) <= 0.0 THEN
@@ -517,7 +611,7 @@ BEGIN
 	                #fOutSpeed := #fProfSpeed;
 	                IF #Cfg.xPosLoop THEN
 	                    // anticipo sull'accelerazione + correzione proporzionale (limitata)
-	                    #tfP := #Cfg.fKp_Pos * #rDir * (#fVirPos - #ifEncoder);
+	                    #tfP := #tfKp * #rDir * (#fVirPos - #ifEncoder);
 	                    IF #tfP > #tfPLim THEN
 	                        #tfP := #tfPLim;
 	                    ELSIF #tfP < -#tfPLim THEN
@@ -560,6 +654,12 @@ BEGIN
 
 	            IF NOT #ixEnable THEN
 	                #iNextState := #ST_DISABLED;
+	                #iState := #ST_BRAKE;
+	            ELSIF #ixHold THEN
+	                // pausa durante l'accostamento: chiudo il freno, alla ripresa riparte (o è già in posizione)
+	                #xSettleCreep := FALSE;
+	                #xHoldResume := TRUE;
+	                #iNextState := #ST_STANDBY;
 	                #iState := #ST_BRAKE;
 	            ELSIF #ixLevelSearch AND #ixLevelSensor AND NOT #xLevelFound THEN
 	                #xLevelFound := TRUE;
@@ -611,9 +711,16 @@ BEGIN
 	            #fOutSpeed := #fProfSpeed;
 	            #rOutDir := #rDir;
 
+	            // pausa arrivata durante un arresto per inversione: non riparto da solo
+	            IF #ixHold AND #xRestart THEN
+	                #xRestart := FALSE;
+	                #xHoldResume := TRUE;
+	            END_IF;
+
 	            IF #fProfSpeed <= 0.0 AND ABS(#fEncSpeed) <= #Cfg.fMotWindSpeed THEN
 	                #txProfileReset := TRUE;
 	                IF #xLevelFound THEN
+	                    #xHoldResume := FALSE;
 	                    #fTarget := #ifEncoder;
 	                    #iNextState := #ST_STANDBY;
 	                    #iState := #ST_BRAKE;
@@ -683,6 +790,7 @@ BEGIN
 	            #txProfileReset := TRUE;
 	            #xBrakeOpen := FALSE;
 	            #xRestart := FALSE;
+	            #xHoldResume := FALSE;
 
 	        ELSE
 	            #iState := #ST_DISABLED;
@@ -700,15 +808,13 @@ BEGIN
 	        #xLevelPhase := FALSE;
 	        #xLevelFound := FALSE;
 	        #xLevelNotFound := FALSE;
+	        #xHoldResume := FALSE;
 	        #fMaxOvershoot := 0.0;
+	        #fMemoMaxSpeed := 0.0;
 	        #fVirPos := #ifEncoder;
 	        #ofMaxFollowingError := 0.0;
 
-	        IF #Cfg.fMaxSpeed <= 0.0 OR #Cfg.fMinSpeed <= 0.0 OR #Cfg.fMinSpeed > #Cfg.fMaxSpeed
-	            OR #Cfg.fMinAccRamp <= 0.0 OR #Cfg.fMinDecRamp <= 0.0
-	            OR #Cfg.fMaxAccRamp < #Cfg.fMinAccRamp OR #Cfg.fMaxDecRamp < #Cfg.fMinDecRamp
-	            OR #Cfg.fJerk < 0.0 OR #Cfg.fMotWindPos <= 0.0
-	            OR (#Cfg.xPosLoop AND (#Cfg.fKp_Pos < 0.0 OR #Cfg.fPosLoopLimitPct < 0.0)) THEN
+	        IF NOT #txCfgOk THEN
 	            #wError := #ERR_PARAM;
 	            #iState := #ST_ERROR;
 
@@ -837,6 +943,7 @@ BEGIN
 	    // stato
 	    #oxStopSpeed := (#ofSpeedRequest = 0.0);
 	    #oxBusy := (#iState >= #ST_START) AND (#iState <= #ST_BRAKE);
+	    #oxHold := #xHoldResume OR (#ixHold AND #iState >= #ST_STANDBY AND #iState <= #ST_BRAKE);
 	    #oxAccOnWork := (#iState = #ST_MOVING OR #iState = #ST_JOG) AND #Profile.oxAcc;
 	    #oxDecOnWork := (#iState = #ST_MOVING OR #iState = #ST_STOPPING OR #iState = #ST_JOG) AND #Profile.oxDec;
 	    #oxEndPos := ((#iState = #ST_STANDBY) OR (#iState = #ST_BRAKE AND #iNextState = #ST_STANDBY))
