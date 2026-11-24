@@ -6,13 +6,14 @@ VERSION : 0.1
 //Traiettoria prevista e registrazione del moto reale per AxisAS_Mng_v4, per il trend view dei pannelli Comfort
 //in modalità "buffer comandato da bit" (bit-triggered buffer).
 //  - Alla partenza di ogni movimento (asse in moto, dopo la magnetizzazione) calcola la traiettoria prevista (posizione e velocità,
-//    200 punti) con gli stessi parametri dell'asse e avvia la registrazione di encoder e velocità reale
+//    1000 punti, calcolo distribuito su più cicli) con gli stessi parametri dell'asse e avvia la registrazione di encoder e velocità reale
 //    con la stessa scala di tempo: le curve si sovrappongono.
 //  - Con ixPreview (fronte) calcola la traiettoria prevista dalla posizione attuale a ifPreviewTarget, senza muovere.
 //  - wTrendTransfer (consegnato con fronte, vedi REGION Consegna al pannello): bit 0 = posizione prevista, bit 1 = posizione reale, bit 2 = velocità prevista,
 //    bit 3 = velocità reale. Il blocco alza il bit quando l'array è pronto, il pannello lo legge e lo azzera.
-//    Durante la registrazione i bit 1 e 3 vengono rialzati ogni 10 punti (aggiornamento in moto).
-//  - Scala del tempo: ofSampleTime secondi per punto (asse X del trend = 200 punti).
+//    Durante la registrazione, con ixLive, i bit 1 e 3 vengono rialzati ogni LIVE_PERIOD secondi (aggiornamento in moto);
+//    senza ixLive il grafico reale viene consegnato una sola volta a fine moto (una sola lettura del pannello).
+//  - Scala del tempo: ofSampleTime secondi per punto (asse X del trend = N_LAST+1 punti).
 //Profilo previsto ideale: motore che segue esattamente il riferimento (nessun ritardo/inerzia/slittamento);
 //la differenza con il reale mostra l'effetto della meccanica.
    VAR_INPUT
@@ -29,17 +30,19 @@ VERSION : 0.1
       ifSpeedMove : Real;   // Velocità di lavoro (AxisAS_Mng_v4.ofSpeedMove)
       ifAccWork : Real;   // Accelerazione di lavoro (AxisAS_Mng_v4.ofAccWork)
       ifDecWork : Real;   // Decelerazione di lavoro (AxisAS_Mng_v4.ofDecWork)
+      ixLive : Bool := TRUE;   // Aggiorna il grafico reale anche durante il moto (FALSE = solo a fine moto)
    END_VAR
 
    VAR_OUTPUT
       ofSampleTime : Real;   // Secondi per punto del grafico
-      ofWindowTime : Real;   // Durata totale del grafico (s) = 199 x ofSampleTime
+      ofWindowTime : Real;   // Durata totale del grafico (s) = N_LAST x ofSampleTime
       ofPlanTime : Real;   // Durata prevista del posizionamento (s)
       ofActTime : Real;   // Durata reale registrata (s)
       ofPosMin : Real;   // Limite inferiore suggerito per l'asse posizione
       ofPosMax : Real;   // Limite superiore suggerito per l'asse posizione
       ofSpeedMax : Real;   // Limite superiore suggerito per l'asse velocità
       oxRecording : Bool;   // Registrazione in corso
+      oxPlanning : Bool;   // Calcolo della traiettoria prevista in corso
    END_VAR
 
    VAR_IN_OUT
@@ -47,10 +50,10 @@ VERSION : 0.1
    END_VAR
 
    VAR
-      aPlanPos : Array[0..199] of Real;   // Posizione prevista
-      aActPos : Array[0..199] of Real;   // Posizione reale
-      aPlanSpd : Array[0..199] of Real;   // Velocità prevista (modulo)
-      aActSpd : Array[0..199] of Real;   // Velocità reale (modulo)
+      aPlanPos : Array[0..999] of Real;   // Posizione prevista
+      aActPos : Array[0..999] of Real;   // Posizione reale
+      aPlanSpd : Array[0..999] of Real;   // Velocità prevista (modulo)
+      aActSpd : Array[0..999] of Real;   // Velocità reale (modulo)
       wTrendTransfer : Word;   // Bit di trasferimento per il trend view (il pannello li azzera)
       wTrendRequest : Word;   // Requisiti curva: scritta dal pannello (curve visualizzate), non usata dal PLC
       wTrendPend : Word;   // Bit da consegnare al pannello (in attesa)
@@ -70,7 +73,22 @@ VERSION : 0.1
       fTs : Real := 0.05;   // Tempo per punto (s)
       fActT : Real;   // Tempo dall'inizio della registrazione (s)
       iActIdx : Int;   // Prossimo punto da registrare
-      iLiveCnt : Int;
+      fLiveT : Real;   // Tempo dall'ultimo aggiornamento in moto (s)
+      iPlanIdx : Int;   // Prossimo punto della traiettoria prevista da calcolare
+      fPlD : Real;   // Dati della traiettoria prevista mantenuti tra i cicli
+      fPlDir : Real;
+      fPlV : Real;
+      fPlVEnd : Real;
+      fPlA : Real;
+      fPlDc : Real;
+      fPlJ : Real;
+      fPlAdv : Real;
+      fPlDtI : Real;
+      fPlS : Real;
+      fPlSp : Real;
+      fPlArr : Real;
+      xPlDec : Bool;
+      xPlArrived : Bool;
       fRecSpdSum : Real;   // Integrale della velocità reale dall'ultimo punto registrato
       fRecT : Real;   // Tempo dall'ultimo punto registrato (s)
       fRecSpd : Real;   // Velocità reale media sull'ultimo passo del grafico
@@ -96,22 +114,18 @@ VERSION : 0.1
       tfTA : Real;
       tfTD : Real;
       tfT : Real;
-      tfS : Real;
-      tfSp : Real;
       tfRem : Real;
       tfCmd : Real;
-      tfDtI : Real;
-      tfArr : Real;
-      txDec : Bool;
-      txArrived : Bool;
       ti : Int;
       tk : Int;
       tiIter : Int;
    END_VAR
 
    VAR CONSTANT
-      N_LAST : Int := 199;   // Ultimo indice degli array
+      N_LAST : Int := 999;   // Ultimo indice degli array (1000 punti)
       SUBSTEPS : Int := 5;   // Passi di calcolo per punto
+      PLAN_CHUNK : Int := 100;   // Punti della traiettoria prevista calcolati per ciclo PLC
+      LIVE_PERIOD : Real := 0.5;   // Periodo di aggiornamento del grafico durante il moto (s)
       TREND_SYNC_BIT : Word := 16#8000;   // Bit 15 di wTrendTransfer richiesto dal pannello insieme ai bit delle curve
    END_VAR
 
@@ -158,7 +172,9 @@ BEGIN
 	        #oxRecording := TRUE;
 	        #iActIdx := 0;
 	        #fActT := 0.0;
-	        #iLiveCnt := 0;
+	        #fLiveT := 0.0;
+	        #fRecSpdSum := 0.0;
+	        #fRecT := 0.0;
 	        FOR #ti := 0 TO #N_LAST DO
 	            #aActPos[#ti] := #ifEncoder;
 	            #aActSpd[#ti] := 0.0;
@@ -257,57 +273,78 @@ BEGIN
 
 	        // scala del grafico: 50% di margine per il moto reale (inerzia, accostamento)
 	        #fTs := #tfT * 1.5 / INT_TO_REAL(#N_LAST);
-	        IF #fTs < 0.01 THEN
-	            #fTs := 0.01;
+	        IF #fTs < 0.002 THEN
+	            #fTs := 0.002;   // minimo 2 ms (movimenti brevi)
 	        END_IF;
 
-	        // simulazione del profilo ideale (stessa logica di AxisAS_Mng_v4 senza ritardi)
+	        // stato iniziale della simulazione, poi calcolo distribuito su più cicli (PLAN_CHUNK punti per ciclo)
 	        #Prof(ifCmdSpeed := 0.0, ifAcc := #tfA, ifDec := #tfDc, ifJerk := #tfJ, ifDt := 0.0, ixReset := TRUE);
-	        #tfDtI := #fTs / INT_TO_REAL(#SUBSTEPS);
-	        #tfS := 0.0;
-	        #tfSp := 0.0;
-	        #txDec := FALSE;
-	        #txArrived := #tfD <= #Cfg.fMotWindPos;
-	        #tfArr := 0.0;
-	        FOR #ti := 0 TO #N_LAST DO
-	            #aPlanPos[#ti] := #fPlanStart + #tfDir * #tfS;
-	            #aPlanSpd[#ti] := #tfSp;
-	            FOR #tk := 1 TO #SUBSTEPS DO
-	                IF NOT #txArrived THEN
-	                    #tfRem := #tfD - #tfS - #tfSp * #tfDtI;
-	                    IF NOT #txDec THEN
-	                        IF #tfRem <= #tfAdv + "AxisAS_RampDist_v4"(ifV0 := #tfSp, ifA0 := MAX(IN1 := #Prof.ofAcc, IN2 := 0.0),
-	                                                                     ifV1 := #tfVEnd, ifDec := #tfDc, ifJerk := #tfJ) THEN
-	                            #txDec := TRUE;
-	                        END_IF;
-	                    END_IF;
-	                    IF #txDec THEN
-	                        #tfCmd := #tfVEnd;
-	                    ELSE
-	                        #tfCmd := #tfV;
-	                    END_IF;
-	                    #Prof(ifCmdSpeed := #tfCmd, ifAcc := #tfA, ifDec := #tfDc, ifJerk := #tfJ, ifDt := #tfDtI, ixReset := FALSE);
-	                    #tfSp := #Prof.ofSpeed;
-	                    IF #tfSp < #tfVEnd THEN
-	                        #tfSp := #tfVEnd;   // come l'asse: velocità minima già alla partenza
-	                    END_IF;
-	                    #tfS := #tfS + #tfSp * #tfDtI;
-	                    #tfArr := #tfArr + #tfDtI;
-	                    IF #tfD - #tfS <= 0.5 * #Cfg.fMotWindPos THEN
-	                        #txArrived := TRUE;
-	                        #tfSp := 0.0;
-	                    END_IF;
-	                END_IF;
-	            END_FOR;
-	        END_FOR;
-
-	        #ofPlanTime := #tfArr;
+	        #fPlD := #tfD;
+	        #fPlDir := #tfDir;
+	        #fPlV := #tfV;
+	        #fPlVEnd := #tfVEnd;
+	        #fPlA := #tfA;
+	        #fPlDc := #tfDc;
+	        #fPlJ := #tfJ;
+	        #fPlAdv := #tfAdv;
+	        #fPlDtI := #fTs / INT_TO_REAL(#SUBSTEPS);
+	        #fPlS := 0.0;
+	        #fPlSp := 0.0;
+	        #xPlDec := FALSE;
+	        #xPlArrived := #tfD <= #Cfg.fMotWindPos;
+	        #fPlArr := 0.0;
+	        #iPlanIdx := 0;
+	        #oxPlanning := TRUE;
 	        #ofSampleTime := #fTs;
 	        #ofWindowTime := #fTs * INT_TO_REAL(#N_LAST);
 	        #ofPosMin := MIN(IN1 := #fPlanStart, IN2 := #fPlanTarget) - 0.05 * #tfD - 1.0;
 	        #ofPosMax := MAX(IN1 := #fPlanStart, IN2 := #fPlanTarget) + 0.05 * #tfD + 1.0;
 	        #ofSpeedMax := #tfV * 1.3;
-	        #wTrendPend := #wTrendPend OR 16#0005;   // posizione e velocità previste pronte
+	    END_IF;
+
+	    // simulazione del profilo ideale (stessa logica di AxisAS_Mng_v4 senza ritardi), PLAN_CHUNK punti per ciclo
+	    IF #oxPlanning THEN
+	        #tiIter := #iPlanIdx + #PLAN_CHUNK - 1;
+	        IF #tiIter > #N_LAST THEN
+	            #tiIter := #N_LAST;
+	        END_IF;
+	        FOR #ti := #iPlanIdx TO #tiIter DO
+	            #aPlanPos[#ti] := #fPlanStart + #fPlDir * #fPlS;
+	            #aPlanSpd[#ti] := #fPlSp;
+	            FOR #tk := 1 TO #SUBSTEPS DO
+	                IF NOT #xPlArrived THEN
+	                    #tfRem := #fPlD - #fPlS - #fPlSp * #fPlDtI;
+	                    IF NOT #xPlDec THEN
+	                        IF #tfRem <= #fPlAdv + "AxisAS_RampDist_v4"(ifV0 := #fPlSp, ifA0 := MAX(IN1 := #Prof.ofAcc, IN2 := 0.0),
+	                                                                      ifV1 := #fPlVEnd, ifDec := #fPlDc, ifJerk := #fPlJ) THEN
+	                            #xPlDec := TRUE;
+	                        END_IF;
+	                    END_IF;
+	                    IF #xPlDec THEN
+	                        #tfCmd := #fPlVEnd;
+	                    ELSE
+	                        #tfCmd := #fPlV;
+	                    END_IF;
+	                    #Prof(ifCmdSpeed := #tfCmd, ifAcc := #fPlA, ifDec := #fPlDc, ifJerk := #fPlJ, ifDt := #fPlDtI, ixReset := FALSE);
+	                    #fPlSp := #Prof.ofSpeed;
+	                    IF #fPlSp < #fPlVEnd THEN
+	                        #fPlSp := #fPlVEnd;   // come l'asse: velocità minima già alla partenza
+	                    END_IF;
+	                    #fPlS := #fPlS + #fPlSp * #fPlDtI;
+	                    #fPlArr := #fPlArr + #fPlDtI;
+	                    IF #fPlD - #fPlS <= 0.5 * #Cfg.fMotWindPos THEN
+	                        #xPlArrived := TRUE;
+	                        #fPlSp := 0.0;
+	                    END_IF;
+	                END_IF;
+	            END_FOR;
+	        END_FOR;
+	        #iPlanIdx := #tiIter + 1;
+	        IF #iPlanIdx > #N_LAST THEN
+	            #oxPlanning := FALSE;
+	            #ofPlanTime := #fPlArr;
+	            #wTrendPend := #wTrendPend OR 16#0005;   // posizione e velocità previste pronte
+	        END_IF;
 	    END_IF;
 	END_REGION
 
@@ -328,23 +365,28 @@ BEGIN
 	            END_IF;   // più punti nello stesso ciclo: resta la velocità precedente
 	            #fRecSpdSum := 0.0;
 	            #fRecT := 0.0;
-	            // i punti futuri restano sull'ultimo valore: la curva si allunga durante il moto
-	            FOR #ti := #iActIdx TO #N_LAST DO
-	                #aActPos[#ti] := #ifEncoder;
-	                #aActSpd[#ti] := #fRecSpd;
-	            END_FOR;
+	            #aActPos[#iActIdx] := #ifEncoder;
+	            #aActSpd[#iActIdx] := #fRecSpd;
 	            #iActIdx := #iActIdx + 1;
-	            #iLiveCnt := #iLiveCnt + 1;
 	        END_WHILE;
-	        IF #iLiveCnt >= 10 THEN
-	            #iLiveCnt := 0;
-	            #wTrendPend := #wTrendPend OR 16#000A;   // aggiornamento durante il moto
-	        END_IF;
-	        // fine: asse fermo o array pieno
+	        // fine (asse fermo o array pieno): consegna finale; con ixLive anche aggiornamento periodico in moto
+	        #fLiveT := #fLiveT + #tfDt;
+	        #tk := 0;
 	        IF NOT #ixBusy OR #iActIdx > #N_LAST THEN
 	            #oxRecording := FALSE;
 	            #ofActTime := #fActT;
-	            #wTrendPend := #wTrendPend OR 16#000A;   // posizione e velocità reali pronte
+	            #tk := 1;
+	        ELSIF #ixLive AND #fLiveT >= #LIVE_PERIOD THEN
+	            #tk := 1;
+	        END_IF;
+	        IF #tk = 1 AND #iActIdx > 0 THEN
+	            #fLiveT := 0.0;
+	            // i punti non ancora registrati restano sull'ultimo valore: la curva si allunga durante il moto
+	            FOR #ti := #iActIdx TO #N_LAST DO
+	                #aActPos[#ti] := #aActPos[#iActIdx - 1];
+	                #aActSpd[#ti] := #aActSpd[#iActIdx - 1];
+	            END_FOR;
+	            #wTrendPend := #wTrendPend OR 16#000A;   // posizione e velocità reali
 	        END_IF;
 	    END_IF;
 	END_REGION
