@@ -39,6 +39,8 @@ except ImportError:  # l'app parte comunque, senza collegamento
 APP_TITLE = "AxisAS_Sim_v4 - Simulatore encoder posizionatore"
 CFG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "AxisAS_Sim_v4.json")
 SIM_PERIOD = 0.005          # periodo del ciclo di simulazione (s)
+COMM_TIMEOUT = 1.0          # errori di comunicazione continui per più di questo tempo -> scollegato (s)
+RECONNECT_PERIOD = 2.0      # intervallo tra i tentativi di ricollegamento automatico (s)
 
 # ------------------------------------------------------------------------------------------------
 # Parametri (valori di default = motore 1,5 kW 4 poli, riduttore 7,5, puleggia 50 mm, come PosSim)
@@ -241,38 +243,59 @@ class AxisModel:
 # Collegamento PLC via snap7
 # ------------------------------------------------------------------------------------------------
 class PlcLink:
+    """Client snap7. Tutte le chiamate al client passano da io_lock: il client non è thread-safe
+    (lo usano il thread di simulazione e il thread di ricollegamento)."""
+
     def __init__(self):
-        self.client = snap7.client.Client() if SNAP7_OK else None
+        self.client = None
         self.connected = False
         self.db = 900
         self.error = ""
+        self.io_lock = threading.Lock()
 
     def connect(self, ip, rack, slot, db):
         if not SNAP7_OK:
             self.error = "python-snap7 non installato (pip install python-snap7)"
             return False
-        self.db = db
-        try:
-            self.client.connect(ip, rack, slot)
-            self.connected = self.client.get_connected()
-            # prova di lettura del DB
-            self.client.db_read(self.db, 0, 14)
-            self.error = ""
-        except Exception as e:
-            self.error = str(e)
-            self.disconnect()
+        with self.io_lock:
+            self.connected = False
+            self._close()
+            self.db = db
+            try:
+                # client nuovo a ogni collegamento: dopo una caduta il vecchio può restare in uno stato non valido
+                self.client = snap7.client.Client()
+                self.client.connect(ip, rack, slot)
+                # prova di lettura del DB: collegato solo se il DB SimIO risponde
+                self.client.db_read(self.db, 0, 14)
+                self.error = ""
+                self.connected = True
+            except Exception as e:
+                self.error = str(e)
+                self._close()
         return self.connected
 
-    def disconnect(self):
-        try:
-            if self.client is not None:
+    def _close(self):
+        if self.client is not None:
+            try:
                 self.client.disconnect()
-        except Exception:
-            pass
-        self.connected = False
+            except Exception:
+                pass
+            try:
+                self.client.destroy()
+            except Exception:
+                pass
+        self.client = None
+
+    def disconnect(self):
+        with self.io_lock:
+            self.connected = False
+            self._close()
 
     def read_cmd(self):
-        data = self.client.db_read(self.db, 0, 6)
+        with self.io_lock:
+            if self.client is None:
+                raise ConnectionError("client non collegato")
+            data = self.client.db_read(self.db, 0, 6)
         return get_bool(data, 0, 0), get_bool(data, 0, 1), get_bool(data, 0, 2), get_real(data, 2)
 
     def write_fb(self, encoder, ready, heartbeat, level=False):
@@ -281,13 +304,24 @@ class PlcLink:
         set_bool(data, 4, 0, ready)
         set_bool(data, 4, 1, level)
         set_int(data, 6, heartbeat)
-        self.client.db_write(self.db, 6, data)
+        with self.io_lock:
+            if self.client is None:
+                raise ConnectionError("client non collegato")
+            self.client.db_write(self.db, 6, data)
 
 
 # ------------------------------------------------------------------------------------------------
 # Motore di simulazione (thread)
 # ------------------------------------------------------------------------------------------------
 class SimEngine:
+    """Thread di simulazione + thread di ricollegamento.
+
+    Comunicazione: lettura comandi e scrittura encoder avvengono FUORI da self.lock (che protegge modello e storico),
+    così una chiamata di rete lenta non blocca l'interfaccia. Un errore isolato non scollega: si mantiene l'ultimo
+    comando e si scollega solo dopo COMM_TIMEOUT secondi di errori continui. Se il collegamento cade (non per
+    "Scollega"), il thread di ricollegamento riprova ogni RECONNECT_PERIOD secondi senza bloccare la simulazione.
+    """
+
     def __init__(self, params):
         self.model = AxisModel(params)
         self.link = PlcLink()
@@ -298,60 +332,166 @@ class SimEngine:
         self.level_on = False
         self.level_force = False
         self.cycle_ms = 0.0
-        self.comm_errors = 0
+        self.cycle_max_ms = 0.0      # ciclo di simulazione più lungo nell'ultimo secondo
         self.history = []            # (t, pos_enc, speed_ref_signed, speed, torque)
         self.t0 = time.perf_counter()
+        # stato del collegamento
+        self.want_connected = False  # True da "Connetti" a "Scollega": abilita il ricollegamento automatico
+        self.conn_params = None      # (ip, rack, slot, db)
+        self.comm_fail_since = None  # inizio della serie di errori in corso (perf_counter) o None
+        self.reconnects = 0          # ricollegamenti automatici riusciti
+        self.drops = 0               # cadute del collegamento
+        self.last_error = ""
+        self.last_error_time = ""
+        self.manual_result = None    # (ok, errore) del collegamento chiesto con "Connetti", letto dall'interfaccia
+        self._manual_pending = False
+        self._wake = threading.Event()
         self.thread = threading.Thread(target=self._loop, daemon=True)
         self.thread.start()
+        self.rthread = threading.Thread(target=self._reconnect_loop, daemon=True)
+        self.rthread.start()
 
+    # --- comandi dall'interfaccia
+    def request_connect(self, ip, rack, slot, db):
+        self.conn_params = (ip, rack, slot, db)
+        self.manual_result = None
+        self._manual_pending = True
+        self.want_connected = True
+        self._wake.set()
+
+    def request_disconnect(self):
+        self.want_connected = False
+        self._manual_pending = False
+        self.comm_fail_since = None
+        self.link.disconnect()
+
+    def conn_state(self):
+        """'on' collegato, 'retry' collegamento/ricollegamento in corso, 'off' scollegato."""
+        if self.link.connected:
+            return "on"
+        return "retry" if self.want_connected else "off"
+
+    # --- errori di comunicazione
+    def _note_error(self, msg):
+        self.last_error = msg
+        self.last_error_time = time.strftime("%H:%M:%S")
+
+    def _comm_error(self, e, now):
+        self.link.error = str(e)
+        self._note_error(str(e))
+        if self.comm_fail_since is None:
+            self.comm_fail_since = now
+        elif now - self.comm_fail_since > COMM_TIMEOUT and self.link.connected:
+            self.link.disconnect()
+            self.comm_fail_since = None
+            self.drops += 1
+            self._note_error(f"collegamento perso dopo {COMM_TIMEOUT:.0f} s di errori: {e}")
+
+    # --- thread di simulazione
     def _loop(self):
         last = time.perf_counter()
+        win_start, win_max = last, 0.0
         while self.running:
             now = time.perf_counter()
-            dt = min(now - last, 0.05)
+            dt_real = now - last
+            dt = min(dt_real, 0.05)
             last = now
-            with self.lock:
-                fwd, back, brake, ref = self.cmd
-                if self.link.connected:
-                    try:
-                        fwd, back, brake, ref = self.link.read_cmd()
-                    except Exception as e:
-                        self.comm_errors += 1
-                        self.link.error = str(e)
-                        if self.comm_errors > 20:
-                            self.link.disconnect()
+            link = self.link
+            ok = True
+
+            # lettura comandi (fuori da self.lock)
+            fwd, back, brake, ref = self.cmd
+            if link.connected:
+                try:
+                    fwd, back, brake, ref = link.read_cmd()
+                except Exception as e:
+                    ok = False
+                    self._comm_error(e, now)
+                    # errore isolato: si tiene l'ultimo comando; se il collegamento è caduto, tutto a zero
+                    if not link.connected:
                         fwd, back, brake, ref = False, False, False, 0.0
-                else:
-                    fwd, back, brake, ref = False, False, False, 0.0
+            else:
+                fwd, back, brake, ref = False, False, False, 0.0
+
+            with self.lock:
                 self.cmd = (fwd, back, brake, ref)
                 m = self.model
                 m.step(fwd, back, brake, ref, dt)
                 enc = m.encoder()
+                ready = m.drive_ready
                 p = m.p
                 lev = False
                 if p.get("level_enabled"):
                     lp = float(p.get("level_pos", 0.0))
                     lev = enc >= lp if p.get("level_above", True) else enc <= lp
                 self.level_on = lev or self.level_force
+                level_on = self.level_on
                 self.heartbeat = (self.heartbeat + 1) % 32000
-                if self.link.connected:
-                    try:
-                        self.link.write_fb(enc, m.drive_ready, self.heartbeat, self.level_on)
-                        self.comm_errors = 0
-                    except Exception as e:
-                        self.comm_errors += 1
-                        self.link.error = str(e)
+                heartbeat = self.heartbeat
                 t = now - self.t0
                 sref = ref if fwd else (-ref if back else 0.0)
                 self.history.append((t, enc, sref, m.speed, m.torque))
                 if len(self.history) > 40000:
                     del self.history[:10000]
-                self.cycle_ms = self.cycle_ms * 0.9 + dt * 1000.0 * 0.1
+
+            # scrittura encoder (fuori da self.lock)
+            if link.connected:
+                try:
+                    link.write_fb(enc, ready, heartbeat, level_on)
+                except Exception as e:
+                    ok = False
+                    self._comm_error(e, now)
+                if ok:
+                    self.comm_fail_since = None
+
+            # tempo ciclo: medio e massimo sull'ultimo secondo
+            self.cycle_ms = self.cycle_ms * 0.9 + dt_real * 1000.0 * 0.1
+            win_max = max(win_max, dt_real * 1000.0)
+            if now - win_start >= 1.0:
+                self.cycle_max_ms = win_max
+                win_start, win_max = now, 0.0
+
             spent = time.perf_counter() - now
             time.sleep(max(0.0005, SIM_PERIOD - spent))
 
+    # --- thread di ricollegamento (il collegamento può bloccare qualche secondo: non lo fa la simulazione)
+    def _reconnect_loop(self):
+        last_try = -RECONNECT_PERIOD
+        while self.running:
+            self._wake.wait(0.2)
+            self._wake.clear()
+            if not self.running:
+                break
+            if not self.want_connected or self.link.connected or self.conn_params is None:
+                continue
+            manual = self._manual_pending
+            now = time.perf_counter()
+            if not manual and now - last_try < RECONNECT_PERIOD:
+                continue
+            last_try = now
+            ok = self.link.connect(*self.conn_params)
+            if not self.want_connected:
+                # "Scollega" premuto durante il tentativo: annullo senza segnalare errori
+                if ok:
+                    self.link.disconnect()
+                continue
+            if ok:
+                self.comm_fail_since = None
+                if not manual:
+                    self.reconnects += 1
+            elif self.want_connected:
+                self._note_error(self.link.error)
+            if manual:
+                self._manual_pending = False
+                self.manual_result = (ok, self.link.error)
+                if not ok:
+                    # primo collegamento non riuscito: niente tentativi automatici, l'interfaccia mostra l'errore
+                    self.want_connected = False
+
     def stop(self):
         self.running = False
+        self.want_connected = False
+        self._wake.set()
         self.link.disconnect()
 
 
@@ -370,8 +510,9 @@ class Scope:
              ("spd", 3, "Velocità", "mm/s", "{:.1f}"), ("trq", 4, "Coppia", "Nm", "{:.2f}"))
     PAD_L, PAD_R, TOP, BOT = 60, 60, 22, 22
 
-    def __init__(self, parent, on_freeze=None):
+    def __init__(self, parent, on_freeze=None, get_full=None):
         self.on_freeze = on_freeze
+        self.get_full = get_full    # funzione che restituisce lo storico completo (usata quando si congela)
         self.cv = tk.Canvas(parent, bg="#101418", highlightthickness=0, height=360, cursor="crosshair")
         self.cv.pack(fill="both", expand=True)
         self.readout = tk.StringVar(value="")
@@ -412,6 +553,12 @@ class Scope:
     def freeze(self, on=True):
         if on and not self.frozen:
             self.frozen = True
+            # in tempo reale si riceve solo la coda dello storico: da congelato serve tutto (zoom, "Zoom tutto")
+            if self.get_full is not None:
+                full = self.get_full()
+                if len(full) >= 2:
+                    self.hist = full
+                    self.times = [h[0] for h in full]
             if self.on_freeze:
                 self.on_freeze(True)
         elif not on and self.frozen:
@@ -690,6 +837,9 @@ class App:
         self.lbl_cycle.pack(side="left", padx=10)
         if not SNAP7_OK:
             ttk.Label(top, text="python-snap7 non installato: pip install python-snap7", foreground="red").pack(side="left")
+        # diagnostica comunicazione: cadute, ricollegamenti, ultimo errore
+        self.lbl_comm = ttk.Label(self.root, text="", foreground="#a03000", padding=(6, 0))
+        self.lbl_comm.pack(fill="x")
 
         body = ttk.PanedWindow(self.root, orient="horizontal")
         body.pack(fill="both", expand=True, padx=6, pady=6)
@@ -787,7 +937,7 @@ class App:
         ttk.Button(cf, text="Zoom tutto", command=lambda: self.scope.zoom_all()).pack(side="left")
         ttk.Button(cf, text="Cancella cursori", command=lambda: self.scope.clear_cursors()).pack(side="left", padx=4)
         ttk.Button(cf, text="Pulisci", command=self._clear).pack(side="left")
-        self.scope = Scope(sf, on_freeze=self._on_freeze)
+        self.scope = Scope(sf, on_freeze=self._on_freeze, get_full=self._full_history)
 
         self.status_var = tk.StringVar(value="Pronto")
         ttk.Label(self.root, textvariable=self.status_var, relief="sunken", anchor="w").pack(fill="x", side="bottom")
@@ -850,6 +1000,10 @@ class App:
         self.paused = frozen
         self.btn_pause.config(text="Riprendi" if frozen else "Pausa")
 
+    def _full_history(self):
+        with self.eng.lock:
+            return list(self.eng.history)
+
     def _clear(self):
         with self.eng.lock:
             self.eng.history.clear()
@@ -858,36 +1012,53 @@ class App:
         self.scope.freeze(False)
 
     def toggle_conn(self):
-        if self.eng.link.connected:
-            with self.eng.lock:
-                self.eng.link.disconnect()
+        e = self.eng
+        if e.want_connected or e.link.connected:
+            e.request_disconnect()
             self.status("Scollegato")
             return
         self._apply()
         p = self.params
         self.status(f"Collegamento a {p['ip']} ...")
-        self.root.update_idletasks()
-        with self.eng.lock:
-            ok = self.eng.link.connect(p["ip"], int(p["rack"]), int(p["slot"]), int(p["db"]))
+        # il collegamento avviene nel thread di ricollegamento: l'esito arriva in _update (eng.manual_result)
+        e.request_connect(p["ip"], int(p["rack"]), int(p["slot"]), int(p["db"]))
+
+    def _check_manual_result(self):
+        res = self.eng.manual_result
+        if res is None:
+            return
+        self.eng.manual_result = None
+        ok, err = res
+        p = self.params
         if ok:
-            self.status(f"Collegato a {p['ip']}, DB{p['db']}")
+            self.status(f"Collegato a {p['ip']}, DB{p['db']} (ricollegamento automatico attivo)")
         else:
+            self.status("Collegamento non riuscito")
             messagebox.showerror(APP_TITLE, "Collegamento non riuscito.\n\n"
-                                 f"{self.eng.link.error}\n\n"
+                                 f"{err}\n\n"
                                  "Controlla: IP del PLC, DB AxisAS_SimIO presente con accesso STANDARD (non ottimizzato), "
                                  "'Accesso PUT/GET' abilitato nella CPU, rack 0 / slot 1 per S7-1500 (slot 1 anche per S7-1200).")
 
     # --- aggiornamento periodico
     def _update(self):
         e = self.eng
+        try:
+            win = float(self.win.get())
+        except ValueError:
+            win = 20.0
+        # in tempo reale basta la coda dello storico che copre la finestra (copia breve, lock tenuto poco);
+        # lo storico completo viene copiato solo quando l'oscilloscopio si congela (Scope.freeze -> _full_history)
+        n_tail = int(max(win, 1.0) / SIM_PERIOD * 1.2) + 100
         with e.lock:
             fwd, back, brake, ref = e.cmd
             m = e.model
             enc, spd, rpm, trq, cur, ready = m.encoder(), m.speed, m.rpm, m.torque, m.current, m.drive_ready
-            hist = list(e.history) if not self.scope.frozen else None
-            conn, cyc, vmax = e.link.connected, e.cycle_ms, m.max_mech_speed()
+            hist = e.history[-n_tail:] if not self.scope.frozen else None
+            vmax = m.max_mech_speed()
             lev = e.level_on
             self.scope.level_pos = float(m.p.get("level_pos", 0.0)) if m.p.get("level_enabled") else None
+        state, cyc, cmax = e.conn_state(), e.cycle_ms, e.cycle_max_ms
+        self._check_manual_result()
         on = {"fwd": fwd, "back": back, "brake": brake, "ready": ready, "lev": lev}
         for k, l in self.leds.items():
             l.config(bg="#1a9a3a" if on[k] else "#444")
@@ -897,14 +1068,20 @@ class App:
         self.vals["rpm"].set(f"{rpm:8.0f}")
         self.vals["trq"].set(f"{trq:7.2f}")
         self.vals["cur"].set(f"{cur:6.2f}")
-        self.lbl_conn.config(text="  COLLEGATO  " if conn else "  NON COLLEGATO  ", bg="#1a9a3a" if conn else "#aa2222")
-        self.btn_conn.config(text="Scollega" if conn else "Connetti")
-        self.lbl_cycle.config(text=f"ciclo simulazione {cyc:.1f} ms")
+        if state == "on":
+            self.lbl_conn.config(text="  COLLEGATO  ", bg="#1a9a3a")
+        elif state == "retry":
+            self.lbl_conn.config(text="  COLLEGAMENTO...  " if e._manual_pending else "  RICOLLEGAMENTO...  ", bg="#c07000")
+        else:
+            self.lbl_conn.config(text="  NON COLLEGATO  ", bg="#aa2222")
+        self.btn_conn.config(text="Connetti" if state == "off" else "Scollega")
+        self.lbl_cycle.config(text=f"ciclo simulazione {cyc:.1f} ms (max {cmax:.0f} ms nell'ultimo secondo)")
+        if e.last_error or e.drops:
+            self.lbl_comm.config(text=f"Cadute collegamento: {e.drops}   ricollegamenti automatici: {e.reconnects}   "
+                                      f"ultimo errore ({e.last_error_time}): {e.last_error}")
+        else:
+            self.lbl_comm.config(text="")
         self.lbl_info.config(text=f"Velocità carico a giri nominali: {vmax:.0f} mm/s  (riferimento per Cfg.fMaxSpeed)")
-        try:
-            win = float(self.win.get())
-        except ValueError:
-            win = 20.0
         self.scope.draw(hist, win)
         self.root.after(50, self._update)
 
