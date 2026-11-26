@@ -2,18 +2,21 @@
 { S7_Optimized_Access := 'TRUE' }
 AUTHOR : FMT
 FAMILY : AxisAS
-VERSION : 0.1
+VERSION : 0.2
 //Traiettoria prevista e registrazione del moto reale per AxisAS_Mng_v4, per il trend view dei pannelli Comfort
 //in modalità "buffer comandato da bit" (bit-triggered buffer).
 //  - Alla partenza di ogni movimento (asse in moto, dopo la magnetizzazione) calcola la traiettoria prevista (posizione e velocità,
-//    1000 punti, calcolo distribuito su più cicli) con gli stessi parametri dell'asse e avvia la registrazione di encoder e velocità reale
+//    999 punti, calcolo distribuito su più cicli) con gli stessi parametri dell'asse e avvia la registrazione di encoder e velocità reale
 //    con la stessa scala di tempo: le curve si sovrappongono.
 //  - Con ixPreview (fronte) calcola la traiettoria prevista dalla posizione attuale a ifPreviewTarget, senza muovere.
 //  - wTrendTransfer (consegnato con fronte, vedi REGION Consegna al pannello): bit 0 = posizione prevista, bit 1 = posizione reale, bit 2 = velocità prevista,
 //    bit 3 = velocità reale. Il blocco alza il bit quando l'array è pronto, il pannello lo legge e lo azzera.
 //    Durante la registrazione, con ixLive, i bit 1 e 3 vengono rialzati ogni LIVE_PERIOD secondi (aggiornamento in moto);
 //    senza ixLive il grafico reale viene consegnato una sola volta a fine moto (una sola lettura del pannello).
-//  - Scala del tempo: ofSampleTime secondi per punto (asse X del trend = N_LAST+1 punti).
+//  - Scala del tempo: ofSampleTime secondi per punto (asse X del trend = N_LAST+1 = 999 punti: nel trend view
+//    impostare 999 valori per curva, il massimo consentito, altrimenti si vede solo l'inizio del movimento).
+//CHANGELOG:
+//    v0.2 - 26/11/2026 - buffer da 1000 a 999 punti (limite del trend view WinCC)
 //Profilo previsto ideale: motore che segue esattamente il riferimento (nessun ritardo/inerzia/slittamento);
 //la differenza con il reale mostra l'effetto della meccanica.
    VAR_INPUT
@@ -50,10 +53,10 @@ VERSION : 0.1
    END_VAR
 
    VAR
-      aPlanPos : Array[0..999] of Real;   // Posizione prevista
-      aActPos : Array[0..999] of Real;   // Posizione reale
-      aPlanSpd : Array[0..999] of Real;   // Velocità prevista (modulo)
-      aActSpd : Array[0..999] of Real;   // Velocità reale (modulo)
+      aPlanPos : Array[0..998] of Real;   // Posizione prevista (999 valori = massimo di una curva del trend view; limite superiore = N_LAST)
+      aActPos : Array[0..998] of Real;   // Posizione reale
+      aPlanSpd : Array[0..998] of Real;   // Velocità prevista (modulo)
+      aActSpd : Array[0..998] of Real;   // Velocità reale (modulo)
       wTrendTransfer : Word;   // Bit di trasferimento per il trend view (il pannello li azzera)
       wTrendRequest : Word;   // Requisiti curva: scritta dal pannello (curve visualizzate), non usata dal PLC
       wTrendPend : Word;   // Bit da consegnare al pannello (in attesa)
@@ -122,7 +125,7 @@ VERSION : 0.1
    END_VAR
 
    VAR CONSTANT
-      N_LAST : Int := 999;   // Ultimo indice degli array (1000 punti)
+      N_LAST : Int := 998;   // Ultimo indice degli array (999 punti, massimo di una curva del trend view). Deve coincidere con il limite degli array
       SUBSTEPS : Int := 5;   // Passi di calcolo per punto
       PLAN_CHUNK : Int := 100;   // Punti della traiettoria prevista calcolati per ciclo PLC
       LIVE_PERIOD : Real := 0.5;   // Periodo di aggiornamento del grafico durante il moto (s)

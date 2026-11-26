@@ -43,8 +43,8 @@ Aggiornato 26/11/2026. Questo file è nella radice del repo (prima era sul Deskt
     Cfg come IN_OUT (`AxisAS_CFG_Type_v4`), `Cfg.xPosLoop` = FALSE anello aperto (default) / TRUE inseguimento virtuale.
   - `AxisAS_Profile_v4.scl` (FB trapezio con jerk), `AxisAS_RampDist_v4.scl` (FC spazio di frenata).
   - Contorno: `AxisAS_Test_v4.scl` (banco di prova, Cmd da HMI), `AxisAS_Trace_v4.scl` (traiettoria prevista/reale
-    per trend WinCC, 1000 punti, passo = durata prevista x 1,5 / 999), DB `AxisAS_SimIO` (DB900, accesso standard,
-    offset fissi).
+    per trend WinCC, v0.2: 999 punti = massimo di una curva del trend view, `N_LAST` = 998 = limite degli array,
+    passo = durata prevista x 1,5 / 998), DB `AxisAS_SimIO` (DB900, accesso standard, offset fissi).
 - v0.3 (24/11): ingressi per il futuro FB Sincro `ifSpeedOverride`, `ixHold`, `ixSincroError` (allarme 5), uscita `oxHold`;
   `Cfg.fKp_PosDec` (Kp a piramide come v2.0); `ifTimeScan` opzionale (0 = RUNTIME); validazione parametri anche su JOG
   e soglie autospeed; tabella corrispondenze v2.0 -> v4 nell'header dell'FB. Non ancora compilata in TIA.
@@ -58,7 +58,8 @@ Aggiornato 26/11/2026. Questo file è nella radice del repo (prima era sul Deskt
     ogni 2 s in un thread separato, I/O snap7 fuori dal lock della simulazione, cadute/ricollegamenti/ultimo errore
     visibili sotto la barra in alto, ciclo medio e massimo. Provato offline con PLC finto, NON ancora con PLCSIM Advanced.
 - Prove su PLCSIM (26/11), movimento 0 -> 200 mm, 100 mm/s, 500 mm/s^2:
-  - Il trend WinCC mostra solo 200 punti dei 1000 di Trace (~0,68 s di ~2,3 s): controllare l'asse X della vista trend.
+  - Il trend WinCC mostrava solo 200 punti dei 1000 di Trace (~0,68 s di ~2,3 s). Trace portato a 999 punti
+    (26/11): nel trend view impostare 999 valori per curva e adeguare i tag array HMI (Ax4_Trace_aPlanPos ecc.).
   - Nel tratto visibile posizione prevista e reale coincidono; la velocità reale ha denti periodici (~90-130 ms)
     con posizione corretta: probabile artefatto della stima velocità con encoder aggiornato in modo irregolare dal
     simulatore (da verificare: con la GUI aperta il ciclo massimo del simulatore sale a ~11 ms).
