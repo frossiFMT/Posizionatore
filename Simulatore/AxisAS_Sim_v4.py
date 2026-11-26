@@ -38,7 +38,9 @@ except ImportError:  # l'app parte comunque, senza collegamento
 
 APP_TITLE = "AxisAS_Sim_v4 - Simulatore encoder posizionatore"
 CFG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "AxisAS_Sim_v4.json")
-SIM_PERIOD = 0.005          # periodo del ciclo di simulazione (s)
+SIM_PERIOD = 0.002          # periodo del ciclo di simulazione (s). L'encoder scritto ogni SIM_PERIOD e letto dal PLC
+                            # in modo asincrono produce un errore sulla velocità stimata dal PLC di circa
+                            # SIM_PERIOD / ciclo OB (5 ms: 91..106 mm/s su 100, 2 ms: 96..103, verificato con modello)
 COMM_TIMEOUT = 1.0          # errori di comunicazione continui per più di questo tempo -> scollegato (s)
 RECONNECT_PERIOD = 2.0      # intervallo tra i tentativi di ricollegamento automatico (s)
 
@@ -431,8 +433,9 @@ class SimEngine:
                 t = now - self.t0
                 sref = ref if fwd else (-ref if back else 0.0)
                 self.history.append((t, enc, sref, m.speed, m.torque))
-                if len(self.history) > 40000:
-                    del self.history[:10000]
+                # almeno 90 s di storico con SIM_PERIOD = 2 ms (finestra massima dell'oscilloscopio 60 s)
+                if len(self.history) > 60000:
+                    del self.history[:15000]
 
             # scrittura encoder (fuori da self.lock)
             if link.connected:

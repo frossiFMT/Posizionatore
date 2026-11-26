@@ -2,7 +2,7 @@
 { S7_Optimized_Access := 'TRUE' }
 AUTHOR : FMT
 FAMILY : AxisAS
-VERSION : 0.3
+VERSION : 0.4
 //------------------------------------------------------------------------
 //DESCRIPTION: "AxisAS_Mng_v4"
 //    Gestore ASSE per motore asincrono su inverter (marcia avanti/indietro + riferimento velocità + freno)
@@ -66,6 +66,9 @@ VERSION : 0.3
 //    v0.3 - 24/11/2026 - ifSpeedOverride, ixHold, ixSincroError (allarme 5), oxHold per il futuro FB Sincro;
 //                        Cfg.fKp_PosDec (guadagno a piramide come v2.0); ifTimeScan opzionale;
 //                        validazione parametri estesa a JOG e soglie autospeed
+//    v0.4 - 26/11/2026 - stima velocità encoder: a encoder fermo limite = ultimo spostamento / tempo senza cambi,
+//                        velocità 0 dopo ENC_STILL_T (prima restava l'ultimo valore per 100 ms e poi decadeva:
+//                        "fermo" riconosciuto ~120 ms dopo l'arresto reale, ora ~20 ms; a regime invariata)
 //------------------------------------------------------------------------
    VAR_INPUT
       ixEnable : Bool;   // Abilita posizionatore (con FALSE durante il moto: arresto in rampa)
@@ -149,6 +152,7 @@ VERSION : 0.3
       fEncOld : Real;   // Posizione encoder ciclo precedente
       fEncChgT : Real;   // Tempo dall'ultimo cambio del valore encoder [s]
       fEncSpeed : Real;   // Velocità reale stimata dall'encoder (filtrata)
+      fEncLastDelta : Real;   // Modulo dell'ultimo spostamento encoder misurato (limite della velocità a encoder fermo)
       fTarget : Real;   // Quota obiettivo in corso
       fAcceptedRequest : Real;   // Ultima quota richiesta accettata
       fNewTarget : Real;   // Quota per avvio movimento
@@ -180,6 +184,7 @@ VERSION : 0.3
 
    VAR_TEMP
       tlrDt : LReal;
+      tfVBound : Real;   // Velocità massima compatibile con l'encoder fermo
       tfRem : Real;   // Spazio residuo (encoder) nella direzione del moto
       tfRemNew : Real;
       tfVEnd : Real;   // Velocità di accostamento
@@ -210,7 +215,7 @@ VERSION : 0.3
 
    VAR CONSTANT
       ENC_FILT_T : Real := 0.03;   // Costante di tempo filtro velocità encoder [s]
-      ENC_STILL_T : Real := 0.1;   // Encoder fermo da più di questo tempo -> velocità verso zero [s]
+      ENC_STILL_T : Real := 0.1;   // Encoder fermo da più di questo tempo -> velocità 0 [s]
       ST_DISABLED : Int := 0;
       ST_STANDBY : Int := 10;
       ST_START : Int := 20;
@@ -253,16 +258,26 @@ BEGIN
 
 	    // velocità reale dall'encoder: calcolata solo quando il valore cambia, sul tempo trascorso dall'ultimo
 	    // cambio (encoder aggiornato in modo asincrono rispetto al ciclo, es. bus o simulatore), poi filtrata.
-	    // Se l'encoder resta fermo più di ENC_STILL_T la velocità tende a zero.
+	    // Encoder fermo: la velocità non può superare l'ultimo spostamento diviso il tempo senza cambi
+	    // (limite fisico: cala subito quando il motore si ferma, a velocità costante non interviene);
+	    // fermo da più di ENC_STILL_T -> velocità 0.
 	    #fEncChgT := #fEncChgT + #fDt;
 	    IF #ifEncoder <> #fEncOld THEN
 	        IF #fEncChgT > 0.0 THEN
 	            #fEncSpeed := #fEncSpeed + ((#ifEncoder - #fEncOld) / #fEncChgT - #fEncSpeed) * (#fEncChgT / (#fEncChgT + #ENC_FILT_T));
 	        END_IF;
+	        #fEncLastDelta := ABS(#ifEncoder - #fEncOld);
 	        #fEncOld := #ifEncoder;
 	        #fEncChgT := 0.0;
 	    ELSIF #fEncChgT > #ENC_STILL_T THEN
-	        #fEncSpeed := #fEncSpeed - #fEncSpeed * (#fDt / (#fDt + #ENC_FILT_T));
+	        #fEncSpeed := 0.0;
+	    ELSIF #fEncChgT > 0.0 THEN
+	        #tfVBound := #fEncLastDelta / #fEncChgT;
+	        IF #fEncSpeed > #tfVBound THEN
+	            #fEncSpeed := #tfVBound;
+	        ELSIF #fEncSpeed < -#tfVBound THEN
+	            #fEncSpeed := -#tfVBound;
+	        END_IF;
 	    END_IF;
 
 	    #txResetPulse := #ixReset AND NOT #xResetOld;

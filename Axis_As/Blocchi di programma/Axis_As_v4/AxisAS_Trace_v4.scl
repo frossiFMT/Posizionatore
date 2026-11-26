@@ -16,7 +16,9 @@ VERSION : 0.2
 //  - Scala del tempo: ofSampleTime secondi per punto (asse X del trend = N_LAST+1 = 999 punti: nel trend view
 //    impostare 999 valori per curva, il massimo consentito, altrimenti si vede solo l'inizio del movimento).
 //CHANGELOG:
-//    v0.2 - 26/11/2026 - buffer da 1000 a 999 punti (limite del trend view WinCC)
+//    v0.2 - 26/11/2026 - buffer da 1000 a 999 punti (limite del trend view WinCC);
+//                        registrazione prolungata di POST_TIME dopo l'arrivo, poi velocità reale a 0 nei punti restanti
+//                        (prima restava l'ultima velocità misurata, es. 4 mm/s, come se il motore si muovesse ancora)
 //Profilo previsto ideale: motore che segue esattamente il riferimento (nessun ritardo/inerzia/slittamento);
 //la differenza con il reale mostra l'effetto della meccanica.
    VAR_INPUT
@@ -95,6 +97,7 @@ VERSION : 0.2
       fRecSpdSum : Real;   // Integrale della velocità reale dall'ultimo punto registrato
       fRecT : Real;   // Tempo dall'ultimo punto registrato (s)
       fRecSpd : Real;   // Velocità reale media sull'ultimo passo del grafico
+      fPostT : Real;   // Tempo di registrazione dopo l'arrivo (asse non più in movimento) [s]
    END_VAR
 
    VAR_TEMP
@@ -129,6 +132,7 @@ VERSION : 0.2
       SUBSTEPS : Int := 5;   // Passi di calcolo per punto
       PLAN_CHUNK : Int := 100;   // Punti della traiettoria prevista calcolati per ciclo PLC
       LIVE_PERIOD : Real := 0.5;   // Periodo di aggiornamento del grafico durante il moto (s)
+      POST_TIME : Real := 0.5;   // Registrazione dopo l'arrivo (s): arresto reale e assestamenti dopo la chiusura del freno
       TREND_SYNC_BIT : Word := 16#8000;   // Bit 15 di wTrendTransfer richiesto dal pannello insieme ai bit delle curve
    END_VAR
 
@@ -178,6 +182,7 @@ BEGIN
 	        #fLiveT := 0.0;
 	        #fRecSpdSum := 0.0;
 	        #fRecT := 0.0;
+	        #fPostT := 0.0;
 	        FOR #ti := 0 TO #N_LAST DO
 	            #aActPos[#ti] := #ifEncoder;
 	            #aActSpd[#ti] := 0.0;
@@ -372,22 +377,33 @@ BEGIN
 	            #aActSpd[#iActIdx] := #fRecSpd;
 	            #iActIdx := #iActIdx + 1;
 	        END_WHILE;
-	        // fine (asse fermo o array pieno): consegna finale; con ixLive anche aggiornamento periodico in moto
+	        // dopo l'arrivo (asse non più in movimento) registra ancora POST_TIME: arresto reale e assestamenti dopo il freno
+	        IF #ixBusy THEN
+	            #fPostT := 0.0;
+	        ELSE
+	            #fPostT := #fPostT + #tfDt;
+	        END_IF;
+	        // fine (POST_TIME dopo l'arrivo o array pieno): consegna finale; con ixLive anche aggiornamento periodico in moto
 	        #fLiveT := #fLiveT + #tfDt;
 	        #tk := 0;
-	        IF NOT #ixBusy OR #iActIdx > #N_LAST THEN
+	        IF #fPostT >= #POST_TIME OR #iActIdx > #N_LAST THEN
 	            #oxRecording := FALSE;
 	            #ofActTime := #fActT;
-	            #tk := 1;
+	            #tk := 2;
 	        ELSIF #ixLive AND #fLiveT >= #LIVE_PERIOD THEN
 	            #tk := 1;
 	        END_IF;
-	        IF #tk = 1 AND #iActIdx > 0 THEN
+	        IF #tk > 0 AND #iActIdx > 0 THEN
 	            #fLiveT := 0.0;
-	            // i punti non ancora registrati restano sull'ultimo valore: la curva si allunga durante il moto
+	            // punti non ancora registrati: durante il moto restano sull'ultimo valore (la curva si allunga);
+	            // a fine registrazione posizione finale e velocità 0 (asse fermo)
 	            FOR #ti := #iActIdx TO #N_LAST DO
 	                #aActPos[#ti] := #aActPos[#iActIdx - 1];
-	                #aActSpd[#ti] := #aActSpd[#iActIdx - 1];
+	                IF #tk = 2 THEN
+	                    #aActSpd[#ti] := 0.0;
+	                ELSE
+	                    #aActSpd[#ti] := #aActSpd[#iActIdx - 1];
+	                END_IF;
 	            END_FOR;
 	            #wTrendPend := #wTrendPend OR 16#000A;   // posizione e velocità reali
 	        END_IF;
